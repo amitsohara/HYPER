@@ -7,7 +7,7 @@ export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: n
         } catch (e: any) {
             console.error(`Attempt ${i+1} failed for ${config.model}: ${e.message}`);
             if (i === retries - 1) throw e;
-            await new Promise(r => setTimeout(r, 1000 * (i + 1))); // Backoff
+            await new Promise(r => setTimeout(r, 2000 * Math.pow(2, i))); // Exponential Backoff
         }
     }
 }
@@ -15,22 +15,22 @@ export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: n
 export async function cleanJSON(text: string, ai: GoogleGenAI): Promise<any> {
     if (!text) return null;
     let t = text.trim();
-    if (t.startsWith('```json')) t = t.substring(7);
-    else if (t.startsWith('```')) t = t.substring(3);
-    if (t.endsWith('```')) t = t.substring(0, t.length - 3);
-    t = t.trim();
+    t = t.replace(/^```json/i, "").replace(/^```/, "").replace(/```$/, "").trim();
+    
     try {
         return JSON.parse(t);
-    } catch (e) {
+    } catch (e: any) {
         console.warn("JSON parsing failed, attempting repair via LLM...");
         const sysPrompt = "You are an expert JSON repair tool. Repair the following invalid JSON and return ONLY the fully corrected valid JSON without any markdown formatting or explanations. Error encountered: " + e.message + "\n\nRaw JSON:\n" + t;
         try {
-            const repairRes = await ai.models.generateContent({
+            const repairRes = await generateWithRetry(ai, {
                 model: 'gemini-3.1-flash-lite',
                 contents: sysPrompt,
                 config: { responseMimeType: "application/json" }
-            });
-            return JSON.parse(repairRes?.text || "{}");
+            }, 3);
+            let rt = (repairRes?.text || "{}").trim();
+            rt = rt.replace(/^```json/i, "").replace(/^```/, "").replace(/```$/, "").trim();
+            return JSON.parse(rt);
         } catch (repairErr) {
             console.error("JSON repair also failed:", repairErr);
             throw repairErr;

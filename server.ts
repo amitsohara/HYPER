@@ -14,6 +14,10 @@ async function startServer() {
   const missions: any[] = [];
   const researchReports: any[] = [];
   
+  const researchQueue: any[] = [];
+  const knowledgeGaps: any[] = [];
+  let autonomousStatus = { active: false, maxDepth: 3, maxMissions: 5, currentDepth: 0, currentMissions: 0 };
+  
   // Agent Evolution Store
   const agentStore: Record<string, any> = {
     "Researcher": { version: 1, prompt: "A data-driven analyst focusing on empirical logic.", history: [] },
@@ -118,14 +122,37 @@ async function startServer() {
     res.json(report);
   });
 
-  app.post("/research/run", async (req, res) => {
-    const { mission_text, simulation_mode = "realistic" } = req.body;
-    const research_id = Math.random().toString(36).substring(7);
-    
-    if (!ai) {
-      return res.status(500).json({ error: "Gemini API key is missing. No AI engine available." });
-    }
+  app.get("/research/queue", (req, res) => {
+    res.json(researchQueue);
+  });
 
+  app.get("/research/gaps", (req, res) => {
+    res.json(knowledgeGaps);
+  });
+
+  app.get("/research/autonomous/status", (req, res) => {
+    res.json(autonomousStatus);
+  });
+
+  app.post("/research/autonomous/start", (req, res) => {
+    autonomousStatus.active = true;
+    autonomousStatus.currentMissions = 0;
+    autonomousStatus.currentDepth = 0;
+    res.json(autonomousStatus);
+    // Kick off background loop if needed
+    runAutonomousLoop().catch(console.error);
+  });
+
+  app.post("/research/autonomous/stop", (req, res) => {
+    autonomousStatus.active = false;
+    res.json(autonomousStatus);
+  });
+
+  const performResearch = async (mission_text: string, simulation_mode: string = "realistic", depth: number = 0) => {
+    const research_id = ""+Math.random().toString(36).substring(7);
+    if (!ai) throw new Error("No AI");
+    
+    // We import from engines early to use the retry logic
     const { DynamicWorldGenerator, AgentDebateEngine, DiscoveryEngine, generateWithRetry, cleanJSON } = await import("./src/server/engines.js").catch(e => {
         return import("./src/server/engines.ts");
     });
@@ -140,12 +167,7 @@ async function startServer() {
       try {
         const memoryRes = await generateWithRetry(ai, {
            model: 'gemini-3.1-flash-lite',
-           contents: `Given the new research mission "${mission_text}", review these past missions and their lessons. Return ONLY a JSON object with:
-{
-  "relevant_lessons": "Summarized relevant lessons / improvements. Say 'None' if completely unrelated.",
-  "reused_mission_ids": ["array of mission_ids that had relevant info"]
-}
-Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: m.mission_text, improvement_log: m.improvement_log || {} })))}`,
+           contents: `Given the new research mission "${mission_text}", review these past missions and their lessons. Return ONLY a JSON object with:\n{\n  "relevant_lessons": "Summarized relevant lessons / improvements. Say 'None' if completely unrelated.",\n  "reused_mission_ids": ["array of mission_ids that had relevant info"]\n}\nPast missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: m.mission_text, improvement_log: m.improvement_log || {} })))}`,
            config: { responseMimeType: "application/json" }
         });
         const memObj = await cleanJSON(memoryRes?.text || "{}", ai);
@@ -161,8 +183,6 @@ Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: 
     // Knowledge Graph Search
     const kgSearch = await kgInstance.search(ai, mission_text);
     const kgContext = `Graph Insights: ${kgSearch.insights}\nConcepts: ${kgSearch.related_concepts.join(", ")}`;
-    
-    // Combining memory and knowledge graph insights:
     const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}`;
 
     // 1. Research Question Generator, Hypotheses, Evidence Planner, Experiment Designer
@@ -181,7 +201,6 @@ Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: 
     // 5. Research Reporter
     const finalReportData = await ResearchEngine.generateReport(ai, mission_text, plan, scenarios, discovery);
 
-    // Track Research
     const reportFull = {
       id: research_id,
       mission_text,
@@ -195,13 +214,81 @@ Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: 
       scenarios,
       discovery,
       finalReportData,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      depth
     };
-    researchReports.unshift(reportFull);
-    res.json(reportFull);
 
+    researchReports.unshift(reportFull);
     // Update Knowledge Graph asynchronously
     kgInstance.update(ai, { ...reportFull, goals: plan.research_questions }).catch(e => console.error("KG Update Failed", e));
+
+    // Autonomous Follow-up Generation
+    const { AutonomousResearchEngine } = await import("./src/server/autonomous.js").catch(e => import("./src/server/autonomous.ts"));
+    const autoGaps = await AutonomousResearchEngine.identifyGapsAndFollowUps(ai, reportFull);
+    
+    if (autoGaps.knowledge_gaps && autoGaps.knowledge_gaps.length > 0) {
+        knowledgeGaps.unshift({
+            mission_id: research_id,
+            gaps: autoGaps.knowledge_gaps,
+            weak_assumptions: autoGaps.weak_assumptions,
+            unanswered_questions: autoGaps.unanswered_questions,
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    if (autoGaps.follow_up_questions && autoGaps.follow_up_questions.length > 0) {
+        autoGaps.follow_up_questions.forEach((q: any) => {
+            researchQueue.push({
+                ...q,
+                source_mission_id: research_id,
+                status: "pending",
+                depth: depth + 1,
+                added_at: new Date().toISOString()
+            });
+        });
+        // Sort queue by priority and value
+        researchQueue.sort((a, b) => ((b.priority_score + b.research_value_score) - (a.priority_score + a.research_value_score)));
+    }
+    
+    return reportFull;
+  };
+
+  const runAutonomousLoop = async () => {
+     while (autonomousStatus.active && autonomousStatus.currentMissions < autonomousStatus.maxMissions) {
+        const nextTaskIndex = researchQueue.findIndex(q => q.status === "pending" && q.depth <= autonomousStatus.maxDepth);
+        if (nextTaskIndex === -1) {
+            console.log("No more tasks within depth limits.");
+            autonomousStatus.active = false;
+            break;
+        }
+        
+        const task = researchQueue[nextTaskIndex];
+        // Mark running
+        researchQueue[nextTaskIndex].status = "running";
+        
+        try {
+            console.log("Autonomous executing:", task.question);
+            await performResearch(task.question, "futuristic", task.depth);
+            researchQueue[nextTaskIndex].status = "completed";
+            autonomousStatus.currentMissions++;
+        } catch(e) {
+            console.error("Auto loop error:", e);
+            researchQueue[nextTaskIndex].status = "failed";
+        }
+        // Small pause 
+        await new Promise(r => setTimeout(r, 2000));
+     }
+     autonomousStatus.active = false;
+  };
+
+  app.post("/research/run", async (req, res) => {
+    const { mission_text, simulation_mode = "realistic" } = req.body;
+    try {
+        const report = await performResearch(mission_text, simulation_mode, 0);
+        res.json(report);
+    } catch(e: any) {
+        res.status(500).json({ error: e.message || "Failed" });
+    }
   });
 
   app.post("/mission", async (req, res) => {

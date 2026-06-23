@@ -3,6 +3,9 @@ import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConica
 import { EvolutionDashboard } from "./components/EvolutionDashboard";
 import { KnowledgeGraphDashboard } from "./components/KnowledgeGraphDashboard";
 import { ResearchDashboard } from "./components/ResearchDashboard";
+import { AutonomousDashboard } from "./components/AutonomousDashboard";
+
+import { safeFetchJSON } from "./fetchUtils";
 
 export default function App() {
   const [missions, setMissions] = useState<any[]>([]);
@@ -10,7 +13,7 @@ export default function App() {
   const [simulationMode, setSimulationMode] = useState("realistic");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research">("research");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous">("autonomous");
 
   const [agentVersions, setAgentVersions] = useState<any>({});
   const [agentPerformances, setAgentPerformances] = useState<any[]>([]);
@@ -18,9 +21,7 @@ export default function App() {
 
   const fetchMissions = async () => {
     try {
-      const res = await fetch("/missions");
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
+      const data = await safeFetchJSON("/missions", {}, []);
       if (Array.isArray(data)) {
         setMissions(data);
       } else {
@@ -35,8 +36,8 @@ export default function App() {
   const fetchEvolutionData = async () => {
     try {
       const [vRes, pRes] = await Promise.all([
-        fetch("/agents/versions").then(res => res.json()),
-        fetch("/agents/performance").then(res => res.json())
+        safeFetchJSON("/agents/versions", {}, {}),
+        safeFetchJSON("/agents/performance", {}, [])
       ]);
       setAgentVersions(vRes);
       setAgentPerformances(pRes);
@@ -103,10 +104,10 @@ export default function App() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-2">
-                {activeTab === 'missions' ? 'Mission Command' : activeTab === 'evolution' ? 'Evolution Engine' : activeTab === 'research' ? 'Research Scientist' : 'Knowledge Graph Brain'}
+                {activeTab === 'missions' ? 'Mission Command' : activeTab === 'evolution' ? 'Evolution Engine' : activeTab === 'research' ? 'Research Scientist' : activeTab === 'autonomous' ? 'Autonomous Loop' : 'Knowledge Graph Brain'}
               </h1>
               <p className="text-lg text-slate-400">
-                {activeTab === 'missions' ? 'Define high-level objectives. The multi-agent system will decompose, assign, and execute them.' : activeTab === 'evolution' ? 'Track agent performance and evolve system prompts based on mission outcomes.' : activeTab === 'research' ? 'Formulate hypotheses, design experiments, and generate scientific reports.' : 'A self-assembling network of entities, concepts, and relationships extracted from completed missions.'}
+                {activeTab === 'missions' ? 'Define high-level objectives. The multi-agent system will decompose, assign, and execute them.' : activeTab === 'evolution' ? 'Track agent performance and evolve system prompts based on mission outcomes.' : activeTab === 'research' ? 'Formulate hypotheses, design experiments, and generate scientific reports.' : activeTab === 'autonomous' ? 'Identify knowledge gaps and autonomously pursue follow-up research.' : 'A self-assembling network of entities, concepts, and relationships extracted from completed missions.'}
               </p>
             </div>
             <div className="flex flex-wrap gap-1 bg-[#111] p-1 rounded-xl border border-slate-800">
@@ -137,6 +138,13 @@ export default function App() {
                 <FlaskConical className="w-4 h-4" />
                 Research Scientist
               </button>
+              <button 
+                onClick={() => setActiveTab("autonomous")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "autonomous" ? "bg-yellow-900/50 text-yellow-200" : "text-slate-400 hover:text-yellow-300"}`}
+              >
+                <Activity className="w-4 h-4" />
+                Autonomous Loop
+              </button>
             </div>
           </div>
         </header>
@@ -158,6 +166,8 @@ export default function App() {
           <KnowledgeGraphDashboard />
         ) : activeTab === "research" ? (
           <ResearchDashboard simulationMode={simulationMode} setSimulationMode={setSimulationMode} />
+        ) : activeTab === "autonomous" ? (
+          <AutonomousDashboard />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">

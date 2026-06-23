@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Search, FlaskConical, Play, Activity, Database, Sparkles, BrainCircuit, ShieldAlert, CheckCircle, Flame } from "lucide-react";
 
+import { safeFetchJSON } from "../fetchUtils";
+
 export function ResearchDashboard({ simulationMode, setSimulationMode }: any) {
   const [researchTopic, setResearchTopic] = useState("");
   const [loading, setLoading] = useState(false);
@@ -8,8 +10,7 @@ export function ResearchDashboard({ simulationMode, setSimulationMode }: any) {
 
   const fetchReports = async () => {
     try {
-      const res = await fetch("/research/reports");
-      const data = await res.json();
+      const data = await safeFetchJSON("/research/reports", {}, []);
       setReports(data);
     } catch(e) {
       console.error(e);

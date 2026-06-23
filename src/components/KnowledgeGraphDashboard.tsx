@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Network, Database, Layers, GitMerge } from "lucide-react";
 
+import { safeFetchJSON } from "../fetchUtils";
+
 export function KnowledgeGraphDashboard() {
   const [graphData, setGraphData] = useState<any>({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/knowledge-graph")
-      .then(res => res.json())
+    safeFetchJSON("/knowledge-graph", {}, { nodes: [], edges: [] })
       .then(data => {
         setGraphData(data);
         setLoading(false);
