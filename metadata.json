@@ -1,0 +1,6 @@
+{
+  "name": "HyperMind-X",
+  "description": "HyperMind-X AI Research Operating System",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
