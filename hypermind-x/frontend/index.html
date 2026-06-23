@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HyperMind-X Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">∆</span>
+                <h1>HyperMind-X</h1>
+            </div>
+            <p class="subtitle">Multi-Agent Control Center</p>
+        </header>
+
+        <main class="main-content">
+            <section class="mission-control">
+                <h2>Mission Control</h2>
+                <form id="mission-form">
+                    <div class="input-group">
+                        <input type="text" id="mission-input" placeholder="Define a new mission... e.g. Analyze the impact of quantum computing." required>
+                        <button type="submit" id="run-mission-btn">
+                            <span class="btn-text">Engage</span>
+                            <span class="loader hidden"></span>
+                        </button>
+                    </div>
+                </form>
+                <div id="error-message" class="error-toast hidden"></div>
+            </section>
+
+            <section class="results-dashboard hidden" id="results-dashboard">
+                <div class="dashboard-grid">
+                    <div class="panel goals-panel">
+                        <h3>Goals List</h3>
+                        <ul id="goals-list" class="goals-list"></ul>
+                    </div>
+
+                    <div class="panel agents-panel">
+                        <h3>Agent Outputs</h3>
+                        <div id="agents-grid" class="agents-grid"></div>
+                    </div>
+
+                    <div class="panel critic-panel">
+                        <h3>Critic Evaluation</h3>
+                        <div id="critic-eval" class="evaluation-card">
+                            <div class="score-row">
+                                <span class="score-label">Quality Score:</span>
+                                <span class="score-value" id="quality-score">-</span>
+                            </div>
+                            <p class="feedback-text" id="critic-feedback"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mission-history">
+                <h2>Mission History</h2>
+                <div id="history-loading" class="loading-state">Loading history...</div>
+                <div id="history-grid" class="history-grid hidden"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Template for History Card -->
+    <template id="history-card-template">
+        <div class="history-card">
+            <div class="card-header">
+                <h4 class="mission-title"></h4>
+                <span class="mission-id"></span>
+            </div>
+            <div class="card-body">
+                <div class="stat">
+                    <span class="stat-label">Goals:</span>
+                    <span class="stat-value goals-count"></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Agents:</span>
+                    <span class="stat-value agents-count"></span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span class="stat-value score-val"></span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

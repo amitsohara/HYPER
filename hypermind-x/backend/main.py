@@ -1,6 +1,8 @@
+import os
 import uuid
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -16,10 +18,7 @@ from backend.core.evaluator import evaluator
 from backend.core.memory import memory_core
 
 # Initialize DB
-try:
-    Base.metadata.create_all(bind=engine)
-except Exception:
-    pass
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HyperMind-X", version="1.0.0")
 
@@ -37,9 +36,17 @@ async def create_mission(mission: MissionCreate, db: Session = Depends(get_db)):
     goals = await goal_engine.decompose_mission(mission.mission_text)
     agents = agent_factory.create_team_for_mission(goals)
     scenario = await synthmind_engine.generate_scenario(mission.mission_text)
-    mock_output = "Combined agent output outcome."
-    evaluation = await evaluator.evaluate(mission.mission_text, mock_output)
-    await memory_core.store(mock_output, metadata={"mission_id": mission_id})
+    
+    agent_outputs = []
+    for agent_info in agents:
+        agent = agent_factory.provision_agent(agent_info["agent_type"])
+        output = await agent.run(f"Goal for {agent_info['agent_type']} on {mission.mission_text}")
+        agent_outputs.append(f"{agent.name}: {output}")
+        
+    actual_output = "\n".join(agent_outputs)
+    
+    evaluation = await evaluator.evaluate(mission.mission_text, actual_output)
+    await memory_core.store(actual_output, metadata={"mission_id": mission_id})
     
     mission_record = Mission(
         id=mission_id,
@@ -53,9 +60,9 @@ async def create_mission(mission: MissionCreate, db: Session = Depends(get_db)):
     try:
         db.add(mission_record)
         db.commit()
-    except Exception:
+    except Exception as e:
         db.rollback()
-        pass
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     
     return MissionResponse(
         mission_id=mission_id,
@@ -80,8 +87,8 @@ def list_missions(db: Session = Depends(get_db)):
                 evaluation=m.evaluation
             ) for m in missions
         ]
-    except Exception:
-        return []
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 @app.get("/mission/{id}", response_model=MissionResponse)
 def get_mission(id: str, db: Session = Depends(get_db)):
@@ -106,7 +113,7 @@ async def generate_synthmind(req: ScenarioGenerateRequest):
 
 @app.post("/agents/run")
 async def run_agent(req: AgentRunRequest):
-    agent = agent_factory.provision_agent("researcher")
+    agent = agent_factory.provision_agent(req.agent_id)
     result = await agent.run(req.task)
     return {"agent": agent.name, "result": result}
 
@@ -114,3 +121,7 @@ async def run_agent(req: AgentRunRequest):
 async def search_memory(req: MemorySearchRequest):
     result = await memory_core.search(req.query, req.limit)
     return {"results": result}
+
+frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+if os.path.isdir(frontend_dir):
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
