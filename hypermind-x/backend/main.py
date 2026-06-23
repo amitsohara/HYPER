@@ -62,7 +62,9 @@ async def create_mission(mission: MissionCreate, db: Session = Depends(get_db)):
         text=mission.mission_text,
         goals=goals,
         agents=agents,
+        synthetic_worlds=worlds,
         scenarios=scenario_results,
+        best_solution=best_solution,
         evaluation=evaluation,
         reflection=reflection
     )
@@ -79,7 +81,9 @@ async def create_mission(mission: MissionCreate, db: Session = Depends(get_db)):
         mission_text=mission.mission_text,
         goals=goals,
         agents=agents,
-        scenarios=[scenario],
+        synthetic_worlds=worlds,
+        scenarios=scenario_results,
+        best_solution=best_solution,
         evaluation=evaluation,
         reflection=reflection
     )
@@ -94,7 +98,9 @@ def list_missions(db: Session = Depends(get_db)):
                 mission_text=m.text,
                 goals=m.goals,
                 agents=m.agents,
+                synthetic_worlds=m.synthetic_worlds,
                 scenarios=m.scenarios,
+                best_solution=m.best_solution,
                 evaluation=m.evaluation,
                 reflection=m.reflection
             ) for m in missions
@@ -113,7 +119,9 @@ def get_mission(id: str, db: Session = Depends(get_db)):
             mission_text=m.text,
             goals=m.goals,
             agents=m.agents,
+            synthetic_worlds=m.synthetic_worlds,
             scenarios=m.scenarios,
+            best_solution=m.best_solution,
             evaluation=m.evaluation,
             reflection=m.reflection
         )

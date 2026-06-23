@@ -7,9 +7,11 @@ class MissionCreate(BaseModel):
 class MissionResponse(BaseModel):
     mission_id: str
     mission_text: str
-    goals: List[Dict[str, Any]]
-    agents: List[Dict[str, Any]]
-    scenarios: List[Dict[str, Any]]
+    goals: List[Any]
+    agents: List[Any]
+    synthetic_worlds: List[Any] = []
+    scenarios: List[Any]
+    best_solution: Any = None
     evaluation: Dict[str, Any]
     reflection: Dict[str, Any] = {}
 

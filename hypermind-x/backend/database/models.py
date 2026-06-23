@@ -9,7 +9,9 @@ class Mission(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     goals = Column(JSON)
     agents = Column(JSON)
+    synthetic_worlds = Column(JSON, default=list)
     scenarios = Column(JSON)
+    best_solution = Column(JSON, default=dict)
     evaluation = Column(JSON)
     reflection = Column(JSON, default=dict)
 

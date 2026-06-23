@@ -12,121 +12,353 @@ async function startServer() {
   app.use(express.json());
 
   const missions: any[] = [];
+  const researchReports: any[] = [];
   
+  // Agent Evolution Store
+  const agentStore: Record<string, any> = {
+    "Researcher": { version: 1, prompt: "A data-driven analyst focusing on empirical logic.", history: [] },
+    "Optimist": { version: 1, prompt: "A visionary who sees positive potential and opportunities.", history: [] },
+    "Pessimist": { version: 1, prompt: "A skeptic who identifies flaws, risks, and failure modes.", history: [] },
+    "Economist": { version: 1, prompt: "A pragmatic thinker focused on resource allocation constraints.", history: [] },
+    "Ethics": { version: 1, prompt: "A moral compass evaluating societal and human impact.", history: [] },
+    "Critic": { version: 1, prompt: "A harsh reviewer demanding logical rigor and challenging assumptions.", history: [] }
+  };
+  const agentPerformances: any[] = [];
+
   const ai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
+  const { kgInstance } = await import("./src/server/knowledge_graph.js").catch(e => import("./src/server/knowledge_graph.ts"));
 
   // API routes FIRST
+  app.get("/knowledge-graph", (req, res) => {
+    res.json(kgInstance.exportGraph());
+  });
+
   app.get("/missions", (req, res) => {
     res.json(missions);
   });
+  
+  app.get("/agents/versions", (req, res) => {
+    res.json(agentStore);
+  });
+  
+  app.get("/agents/performance", (req, res) => {
+    res.json(agentPerformances);
+  });
+  
+  app.post("/agents/evolve", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI" });
+    const { EvolutionEngine } = await import("./src/server/evolution.js").catch(e => import("./src/server/evolution.ts"));
+    
+    // Find weak agents (avg score < 85 across their last 3 performances)
+    const agentStats: Record<string, any[]> = {};
+    Object.keys(agentStore).forEach(agent => agentStats[agent] = agentPerformances.filter(p => p.agent_name === agent));
+    
+    const weakAgentsData: any[] = [];
+    Object.keys(agentStats).forEach(agent => {
+        const perfs = agentStats[agent].slice(0, 3); // latest 3
+        if (perfs.length > 0) {
+            const avgQuality = perfs.reduce((a, b) => a + (b.output_quality_score || 0), 0) / perfs.length;
+            const avgReasoning = perfs.reduce((a, b) => a + (b.reasoning_score || 0), 0) / perfs.length;
+            const avgUsefulness = perfs.reduce((a, b) => a + (b.usefulness_score || 0), 0) / perfs.length;
+            const overall = (avgQuality + avgReasoning + avgUsefulness) / 3;
+            
+            if (overall < 85) { 
+                weakAgentsData.push({
+                    agent_name: agent,
+                    current_prompt: agentStore[agent].prompt,
+                    average_score: overall,
+                    recent_weaknesses: perfs.map(p => p.weakness_detected),
+                    recent_suggestions: perfs.map(p => p.improvement_suggestion)
+                });
+            }
+        }
+    });
+
+    if (weakAgentsData.length === 0) {
+        return res.json({ message: "No weak agents identified at this time.", evolved_agents: [], agentStore });
+    }
+
+    const evolved = await EvolutionEngine.evolveAgentPrompts(ai, agentStore, weakAgentsData);
+    const evolvedList: any[] = [];
+    
+    if (Array.isArray(evolved)) {
+        evolved.forEach((e: any) => {
+            if (agentStore[e.agent_name]) {
+                const oldPrompt = agentStore[e.agent_name].prompt;
+                const oldVersion = agentStore[e.agent_name].version;
+                agentStore[e.agent_name].history.push({
+                    version: oldVersion,
+                    prompt: oldPrompt,
+                    reason_for_change: e.reason_for_change,
+                    timestamp: new Date().toISOString()
+                });
+                agentStore[e.agent_name].prompt = e.new_prompt;
+                agentStore[e.agent_name].version += 1;
+                evolvedList.push({
+                    agent_name: e.agent_name,
+                    old_prompt: oldPrompt,
+                    new_prompt: e.new_prompt,
+                    new_version: oldVersion + 1,
+                    reason: e.reason_for_change
+                });
+            }
+        });
+    }
+
+    res.json({ message: "Evolution complete.", evolved_agents: evolvedList, agentStore });
+  });
+
+  app.get("/research/reports", (req, res) => {
+    res.json(researchReports);
+  });
+
+  app.get("/research/report/:id", (req, res) => {
+    const report = researchReports.find(r => r.id === req.params.id);
+    if (!report) return res.status(404).json({ error: "Not found" });
+    res.json(report);
+  });
+
+  app.post("/research/run", async (req, res) => {
+    const { mission_text, simulation_mode = "realistic" } = req.body;
+    const research_id = Math.random().toString(36).substring(7);
+    
+    if (!ai) {
+      return res.status(500).json({ error: "Gemini API key is missing. No AI engine available." });
+    }
+
+    const { DynamicWorldGenerator, AgentDebateEngine, DiscoveryEngine, generateWithRetry, cleanJSON } = await import("./src/server/engines.js").catch(e => {
+        return import("./src/server/engines.ts");
+    });
+    const { ResearchEngine } = await import("./src/server/research.js").catch(e => {
+        return import("./src/server/research.ts");
+    });
+
+    // Memory Reuse
+    let memoryContext = "No relevant past memories.";
+    let reused_memories: string[] = [];
+    if (missions.length > 0) {
+      try {
+        const memoryRes = await generateWithRetry(ai, {
+           model: 'gemini-3.1-flash-lite',
+           contents: `Given the new research mission "${mission_text}", review these past missions and their lessons. Return ONLY a JSON object with:
+{
+  "relevant_lessons": "Summarized relevant lessons / improvements. Say 'None' if completely unrelated.",
+  "reused_mission_ids": ["array of mission_ids that had relevant info"]
+}
+Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: m.mission_text, improvement_log: m.improvement_log || {} })))}`,
+           config: { responseMimeType: "application/json" }
+        });
+        const memObj = await cleanJSON(memoryRes?.text || "{}", ai);
+        if (memObj && memObj.relevant_lessons && memObj.relevant_lessons !== "None") {
+           memoryContext = memObj.relevant_lessons;
+           reused_memories = memObj.reused_mission_ids || [];
+        }
+      } catch(e) {
+          console.error("Memory retrieval failed", e);
+      }
+    }
+
+    // Knowledge Graph Search
+    const kgSearch = await kgInstance.search(ai, mission_text);
+    const kgContext = `Graph Insights: ${kgSearch.insights}\nConcepts: ${kgSearch.related_concepts.join(", ")}`;
+    
+    // Combining memory and knowledge graph insights:
+    const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}`;
+
+    // 1. Research Question Generator, Hypotheses, Evidence Planner, Experiment Designer
+    const plan = await ResearchEngine.planResearch(ai, mission_text, memoryContext, kgContext);
+    
+    // 2. Synthetic Experiments (Worlds/Scenarios for testing)
+    const worlds = await DynamicWorldGenerator.generate(ai, mission_text, simulation_mode, combinedMemoryContext);
+    const topWorlds = worlds.slice(0, 10);
+    
+    // 3. Agent Debate
+    const scenarios = await AgentDebateEngine.run(ai, mission_text, topWorlds, simulation_mode, combinedMemoryContext, Object.keys(agentStore).map(k => ({ name: k, prompt: agentStore[k].prompt })));
+    
+    // 4. Discovery Engine
+    const discovery = await DiscoveryEngine.discover(ai, mission_text, scenarios, simulation_mode, combinedMemoryContext);
+
+    // 5. Research Reporter
+    const finalReportData = await ResearchEngine.generateReport(ai, mission_text, plan, scenarios, discovery);
+
+    // Track Research
+    const reportFull = {
+      id: research_id,
+      mission_text,
+      simulation_mode,
+      memoryContext,
+      kgContext,
+      kgSearch,
+      reused_memories,
+      plan,
+      worlds,
+      scenarios,
+      discovery,
+      finalReportData,
+      timestamp: new Date().toISOString()
+    };
+    researchReports.unshift(reportFull);
+    res.json(reportFull);
+
+    // Update Knowledge Graph asynchronously
+    kgInstance.update(ai, { ...reportFull, goals: plan.research_questions }).catch(e => console.error("KG Update Failed", e));
+  });
 
   app.post("/mission", async (req, res) => {
-    const { mission_text } = req.body;
+    const { mission_text, simulation_mode = "realistic" } = req.body;
     const mission_id = Math.random().toString(36).substring(7);
     
-    let goals = ["Analyze topic", "Gather data", "Synthesize findings"];
-    let score = 9;
-    let fallback = true;
-    let worlds = ["low-income rural school", "urban private school", "multilingual classroom"];
-    let scenarios = [
-      { world: "low-income rural school", scenario: "Design a curriculum for limited resources.", solution: "Use analog bridging.", score: 85 },
-      { world: "urban private school", scenario: "Design for advanced placement.", solution: "Accelerated tracks.", score: 92 },
-      { world: "multilingual classroom", scenario: "Support 5 languages.", solution: "Real-time AI translation tools.", score: 88 }
-    ];
-    let best_solution = scenarios[1];
-    let lessons = "Different worlds require tailored resources.";
-    let suggestion = "Apply dynamic scalability based on environment.";
+    if (!ai) {
+      return res.status(500).json({ error: "Gemini API key is missing. No AI engine available." });
+    }
 
-    // Try to connect to Ollama running locally using standard fetch
-    if (process.env.OLLAMA_URL || true) {
-        try {
-            const ollamaUrl = process.env.OLLAMA_URL || "http://localhost:11434";
-            
-            // Planner
-            const plannerRes = await fetch(`${ollamaUrl}/api/generate`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ model: "llama3", prompt: `As a Master Planner, create clear goals and break this mission down into actionable steps: ${mission_text}`, stream: false }),
-                signal: AbortSignal.timeout(15000)
-            });
-            if (plannerRes.ok) {
-                fallback = false;
-                goals = ["Generate Synthetic Worlds", "Create Scenarios", "Agents Solve Scenarios", "Evaluate Best Solution"];
-            }
-
-            // SynthWorld Engine Placeholder
-            const synthRes = await fetch(`${ollamaUrl}/api/generate`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ model: "llama3", prompt: `Generate 3 diverse synthetic worlds to test the mission: ${mission_text}. Respond with JSON array simple strings.`, stream: false }),
-                signal: AbortSignal.timeout(15000)
-            });
-            if (synthRes.ok) {
-                const data = await synthRes.json();
-                const text = data.response;
-                try {
-                    const match = text.match(/\[.*\]/s);
-                    if (match) worlds = JSON.parse(match[0]);
-                } catch(e){}
-            }
-
-            // ... (We skip actual scenario generation from Ollama for simplicity/time, and use defaults if Ollama didn't return good arrays)
-
-        } catch (e) {
-            // Silently fall back to Gemini if Ollama is not available locally
-            fallback = true;
+    // We import from engines early to use the retry logic
+    const { DynamicWorldGenerator, AgentDebateEngine, CriticScoringEngine, DiscoveryEngine, generateWithRetry, cleanJSON } = await import("./src/server/engines.js").catch(e => {
+        return import("./src/server/engines.ts");
+    });
+    
+    // Memory Reuse
+    let memoryContext = "No relevant past memories.";
+    let reused_memories: string[] = [];
+    if (missions.length > 0) {
+      try {
+        const memoryRes = await generateWithRetry(ai, {
+           model: 'gemini-3.1-flash-lite',
+           contents: `Given the new mission "${mission_text}", review these past missions and their lessons. Return ONLY a JSON object with:
+{
+  "relevant_lessons": "Summarized relevant lessons / improvements. Say 'None' if completely unrelated.",
+  "reused_mission_ids": ["array of mission_ids that had relevant info"]
+}
+Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: m.mission_text, improvement_log: m.improvement_log || {} })))}`,
+           config: { responseMimeType: "application/json" }
+        });
+        const memObj = await cleanJSON(memoryRes?.text || "{}", ai);
+        
+        if (memObj && memObj.relevant_lessons && memObj.relevant_lessons !== "None") {
+           memoryContext = memObj.relevant_lessons;
+           reused_memories = memObj.reused_mission_ids || [];
         }
+      } catch(e) {
+          console.error("Memory retrieval failed", e);
+      }
+    }
+
+    // Knowledge Graph Search
+    const kgSearch = await kgInstance.search(ai, mission_text);
+    const kgContext = `Graph Insights: ${kgSearch.insights}\nConcepts: ${kgSearch.related_concepts.join(", ")}`;
+    
+    // We combine memory and knowledge graph insights securely:
+    const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}`;
+
+    // 1. Generate Goals
+    let goals: string[] = [];
+
+    try {
+      const goalsRes = await generateWithRetry(ai, {
+         model: 'gemini-3.1-flash-lite',
+         contents: `Break this mission into 3-5 specific, actionable goals. Mission: "${mission_text}". 
+Simulation Mode: ${simulation_mode}
+Relevant Past Lessons and Insights: ${combinedMemoryContext}
+Return ONLY a JSON array of strings.`,
+         config: { responseMimeType: "application/json" }
+      });
+      const text = goalsRes?.text || "[]";
+      goals = await cleanJSON(text, ai) || [];
+    } catch(e) {
+      console.error("Goals generation failed", e);
+    }
+
+    // 2. Dynamic Worlds (10)
+    const worlds = await DynamicWorldGenerator.generate(ai, mission_text, simulation_mode, combinedMemoryContext);
+
+    // 3. Agents Debate (Pick top 10 worlds to match prompt)
+    const topWorlds = worlds.slice(0, 10);
+    const scenarios = await AgentDebateEngine.run(ai, mission_text, topWorlds, simulation_mode, combinedMemoryContext, Object.keys(agentStore).map(k => ({ name: k, prompt: agentStore[k].prompt })));
+
+    // 4. Critic Scoring
+    const scores = await CriticScoringEngine.scoreAll(ai, scenarios, simulation_mode, combinedMemoryContext);
+    scenarios.forEach((s: any, i: number) => {
+       const scoreData = scores[i] || {};
+       s.score = scoreData.final_score || 0;
+       s.detailed_scores = scoreData;
+    });
+
+    scenarios.sort((a: any, b: any) => (b.score || 0) - (a.score || 0));
+    const best_solution = scenarios[0] || {
+      world: "No world generated",
+      scenario: "No scenario generated",
+      solution: "No solution reached",
+      score: 0,
+      debates: []
+    };
+
+    // 5. Discovery Engine
+    const discovery = await DiscoveryEngine.discover(ai, mission_text, scenarios, simulation_mode, combinedMemoryContext);
+
+    // 6. Improvement Log / Reflection
+    let improvement_log = { what_worked: "N/A", what_failed: "N/A", next_improvement: "N/A", confidence_score: 0 };
+    try {
+       const reflectRes = await generateWithRetry(ai, {
+         model: 'gemini-3.1-flash-lite',
+         contents: `Based on the best solution for mission "${mission_text}" (World: "${best_solution?.world || "unknown"}"), what worked well, what failed or needs improvement, what is the next step to improve, and what is your overall confidence score (0-100)?
+Simulation Mode: ${simulation_mode}
+Return ONLY a JSON object with strictly these keys: "what_worked" (string), "what_failed" (string), "next_improvement" (string), "confidence_score" (number).`,
+         config: { responseMimeType: "application/json" }
+       });
+       const text = reflectRes?.text || "{}";
+       const parsedLog = await cleanJSON(text, ai);
+       if (parsedLog && typeof parsedLog === 'object') {
+           improvement_log = { ...improvement_log, ...parsedLog };
+       }
+    } catch(e) {
+      console.error("Reflection generation failed", e);
+    }
+
+    const evaluation = {
+      quality_score: best_solution?.score || 0,
+      feedback: best_solution?.detailed_scores?.feedback || "Completed evaluation."
     }
     
-    if (fallback && ai) {
-      try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            contents: `For the mission '${mission_text}', we are using a synthetic AI engine. Provide a JSON response:
-{ 
-  "goals": ["objective 1", "objective 2"],
-  "synthetic_worlds": ["world 1", "world 2", "world 3"],
-  "scenario_results": [
-    { "world": "world 1", "scenario": "...", "solution": "...", "score": 85 },
-    { "world": "world 2", "scenario": "...", "solution": "...", "score": 92 }
-  ],
-  "best_solution": { "world": "world 2", "scenario": "...", "solution": "...", "score": 92 },
-  "lessons_learned": "...",
-  "improvement_suggestion": "..."
-}`
+    // Evaluate agent performance
+    const { EvolutionEngine } = await import("./src/server/evolution.js").catch(e => import("./src/server/evolution.ts"));
+    const perfEval = await EvolutionEngine.evaluateAgents(ai, mission_text, best_solution?.debates || []);
+    if (Array.isArray(perfEval) && perfEval.length > 0) {
+        perfEval.forEach(p => {
+             agentPerformances.unshift({
+                  ...p,
+                  mission_id,
+                  timestamp: new Date().toISOString()
+             });
         });
-        const text = response.text || "";
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-            const data = JSON.parse(jsonMatch[0]);
-            goals = data.goals || goals;
-            worlds = data.synthetic_worlds || worlds;
-            scenarios = data.scenario_results || scenarios;
-            best_solution = data.best_solution || best_solution;
-            lessons = data.lessons_learned || lessons;
-            suggestion = data.improvement_suggestion || suggestion;
-        }
-      } catch (e) {
-        // Fallback silently if API is rate limited or unavailable
-      }
     }
 
     const mission = {
       mission_id,
       mission_text,
+      simulation_mode,
+      kg_insights: kgSearch,
+      reused_memories,
+      improvement_log,
       goals: goals,
+      discovery,
       synthetic_worlds: worlds,
-      scenarios: scenarios,
+      scenario_results: scenarios,
       best_solution: best_solution,
-      evaluation: {
-        quality_score: best_solution?.score || 0,
-        feedback: "Evaluated across multiple synthetic worlds by Critic."
-      },
-      reflection: {
-        lessons_learned: lessons,
-        improvement_suggestion: suggestion
-      }
+      assigned_agents: best_solution?.debates?.map((d: any) => d.agent) || [],
+      debate_log: best_solution?.debates || [],
+      // Preserving old keys for backward compatibility in UI just in case
+      scenarios: scenarios,
+      agents: best_solution?.debates?.map((d: any) => ({ agent_type: d.agent, output: d.argument })) || [],
+      evaluation: evaluation,
+      lessons_learned: improvement_log.what_worked,
+      next_improvement: improvement_log.next_improvement,
+      reflection: { lessons_learned: improvement_log.what_worked, improvement_suggestion: improvement_log.next_improvement }
     };
     missions.unshift(mission);
     res.json(mission);
+    
+    // Update Knowledge Graph asynchronously
+    kgInstance.update(ai, mission).catch(e => console.error("KG Update Failed", e));
   });
 
   // Vite middleware for development
