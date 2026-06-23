@@ -6,5 +6,5 @@ class PlannerAgent(BaseAgent):
         super().__init__(name="Planner-Alpha", role="Planner", model="llama3")
 
     async def run(self, task: str) -> str:
-        prompt = f"As a Master Planner, break this down into steps: {task}"
+        prompt = f"As a Master Planner, create clear goals and break this mission down into actionable steps: {task}"
         return await router.generate(prompt, self.model)

@@ -11,6 +11,8 @@ class MissionResponse(BaseModel):
     agents: List[Dict[str, Any]]
     scenarios: List[Dict[str, Any]]
     evaluation: Dict[str, Any]
+    reflection: Dict[str, Any] = {}
+
 
 class ScenarioGenerateRequest(BaseModel):
     topic: str

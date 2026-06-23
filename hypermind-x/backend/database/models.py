@@ -11,3 +11,5 @@ class Mission(Base):
     agents = Column(JSON)
     scenarios = Column(JSON)
     evaluation = Column(JSON)
+    reflection = Column(JSON, default=dict)
+

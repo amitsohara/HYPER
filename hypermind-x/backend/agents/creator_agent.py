@@ -6,5 +6,5 @@ class CreatorAgent(BaseAgent):
         super().__init__(name="Creator-Delta", role="Creator", model="llama3")
 
     async def run(self, task: str) -> str:
-        prompt = f"As a Creator, synthesize this into a final output: {task}"
+        prompt = f"As a Creator, propose a comprehensive and practical solution for this mission: {task}"
         return await router.generate(prompt, self.model)

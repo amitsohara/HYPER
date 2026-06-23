@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import List
+import json
 
 from backend.database.db import get_db, engine, Base
 from backend.database.models import Mission
@@ -16,6 +17,7 @@ from backend.core.agent_factory import agent_factory
 from backend.core.synthmind import synthmind_engine
 from backend.core.evaluator import evaluator
 from backend.core.memory import memory_core
+from backend.core.reflection_engine import reflection_engine
 
 # Initialize DB
 Base.metadata.create_all(bind=engine)
@@ -34,27 +36,35 @@ app.add_middleware(
 async def create_mission(mission: MissionCreate, db: Session = Depends(get_db)):
     mission_id = str(uuid.uuid4())
     goals = await goal_engine.decompose_mission(mission.mission_text)
-    agents = agent_factory.create_team_for_mission(goals)
-    scenario = await synthmind_engine.generate_scenario(mission.mission_text)
     
-    agent_outputs = []
-    for agent_info in agents:
-        agent = agent_factory.provision_agent(agent_info["agent_type"])
-        output = await agent.run(f"Goal for {agent_info['agent_type']} on {mission.mission_text}")
-        agent_outputs.append(f"{agent.name}: {output}")
-        
-    actual_output = "\n".join(agent_outputs)
+    # Phase 4 SynthMind Learning Loop
+    from backend.core.learning_loop import learning_loop
+    loop_results = await learning_loop.run_loop(mission.mission_text)
     
-    evaluation = await evaluator.evaluate(mission.mission_text, actual_output)
-    await memory_core.store(actual_output, metadata={"mission_id": mission_id})
+    worlds = loop_results["worlds"]
+    scenario_results = loop_results["scenario_results"]
+    best_solution = loop_results["best_solution"]
+    reflection = loop_results["reflection"]
+    
+    # Store agents just for response format logging
+    agents = [{"agent_type": "researcher", "output": best_solution["solution"]} if best_solution else {"agent_type": "researcher", "output": ""}]
+    
+    # Mocking standard evaluator output for response
+    evaluation = {
+        "quality_score": best_solution["score"] if best_solution else 0,
+        "feedback": "Evaluated across multiple synthetic worlds."
+    }
+    
+    await memory_core.store(json.dumps(best_solution), metadata={"mission_id": mission_id, "reflection": reflection})
     
     mission_record = Mission(
         id=mission_id,
         text=mission.mission_text,
         goals=goals,
         agents=agents,
-        scenarios=[scenario],
-        evaluation=evaluation
+        scenarios=scenario_results,
+        evaluation=evaluation,
+        reflection=reflection
     )
     
     try:
@@ -70,7 +80,8 @@ async def create_mission(mission: MissionCreate, db: Session = Depends(get_db)):
         goals=goals,
         agents=agents,
         scenarios=[scenario],
-        evaluation=evaluation
+        evaluation=evaluation,
+        reflection=reflection
     )
 
 @app.get("/missions", response_model=List[MissionResponse])
@@ -84,7 +95,8 @@ def list_missions(db: Session = Depends(get_db)):
                 goals=m.goals,
                 agents=m.agents,
                 scenarios=m.scenarios,
-                evaluation=m.evaluation
+                evaluation=m.evaluation,
+                reflection=m.reflection
             ) for m in missions
         ]
     except Exception as e:
@@ -102,10 +114,12 @@ def get_mission(id: str, db: Session = Depends(get_db)):
             goals=m.goals,
             agents=m.agents,
             scenarios=m.scenarios,
-            evaluation=m.evaluation
+            evaluation=m.evaluation,
+            reflection=m.reflection
         )
     except Exception:
         raise HTTPException(status_code=404, detail="Mission not found")
+
 
 @app.post("/synthmind/generate")
 async def generate_synthmind(req: ScenarioGenerateRequest):
