@@ -31,8 +31,16 @@ export function AutonomousDashboard() {
 
   const handleToggle = async () => {
     const endpoint = status.active ? "/research/autonomous/stop" : "/research/autonomous/start";
-    await fetch(endpoint, { method: "POST" });
-    fetchData();
+    try {
+      const res = await fetch(endpoint, { method: "POST" });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Failed to toggle autonomous AI");
+      }
+      fetchData();
+    } catch (e) {
+      console.error("Toggle error", e);
+    }
   };
 
   const handleManualTrigger = async (question: string) => {

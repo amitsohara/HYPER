@@ -135,6 +135,10 @@ async function startServer() {
   });
 
   app.post("/research/autonomous/start", (req, res) => {
+    const hasPending = researchQueue.some(q => q.status === "pending" && q.depth <= autonomousStatus.maxDepth);
+    if (!hasPending && autonomousStatus.currentMissions === 0) {
+        return res.status(400).json({ error: "Queue is empty. Please run a manual research mission first to generate follow-up questions." });
+    }
     autonomousStatus.active = true;
     autonomousStatus.currentMissions = 0;
     autonomousStatus.currentDepth = 0;
