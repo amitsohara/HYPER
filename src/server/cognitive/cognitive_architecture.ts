@@ -242,6 +242,86 @@ Return JSON:
         }
     }
 
+    static async runGeneralIntelligenceSynthesis(ai: GoogleGenAI) {
+        memState.reasoning_summary = "Activating AGI Core: Synthesizing cross-domain principles and generalizing knowledge...";
+        
+        const currentBeliefs = memState.beliefs.slice(0, 5).map(b => b.belief);
+        const currentGoals = memState.goals.slice(0, 3).map(g => g.description);
+        
+        const agiPrompt = `You are the Artificial General Intelligence (AGI) Synthesis Core. 
+Your purpose is to transcend narrow task execution and discover universal, cross-domain principles.
+Review the current cognitive state:
+Beliefs: ${JSON.stringify(currentBeliefs)}
+Goals: ${JSON.stringify(currentGoals)}
+
+Perform the following AGI functions:
+1. Cross-Domain Generalization: Identify a pattern from these specific beliefs that applies universally.
+2. Directive Refinement: Propose an updated foundational directive for the system.
+3. Novel Paradigm Discovery: Generate a completely new concept or paradigm that bridges gaps in current knowledge.
+
+Return JSON:
+{
+  "universal_principles": ["Principle 1", "Principle 2"],
+  "updated_core_directive": "New overarching directive...",
+  "novel_paradigms": ["Paradigm 1"],
+  "synthesis_summary": "Summary of AGI synthesis."
+}`;
+
+        try {
+            const res = await generateWithRetry(ai, {
+                model: 'gemini-3.1-flash-lite',
+                contents: agiPrompt,
+                config: { responseMimeType: "application/json" }
+            }, 3);
+            const data = await cleanJSON(res?.text || "{}", ai);
+            
+            memState.reasoning_summary = data.synthesis_summary || "AGI Synthesis complete.";
+            
+            if (data.universal_principles) {
+                data.universal_principles.forEach((p: string) => {
+                    memState.beliefs.unshift({
+                        id: "agi_principle_" + Math.random().toString(36).substring(7),
+                        belief: `[UNIVERSAL PRINCIPLE] ${p}`,
+                        confidence: 1.0,
+                        evidence: ["Derived from AGI Core Synthesis."],
+                        contradicting_evidence: [],
+                        last_updated: new Date().toISOString(),
+                        version: 1,
+                        source_missions: ["agi_core"]
+                    });
+                });
+            }
+
+            if (data.updated_core_directive) {
+                memState.goals.unshift({
+                    id: "agi_dir_" + Math.random().toString(36).substring(7),
+                    type: "core_directive",
+                    description: `[AGI DIRECTIVE] ${data.updated_core_directive}`,
+                    subgoals: data.novel_paradigms || [],
+                    assumptions: [],
+                    missing_knowledge: [],
+                    risk_factors: [],
+                    success_criteria: ["Universal alignment achieved."],
+                    priority: "critical",
+                    status: "active",
+                    created_at: new Date().toISOString()
+                });
+            }
+
+            memState.reasoning_chains.unshift({
+                mission_id: "agi_synthesis",
+                reasoning_chain: data.universal_principles?.map((p: string) => `Derived Universal Principle: ${p}`) || [],
+                lessons_learned: data.novel_paradigms || [],
+                timestamp: new Date().toISOString()
+            });
+
+            return data;
+        } catch(e) {
+            console.error("AGI Synthesis error:", e);
+            return null;
+        }
+    }
+
     static async runContinuousLoop(ai: GoogleGenAI) {
         memState.reasoning_summary = "Starting continuous cognitive loop...";
 

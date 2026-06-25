@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope } from "lucide-react";
+import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope, Eye, Scale, Trophy } from "lucide-react";
 import { EvolutionDashboard } from "./components/EvolutionDashboard";
 import { KnowledgeGraphDashboard } from "./components/KnowledgeGraphDashboard";
 import { ResearchDashboard } from "./components/ResearchDashboard";
@@ -11,6 +11,12 @@ import { ExecutiveDashboard } from "./components/ExecutiveDashboard";
 import { LearningDashboard } from "./components/LearningDashboard";
 import { SocietyDashboard } from "./components/SocietyDashboard";
 import { DiscoveryDashboard } from "./components/DiscoveryDashboard";
+import { EmbodiedDashboard } from "./components/EmbodiedDashboard";
+import { DigitalTwinDashboard } from "./components/DigitalTwinDashboard";
+import { TheoryOfMindDashboard } from "./components/TheoryOfMindDashboard";
+import { CommonSenseDashboard } from "./components/CommonSenseDashboard";
+import { IntelligenceDashboard } from "./components/IntelligenceDashboard";
+import { CollectiveIntelligenceDashboard } from "./components/CollectiveIntelligenceDashboard";
 
 import { safeFetchJSON } from "./fetchUtils";
 
@@ -20,11 +26,12 @@ export default function App() {
   const [simulationMode, setSimulationMode] = useState("realistic");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery">("world");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective">("world");
 
   const [agentVersions, setAgentVersions] = useState<any>({});
   const [agentPerformances, setAgentPerformances] = useState<any[]>([]);
   const [evolving, setEvolving] = useState(false);
+  const [missionStage, setMissionStage] = useState("");
 
   const fetchMissions = async () => {
     try {
@@ -57,6 +64,20 @@ export default function App() {
     fetchMissions();
     fetchEvolutionData();
   }, []);
+
+  useEffect(() => {
+     if (loading) {
+         const interval = setInterval(async () => {
+             try {
+                const res = await safeFetchJSON("/api/mission/status", {}, { stage: "" });
+                if (res.stage && res.stage !== "idle") setMissionStage(res.stage);
+             } catch(e) { /* ignore */ }
+         }, 1000);
+         return () => clearInterval(interval);
+     } else {
+         setMissionStage("");
+     }
+  }, [loading]);
 
   const handleEvolve = async () => {
     setEvolving(true);
@@ -93,6 +114,7 @@ export default function App() {
       }
       setNewMission("");
       fetchMissions();
+      fetchEvolutionData();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -201,6 +223,48 @@ export default function App() {
                 <Microscope className="w-4 h-4" />
                 Discovery
               </button>
+              <button 
+                onClick={() => setActiveTab("embodied")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "embodied" ? "bg-emerald-900/50 text-emerald-200" : "text-slate-400 hover:text-emerald-300"}`}
+              >
+                <Eye className="w-4 h-4" />
+                Embodied
+              </button>
+              <button 
+                onClick={() => setActiveTab("digital_twin")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "digital_twin" ? "bg-blue-900/50 text-blue-200" : "text-slate-400 hover:text-blue-300"}`}
+              >
+                <Globe className="w-4 h-4" />
+                Digital Twin
+              </button>
+              <button 
+                onClick={() => setActiveTab("theory_of_mind")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "theory_of_mind" ? "bg-fuchsia-900/50 text-fuchsia-200" : "text-slate-400 hover:text-fuchsia-300"}`}
+              >
+                <BrainCircuit className="w-4 h-4" />
+                Theory of Mind
+              </button>
+              <button 
+                onClick={() => setActiveTab("common_sense")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "common_sense" ? "bg-amber-900/50 text-amber-200" : "text-slate-400 hover:text-amber-300"}`}
+              >
+                <Scale className="w-4 h-4" />
+                Common Sense
+              </button>
+              <button 
+                onClick={() => setActiveTab("intelligence")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "intelligence" ? "bg-red-900/50 text-red-200" : "text-slate-400 hover:text-red-300"}`}
+              >
+                <Trophy className="w-4 h-4" />
+                Intelligence
+              </button>
+              <button 
+                onClick={() => setActiveTab("collective")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "collective" ? "bg-indigo-900/50 text-indigo-200" : "text-slate-400 hover:text-indigo-300"}`}
+              >
+                <Network className="w-4 h-4" />
+                Collective
+              </button>
             </div>
           </div>
         </header>
@@ -217,27 +281,40 @@ export default function App() {
              agentPerformances={agentPerformances} 
              evolving={evolving} 
              handleEvolve={handleEvolve} 
+             mission={missions[0] || null}
           />
         ) : activeTab === "knowledge_graph" ? (
-          <KnowledgeGraphDashboard />
+          <KnowledgeGraphDashboard mission={missions[0] || null} />
         ) : activeTab === "research" ? (
-          <ResearchDashboard simulationMode={simulationMode} setSimulationMode={setSimulationMode} />
+          <ResearchDashboard simulationMode={simulationMode} setSimulationMode={setSimulationMode} mission={missions[0] || null} />
         ) : activeTab === "autonomous" ? (
-          <AutonomousDashboard />
+          <AutonomousDashboard mission={missions[0] || null} />
         ) : activeTab === "brain" ? (
-          <PersistentBrainDashboard />
+          <PersistentBrainDashboard mission={missions[0] || null} />
         ) : activeTab === "world" ? (
-          <WorldModelDashboard />
+          <WorldModelDashboard mission={missions[0] || null} />
         ) : activeTab === "cognitive" ? (
-          <CognitiveDashboard />
+          <CognitiveDashboard mission={missions[0] || null} />
         ) : activeTab === "executive" ? (
-          <ExecutiveDashboard />
+          <ExecutiveDashboard mission={missions[0] || null} />
         ) : activeTab === "learning" ? (
-          <LearningDashboard />
+          <LearningDashboard mission={missions[0] || null} />
         ) : activeTab === "society" ? (
-          <SocietyDashboard />
+          <SocietyDashboard mission={missions[0] || null} />
         ) : activeTab === "discovery" ? (
-          <DiscoveryDashboard />
+          <DiscoveryDashboard mission={missions[0] || null} />
+        ) : activeTab === "embodied" ? (
+          <EmbodiedDashboard mission={missions[0] || null} />
+        ) : activeTab === "digital_twin" ? (
+          <DigitalTwinDashboard mission={missions[0] || null} />
+        ) : activeTab === "theory_of_mind" ? (
+          <TheoryOfMindDashboard mission={missions[0] || null} />
+        ) : activeTab === "common_sense" ? (
+          <CommonSenseDashboard mission={missions[0] || null} />
+        ) : activeTab === "intelligence" ? (
+          <IntelligenceDashboard />
+        ) : activeTab === "collective" ? (
+          <CollectiveIntelligenceDashboard mission={missions[0] || null} />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">
@@ -276,6 +353,16 @@ export default function App() {
                 <span>{loading ? "Engage Agents" : "Launch"}</span>
               </button>
             </form>
+
+            {loading && missionStage && (
+               <div className="bg-blue-900/20 border border-blue-900/50 p-4 rounded-xl flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                      <Activity className="w-5 h-5 text-blue-400 animate-spin" />
+                      <span className="text-blue-200 font-medium">{missionStage}</span>
+                   </div>
+                   <div className="text-xs text-blue-500 uppercase tracking-widest font-bold animate-pulse">Running Pipeline</div>
+               </div>
+            )}
 
             <section className="space-y-6">
           <h2 className="text-2xl font-medium text-white flex items-center gap-2">

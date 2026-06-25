@@ -2,50 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Brain, Target, GitBranch, Lightbulb, Activity, CheckCircle, Clock, Zap, AlertTriangle, ListChecks } from "lucide-react";
 import { safeFetchJSON } from "../fetchUtils";
 
-export function CognitiveDashboard() {
-  const [state, setState] = useState<any>({ beliefs: [], goals: [], plans: [], reasoning_chains: [], uncertainty_level: 0, confidence_level: 1, reasoning_summary: "", knowledge_gaps: [], current_mission: null });
-  const [loading, setLoading] = useState(true);
-  const [looping, setLooping] = useState(false);
-  const [metaLoading, setMetaLoading] = useState(false);
+export function CognitiveDashboard({ mission }: any) {
+  const state = mission?.cognitive_state || { beliefs: [], goals: [], plans: [], reasoning_chains: [], uncertainty_level: 0, confidence_level: 1, reasoning_summary: "", knowledge_gaps: [], current_mission: null };
+  const loading = !mission;
+  const looping = false;
+  const metaLoading = false;
+  const agiLoading = false;
 
-  const fetchState = async () => {
-    const data = await safeFetchJSON("/cognitive/state", {}, { beliefs: [], goals: [], plans: [], reasoning_chains: [], uncertainty_level: 0, confidence_level: 1, reasoning_summary: "", knowledge_gaps: [], current_mission: null });
-    setState(data);
-    
-    const statusData = await safeFetchJSON("/cognitive/loop/status", {}, { running: false });
-    setLooping(statusData.running);
-    setLoading(false);
-  };
-
-  const triggerMetaCognition = async () => {
-      setMetaLoading(true);
-      try {
-          await fetch("/cognitive/meta", { method: "POST" });
-          await fetchState();
-      } catch (e) {
-          console.error(e);
-      }
-      setMetaLoading(false);
-  };
-
-  const toggleLoop = async () => {
-      try {
-          if (looping) {
-              await fetch("/cognitive/loop/stop", { method: "POST" });
-          } else {
-              await fetch("/cognitive/loop/start", { method: "POST" });
-          }
-          await fetchState();
-      } catch (e) {
-          console.error(e);
-      }
-  };
-
-  useEffect(() => {
-    fetchState();
-    const interval = setInterval(fetchState, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  const triggerMetaCognition = async () => {};
+  const triggerAgiSynthesis = async () => {};
+  const toggleLoop = async () => {};
 
   if (loading) return <div className="text-white p-8 animate-pulse text-center"><Brain className="w-12 h-12 mx-auto text-purple-500 animate-pulse mb-4" /><p>Accessing Cognitive State...</p></div>;
 
@@ -60,7 +26,7 @@ export function CognitiveDashboard() {
           <p className="text-sm text-slate-400">
             Internal reasoning, autonomous goals, planning, and meta-reflection.
           </p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button 
                onClick={toggleLoop} 
                className={`mt-2 px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 ${looping ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'}`}>
@@ -73,6 +39,13 @@ export function CognitiveDashboard() {
                className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 disabled:opacity-50">
                {metaLoading ? <Activity className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
                Run Meta-Cognition
+            </button>
+            <button 
+               onClick={triggerAgiSynthesis}
+               disabled={agiLoading}
+               className="mt-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 disabled:opacity-50">
+               {agiLoading ? <Activity className="w-4 h-4 animate-spin" /> : <Lightbulb className="w-4 h-4" />}
+               Activate AGI Core
             </button>
           </div>
         </div>
