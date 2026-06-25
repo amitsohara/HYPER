@@ -1,4 +1,5 @@
-import random
+import json
+from .llm_client import generate_json
 
 class FutureSimulator:
     def __init__(self, memory_engine, knowledge_graph):
@@ -11,22 +12,18 @@ class FutureSimulator:
         Domains: economy, technology, healthcare, education, environment, politics
         Generates probability ranges instead of certainties.
         """
-        events = []
-        current_prob = 1.0
-        
-        for year_offset in range(1, timeframe_years + 1, 5):
-            prob = max(0.1, current_prob * random.uniform(0.7, 0.95))
-            event_desc = f"Simulated event in {domain} at year +{year_offset}"
-            if domain == "economy":
-                event_desc = f"Market shift and automation impact scale level {year_offset}"
-            elif domain == "technology":
-                event_desc = f"Breakthrough in AI and quantum networks at generation {year_offset}"
-                
-            events.append({
-                "year_offset": year_offset,
-                "event": event_desc,
-                "probability": round(prob, 2)
-            })
-            current_prob = prob
-            
-        return events
+        prompt = f"""You are the Future Simulator. Simulate events in the {domain} domain over {timeframe_years} years.
+Base State: {json.dumps(base_state)}
+Generate a timeline of key events and probabilities.
+Return JSON:
+{{
+  "events": [
+    {{
+      "year_offset": 5,
+      "event": "Description of the event",
+      "probability": 0.8
+    }}
+  ]
+}}"""
+        data = generate_json(prompt)
+        return data.get("events", [])

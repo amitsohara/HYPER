@@ -1,4 +1,5 @@
-import random
+import json
+from .llm_client import generate_json
 
 class OutcomePredictor:
     def __init__(self):
@@ -8,29 +9,46 @@ class OutcomePredictor:
         """
         Takes simulation timelines and generates predicted outcomes with probability ranges.
         """
-        return [
-            {
-                "scenario": "Optimistic",
-                "description": "Rapid technological integration leads to abundance and reduced inequality.",
-                "probability": round(random.uniform(0.2, 0.4), 2)
-            },
-            {
-                "scenario": "Pessimistic",
-                "description": "Economic disruption causes severe stratification and resource contention.",
-                "probability": round(random.uniform(0.1, 0.3), 2)
-            },
-            {
-                "scenario": "Most Likely",
-                "description": "Gradual adaptation with intermittent crises, ultimately stabilizing.",
-                "probability": round(random.uniform(0.4, 0.6), 2)
-            }
-        ]
+        prompt = f"""You are the Outcome Predictor Engine. Analyze these simulation states: {json.dumps(simulation_states)}
+Generate distinct future scenarios based on this timeline.
+Return JSON:
+{{
+  "scenarios": [
+    {{
+      "scenario": "Optimistic",
+      "description": "Description of the outcome.",
+      "probability": 0.4
+    }},
+    {{
+      "scenario": "Pessimistic",
+      "description": "Description of the outcome.",
+      "probability": 0.2
+    }},
+    {{
+      "scenario": "Most Likely",
+      "description": "Description of the outcome.",
+      "probability": 0.4
+    }}
+  ]
+}}"""
+        data = generate_json(prompt)
+        return data.get("scenarios", [])
 
     def compare_scenarios(self, scenario_a, scenario_b):
         """
         Compares two distinct simulated futures and outputs comparative analytics.
         """
+        prompt = f"""You are the Outcome Predictor. Compare these two scenarios:
+Scenario A: {json.dumps(scenario_a)}
+Scenario B: {json.dumps(scenario_b)}
+Identify divergence points and risk deltas.
+Return JSON:
+{{
+  "divergence_points": ["Point 1", "Point 2"],
+  "risk_delta": 0.15
+}}"""
+        data = generate_json(prompt)
         return {
-            "divergence_points": ["Year 5 economic policy", "Year 15 tech breakthrough"],
-            "risk_delta": round(random.uniform(-0.2, 0.2), 2)
+            "divergence_points": data.get("divergence_points", []),
+            "risk_delta": data.get("risk_delta", 0.0)
         }

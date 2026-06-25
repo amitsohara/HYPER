@@ -334,6 +334,21 @@ async function startServer() {
     res.json(data);
   });
   
+  app.post("/causal_model/update", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI" });
+    const { action, outcome, context } = req.body;
+    const { WorldModelEngine } = await import("./src/server/world/world_model.js").catch(e => import("./src/server/world/world_model.ts"));
+    const newEvidence = `Action: ${action}, Outcome: ${outcome}, Context: ${context}`;
+    const result = await WorldModelEngine.evolveFromEvidence(ai, newEvidence);
+    res.json({ success: true, new_rules: result.causal_graph, evolution_summary: result.evolution_summary });
+  });
+
+  app.get("/causal_model/graph", async (req, res) => {
+    const { WorldModelEngine } = await import("./src/server/world/world_model.js").catch(e => import("./src/server/world/world_model.ts"));
+    const graph = WorldModelEngine.getCausalGraph();
+    res.json({ causal_graph: graph });
+  });
+
   app.get("/simulation/results/:id", (req, res) => {
     const data = simStore.find(s => s.id === req.params.id);
     if (data) res.json(data);
@@ -366,6 +381,31 @@ async function startServer() {
   app.post("/cognitive/run", async (req, res) => {
       // Trigger a cognitive run manually
       res.json({ status: "Cognitive run initiated." });
+  });
+
+  app.post("/cognitive/loop/start", async (req, res) => {
+      if (!ai) return res.status(500).json({ error: "No AI" });
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      const result = await CognitiveArchitecture.startContinuousLoop(ai);
+      res.json(result);
+  });
+
+  app.post("/cognitive/loop/stop", async (req, res) => {
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      const result = await CognitiveArchitecture.stopContinuousLoop();
+      res.json(result);
+  });
+
+  app.post("/cognitive/meta", async (req, res) => {
+      if (!ai) return res.status(500).json({ error: "No AI" });
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      const result = await CognitiveArchitecture.runMetaCognition(ai);
+      res.json(result);
+  });
+
+  app.get("/cognitive/loop/status", async (req, res) => {
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      res.json({ running: CognitiveArchitecture.isLoopRunning });
   });
 
   app.get("/cognitive/beliefs", async (req, res) => {

@@ -1,3 +1,6 @@
+import json
+from .llm_client import generate_json
+
 class MemoryConsolidation:
     def __init__(self, episodic, semantic, concept, belief):
         self.episodic = episodic
@@ -17,13 +20,22 @@ class MemoryConsolidation:
         """
         self.episodic.store_episode("mission", mission_data)
         
-        # In a real implementation, call the LLM to extract facts and beliefs
-        # extracted_facts = extract_facts(mission_data)
-        # for fact in extracted_facts:
-        #    self.semantic.store_fact(...)
+        prompt = f"""You are the Memory Consolidation Engine. Extract facts and concepts from this mission data: {json.dumps(mission_data)}
+Return JSON:
+{{
+  "facts": ["Fact 1", "Fact 2"],
+  "concepts": [
+    {{"name": "Concept A", "related_to": "Concept B"}}
+  ]
+}}"""
+        data = generate_json(prompt)
         
-        # extracted_concepts = extract_concepts(mission_data)
-        # self.concept.link_concepts(...)
+        for fact in data.get("facts", []):
+            self.semantic.store_fact(fact)
+            
+        for concept in data.get("concepts", []):
+            self.concept.add_concept(concept.get("name"))
+            self.concept.link_concepts(concept.get("name"), concept.get("related_to"))
         
-        # self.belief.update_beliefs(mission_data)
-        pass
+        self.belief.update_beliefs(mission_data)
+

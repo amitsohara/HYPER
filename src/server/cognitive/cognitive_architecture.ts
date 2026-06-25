@@ -180,4 +180,171 @@ Return JSON:
             console.error(e);
         }
     }
+
+    static async runMetaCognition(ai: GoogleGenAI) {
+        memState.reasoning_summary = "Running Meta-Cognition: Self-reflection and uncertainty analysis...";
+        
+        const currentBeliefs = memState.beliefs.slice(0, 3).map(b => b.belief);
+        
+        const metaPrompt = `You are the Meta-Cognition Engine. Reflect on the system's current top beliefs: ${JSON.stringify(currentBeliefs)}.
+Generate dynamic self-reflection questions and answers based on these beliefs. Specifically address:
+- Why do I believe this?
+- What evidence contradicts me?
+- What experiment should I run?
+- How uncertain am I?
+
+Return JSON:
+{
+  "meta_questions": [
+    {
+      "question": "Why do I believe [specific belief]?",
+      "analysis": "...",
+      "contradicting_evidence_considered": "...",
+      "proposed_experiment": "...",
+      "uncertainty_level": 0.4
+    }
+  ],
+  "overall_uncertainty": 0.35,
+  "meta_reflection_summary": "Overall summary of current cognitive state."
+}`;
+        
+        try {
+            const res = await generateWithRetry(ai, {
+                model: 'gemini-3.1-flash-lite',
+                contents: metaPrompt,
+                config: { responseMimeType: "application/json" }
+            }, 3);
+            const data = await cleanJSON(res?.text || "{}", ai);
+            
+            memState.uncertainty_level = data.overall_uncertainty || memState.uncertainty_level;
+            memState.confidence_level = 1.0 - memState.uncertainty_level;
+            memState.reasoning_summary = data.meta_reflection_summary || "Meta-cognition complete.";
+            
+            const metaReflection = {
+                id: "meta_" + Math.random().toString(36).substring(7),
+                timestamp: new Date().toISOString(),
+                questions: data.meta_questions || [],
+                overall_uncertainty: memState.uncertainty_level,
+                summary: memState.reasoning_summary
+            };
+            
+            memState.reasoning_chains.unshift({
+                mission_id: "meta_reflection",
+                reasoning_chain: data.meta_questions?.map((q: any) => `Q: ${q.question} | A: ${q.analysis} | Experiment: ${q.proposed_experiment} | Uncertainty: ${q.uncertainty_level}`) || [],
+                lessons_learned: [data.meta_reflection_summary],
+                timestamp: new Date().toISOString()
+            });
+
+            return metaReflection;
+        } catch(e) {
+            console.error("Meta-Cognition error:", e);
+            return null;
+        }
+    }
+
+    static async runContinuousLoop(ai: GoogleGenAI) {
+        memState.reasoning_summary = "Starting continuous cognitive loop...";
+
+        // 1. Observe (Simulate fetching incoming data/context)
+        const observationPrompt = `You are the Observation Engine. Generate a random observation about the current simulated environment. Return JSON: {"observation": "..."}`;
+        const obsRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: observationPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const obsData = await cleanJSON(obsRes?.text || "{}", ai);
+        const observation = obsData.observation || "Detected anomalous data pattern.";
+
+        // 2. Build internal representation
+        const repPrompt = `Build an internal representation based on this observation: "${observation}". Return JSON: {"representation": "..."}`;
+        const repRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: repPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const repData = await cleanJSON(repRes?.text || "{}", ai);
+        const representation = repData.representation || "Internal representation built.";
+
+        // 3. Reason
+        const reasonPrompt = `Reason about this representation: "${representation}". Generate a reasoning chain. Return JSON: {"reasoning_chain": ["Step 1", "Step 2"]}`;
+        const reasonRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: reasonPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const reasonData = await cleanJSON(reasonRes?.text || "{}", ai);
+        const reasoningChain = reasonData.reasoning_chain || ["Reasoned about data."];
+
+        // 4. Generate hypotheses
+        const hypPrompt = `Generate a testable hypothesis based on this reasoning: ${JSON.stringify(reasoningChain)}. Return JSON: {"hypothesis": "..."}`;
+        const hypRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: hypPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const hypData = await cleanJSON(hypRes?.text || "{}", ai);
+        const hypothesis = hypData.hypothesis || "Hypothesized relationship.";
+
+        // 5. Run experiments
+        const expPrompt = `Simulate running an experiment to test this hypothesis: "${hypothesis}". Return JSON: {"experiment_outcome": "...", "success": true}`;
+        const expRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: expPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const expData = await cleanJSON(expRes?.text || "{}", ai);
+        const outcome = expData.experiment_outcome || "Experiment completed.";
+
+        // 6. Update world model (Evolve from new evidence)
+        const { WorldModelEngine } = await import('../world/world_model.js').catch(() => import('../world/world_model.ts'));
+        const evolutionResult = await WorldModelEngine.evolveFromEvidence(ai, outcome);
+        
+        // 7. Update beliefs
+        let newWorldRule = evolutionResult.evolution_summary || "World model updated.";
+        
+        const beliefPrompt = `Formulate a new belief based on this world rule: "${newWorldRule}". Return JSON: {"belief": "...", "confidence": 0.9}`;
+        const beliefRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: beliefPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const beliefData = await cleanJSON(beliefRes?.text || "{}", ai);
+        
+        const newBelief = {
+            id: "b_" + Math.random().toString(36).substring(7),
+            belief: beliefData.belief || newWorldRule,
+            confidence: beliefData.confidence || 0.8,
+            evidence: [outcome],
+            contradicting_evidence: [],
+            last_updated: new Date().toISOString(),
+            version: 1,
+            source_missions: ["continuous_loop"]
+        };
+        memState.beliefs.unshift(newBelief);
+        
+        memState.reasoning_chains.unshift({
+            mission_id: "loop_" + Math.random().toString(36).substring(7),
+            reasoning_chain: reasoningChain,
+            lessons_learned: [newWorldRule],
+            timestamp: new Date().toISOString()
+        });
+
+        memState.reasoning_summary = "Completed a full cognitive cycle: Observation -> Hypothesis -> Experiment -> Belief Update.";
+        
+        return {
+            observation,
+            representation,
+            reasoningChain,
+            hypothesis,
+            outcome,
+            newWorldRule,
+            newBelief
+        };
+    }
+
+    static isLoopRunning = false;
+    static loopTimeout: any = null;
+
+    static async startContinuousLoop(ai: GoogleGenAI) {
+        if (CognitiveArchitecture.isLoopRunning) return { status: "Already running" };
+        CognitiveArchitecture.isLoopRunning = true;
+        
+        const loop = async () => {
+            if (!CognitiveArchitecture.isLoopRunning) return;
+            try {
+                await CognitiveArchitecture.runContinuousLoop(ai);
+            } catch (e) {
+                console.error("Cognitive loop error:", e);
+            }
+            if (CognitiveArchitecture.isLoopRunning) {
+                CognitiveArchitecture.loopTimeout = setTimeout(loop, 15000); // 15 seconds
+            }
+        };
+        
+        loop(); // Start immediately
+        return { status: "Started" };
+    }
+
+    static async stopContinuousLoop() {
+        CognitiveArchitecture.isLoopRunning = false;
+        if (CognitiveArchitecture.loopTimeout) clearTimeout(CognitiveArchitecture.loopTimeout);
+        memState.reasoning_summary = "Continuous loop stopped.";
+        return { status: "Stopped" };
+    }
 }

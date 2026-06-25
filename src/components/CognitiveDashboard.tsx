@@ -5,11 +5,40 @@ import { safeFetchJSON } from "../fetchUtils";
 export function CognitiveDashboard() {
   const [state, setState] = useState<any>({ beliefs: [], goals: [], plans: [], reasoning_chains: [], uncertainty_level: 0, confidence_level: 1, reasoning_summary: "", knowledge_gaps: [], current_mission: null });
   const [loading, setLoading] = useState(true);
+  const [looping, setLooping] = useState(false);
+  const [metaLoading, setMetaLoading] = useState(false);
 
   const fetchState = async () => {
     const data = await safeFetchJSON("/cognitive/state", {}, { beliefs: [], goals: [], plans: [], reasoning_chains: [], uncertainty_level: 0, confidence_level: 1, reasoning_summary: "", knowledge_gaps: [], current_mission: null });
     setState(data);
+    
+    const statusData = await safeFetchJSON("/cognitive/loop/status", {}, { running: false });
+    setLooping(statusData.running);
     setLoading(false);
+  };
+
+  const triggerMetaCognition = async () => {
+      setMetaLoading(true);
+      try {
+          await fetch("/cognitive/meta", { method: "POST" });
+          await fetchState();
+      } catch (e) {
+          console.error(e);
+      }
+      setMetaLoading(false);
+  };
+
+  const toggleLoop = async () => {
+      try {
+          if (looping) {
+              await fetch("/cognitive/loop/stop", { method: "POST" });
+          } else {
+              await fetch("/cognitive/loop/start", { method: "POST" });
+          }
+          await fetchState();
+      } catch (e) {
+          console.error(e);
+      }
   };
 
   useEffect(() => {
@@ -31,6 +60,21 @@ export function CognitiveDashboard() {
           <p className="text-sm text-slate-400">
             Internal reasoning, autonomous goals, planning, and meta-reflection.
           </p>
+          <div className="flex gap-2">
+            <button 
+               onClick={toggleLoop} 
+               className={`mt-2 px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 ${looping ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'}`}>
+               {looping ? <Activity className="w-4 h-4 animate-pulse" /> : <Zap className="w-4 h-4" />}
+               {looping ? 'Stop Continuous Cognitive Loop' : 'Start Continuous Cognitive Loop'}
+            </button>
+            <button 
+               onClick={triggerMetaCognition}
+               disabled={metaLoading}
+               className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-2 disabled:opacity-50">
+               {metaLoading ? <Activity className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+               Run Meta-Cognition
+            </button>
+          </div>
         </div>
         <div className="flex gap-4 text-sm text-slate-300">
            <div className="flex flex-col items-center"><span className="text-lg text-red-400 font-mono">{(state.uncertainty_level * 100).toFixed(0)}%</span><span className="text-[10px] text-slate-500 uppercase tracking-widest">Uncertainty</span></div>
