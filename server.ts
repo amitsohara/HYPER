@@ -187,7 +187,12 @@ async function startServer() {
     // Knowledge Graph Search
     const kgSearch = await kgInstance.search(ai, mission_text);
     const kgContext = `Graph Insights: ${kgSearch.insights}\nConcepts: ${kgSearch.related_concepts.join(", ")}`;
-    const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}`;
+    
+    // Persistent Brain Context Reconstruction
+    const { PersistentBrain } = await import("./src/server/brain/persistent_brain.js").catch(e => import("./src/server/brain/persistent_brain.ts"));
+    const brainContext = await PersistentBrain.reconstructContext(ai, mission_text);
+    
+    const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}\nCognitive Brain Context: ${brainContext}`;
 
     // 1. Research Question Generator, Hypotheses, Evidence Planner, Experiment Designer
     const plan = await ResearchEngine.planResearch(ai, mission_text, memoryContext, kgContext);
@@ -230,6 +235,9 @@ async function startServer() {
     const { AutonomousResearchEngine } = await import("./src/server/autonomous.js").catch(e => import("./src/server/autonomous.ts"));
     const autoGaps = await AutonomousResearchEngine.identifyGapsAndFollowUps(ai, reportFull);
     
+    // Cognitive Brain Mission Consolidation
+    await PersistentBrain.processMissionComplete(ai, reportFull);
+    
     if (autoGaps.knowledge_gaps && autoGaps.knowledge_gaps.length > 0) {
         knowledgeGaps.unshift({
             mission_id: research_id,
@@ -237,6 +245,16 @@ async function startServer() {
             weak_assumptions: autoGaps.weak_assumptions,
             unanswered_questions: autoGaps.unanswered_questions,
             timestamp: new Date().toISOString()
+        });
+        
+        // Trigger Cognitive Architecture Goal Generation
+        import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts")).then(({ CognitiveArchitecture }) => {
+            CognitiveArchitecture.generateGoalsFromGaps(ai, autoGaps.knowledge_gaps).then(goals => {
+                // Also trigger planning for the first goal as an example
+                if (goals.length > 0) {
+                    CognitiveArchitecture.planMultiStepTask(ai, goals[0]);
+                }
+            });
         });
     }
 
@@ -284,6 +302,176 @@ async function startServer() {
      }
      autonomousStatus.active = false;
   };
+
+  // --- BRAIN API ROUTES ---
+  app.get("/brain/db", async (req, res) => {
+     const { PersistentBrain } = await import("./src/server/brain/persistent_brain.js").catch(e => import("./src/server/brain/persistent_brain.ts"));
+     res.json(await PersistentBrain.getDB());
+  });
+  
+  app.get("/brain/beliefs", async (req, res) => {
+     const { PersistentBrain } = await import("./src/server/brain/persistent_brain.js").catch(e => import("./src/server/brain/persistent_brain.ts"));
+     res.json((await PersistentBrain.getDB()).beliefs);
+  });
+  
+  app.get("/brain/timeline", async (req, res) => {
+     const { PersistentBrain } = await import("./src/server/brain/persistent_brain.js").catch(e => import("./src/server/brain/persistent_brain.ts"));
+     res.json((await PersistentBrain.getDB()).episodic);
+  });
+  
+  app.get("/brain/concepts", async (req, res) => {
+     const { PersistentBrain } = await import("./src/server/brain/persistent_brain.js").catch(e => import("./src/server/brain/persistent_brain.ts"));
+     res.json((await PersistentBrain.getDB()).concepts);
+  });
+
+  const simStore: any[] = [];
+  app.post("/simulate/future", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI" });
+    const { WorldModelEngine } = await import("./src/server/world/world_model.js").catch(e => import("./src/server/world/world_model.ts"));
+    const data = await WorldModelEngine.simulateFuture(ai, req.body);
+    if (!data.id) data.id = "sim_" + Math.random().toString(36).substring(7);
+    simStore.push(data);
+    res.json(data);
+  });
+  
+  app.get("/simulation/results/:id", (req, res) => {
+    const data = simStore.find(s => s.id === req.params.id);
+    if (data) res.json(data);
+    else res.status(404).json({ error: "Not found" });
+  });
+
+  app.get("/cognitive/state", async (req, res) => {
+    const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+    res.json(await CognitiveArchitecture.getState());
+  });
+
+  app.get("/executive/state", async (req, res) => {
+    const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+    res.json(await ExecutiveFunction.getState());
+  });
+
+  app.post("/executive/pause/:id", async (req, res) => {
+    const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+    await ExecutiveFunction.pauseTask(req.params.id);
+    res.json({ success: true });
+  });
+
+  app.post("/executive/resume/:id", async (req, res) => {
+    const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+    await ExecutiveFunction.resumeTask(req.params.id);
+    res.json({ success: true });
+  });
+
+  // NEW ENDPOINTS FROM PHASE 13-15
+  app.post("/cognitive/run", async (req, res) => {
+      // Trigger a cognitive run manually
+      res.json({ status: "Cognitive run initiated." });
+  });
+
+  app.get("/cognitive/beliefs", async (req, res) => {
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      const state = await CognitiveArchitecture.getState();
+      res.json({ beliefs: state.beliefs });
+  });
+
+  app.post("/cognitive/beliefs/update", async (req, res) => {
+      res.json({ status: "Manual belief update not supported. Only AI can update beliefs." });
+  });
+
+  app.get("/cognitive/goals", async (req, res) => {
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      const state = await CognitiveArchitecture.getState();
+      res.json({ goals: state.goals });
+  });
+
+  app.get("/cognitive/plans", async (req, res) => {
+      const { CognitiveArchitecture } = await import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts"));
+      const state = await CognitiveArchitecture.getState();
+      res.json({ plans: state.plans });
+  });
+
+  app.post("/tasks/create", async (req, res) => {
+      const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+      const task = await ExecutiveFunction.submitTask(req.body);
+      res.json({ success: true, task });
+  });
+
+  app.get("/tasks", async (req, res) => {
+      const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+      res.json({ tasks: await ExecutiveFunction.getTasks() });
+  });
+
+  app.post("/tasks/:id/run", async (req, res) => {
+      const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+      await ExecutiveFunction.resumeTask(req.params.id);
+      res.json({ success: true });
+  });
+
+  app.post("/tasks/:id/pause", async (req, res) => {
+      const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+      await ExecutiveFunction.pauseTask(req.params.id);
+      res.json({ success: true });
+  });
+
+  app.post("/tasks/:id/complete", async (req, res) => {
+      const { ExecutiveFunction } = await import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts"));
+      await ExecutiveFunction.completeTask(req.params.id);
+      res.json({ success: true });
+  });
+
+  app.get("/learning/skills", async (req, res) => {
+      const { AutonomousLearningEngine } = await import("./src/server/learning/autonomous_learning.js").catch(e => import("./src/server/learning/autonomous_learning.ts"));
+      res.json({ skills: await AutonomousLearningEngine.getSkills() });
+  });
+
+  app.post("/learning/extract", async (req, res) => {
+      const { AutonomousLearningEngine } = await import("./src/server/learning/autonomous_learning.js").catch(e => import("./src/server/learning/autonomous_learning.ts"));
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const skill = await AutonomousLearningEngine.extractSkill(ai, req.body.mission || { mission_text: "Manual extraction" });
+      res.json({ success: true, skill });
+  });
+
+  app.post("/learning/replay", async (req, res) => {
+    const { AutonomousLearningEngine } = await import("./src/server/learning/autonomous_learning.js").catch(e => import("./src/server/learning/autonomous_learning.ts"));
+    // Replay a random past mission
+    const replay = await AutonomousLearningEngine.replayMission("mission_" + Math.random().toString(36).substring(7));
+    res.json({ success: true, replay });
+  });
+
+  app.get("/learning/progress", async (req, res) => {
+      const { AutonomousLearningEngine } = await import("./src/server/learning/autonomous_learning.js").catch(e => import("./src/server/learning/autonomous_learning.ts"));
+      res.json({ progress: await AutonomousLearningEngine.getProgress() });
+  });
+
+  app.get("/society/state", async (req, res) => {
+    const { MultiAgentSociety } = await import("./src/server/society/multi_agent_society.js").catch(e => import("./src/server/society/multi_agent_society.ts"));
+    res.json(await MultiAgentSociety.getState());
+  });
+
+  app.post("/society/vote", async (req, res) => {
+    const { MultiAgentSociety } = await import("./src/server/society/multi_agent_society.js").catch(e => import("./src/server/society/multi_agent_society.ts"));
+    await MultiAgentSociety.holdVote(req.body.proposal);
+    res.json({ success: true });
+  });
+
+  app.post("/society/negotiate", async (req, res) => {
+    const { MultiAgentSociety } = await import("./src/server/society/multi_agent_society.js").catch(e => import("./src/server/society/multi_agent_society.ts"));
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    await MultiAgentSociety.simulateNegotiation(ai, req.body.issue);
+    res.json({ success: true });
+  });
+
+  app.get("/discovery/state", async (req, res) => {
+    const { ScientificDiscoveryPlatform } = await import("./src/server/discovery/scientific_discovery.js").catch(e => import("./src/server/discovery/scientific_discovery.ts"));
+    res.json(await ScientificDiscoveryPlatform.getState());
+  });
+
+  app.post("/discovery/run", async (req, res) => {
+    const { ScientificDiscoveryPlatform } = await import("./src/server/discovery/scientific_discovery.js").catch(e => import("./src/server/discovery/scientific_discovery.ts"));
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    await ScientificDiscoveryPlatform.discover(ai, req.body.topic, req.body.discipline);
+    res.json({ success: true });
+  });
 
   app.post("/research/run", async (req, res) => {
     const { mission_text, simulation_mode = "realistic" } = req.body;
@@ -338,8 +526,12 @@ Past missions: ${JSON.stringify(missions.map(m => ({ id: m.mission_id, mission: 
     const kgSearch = await kgInstance.search(ai, mission_text);
     const kgContext = `Graph Insights: ${kgSearch.insights}\nConcepts: ${kgSearch.related_concepts.join(", ")}`;
     
+    // Persistent Brain Context Reconstruction
+    const { PersistentBrain } = await import("./src/server/brain/persistent_brain.js").catch(e => import("./src/server/brain/persistent_brain.ts"));
+    const brainContext = await PersistentBrain.reconstructContext(ai, mission_text);
+    
     // We combine memory and knowledge graph insights securely:
-    const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}`;
+    const combinedMemoryContext = `${memoryContext}\nKnowledge Graph Context: ${kgContext}\nCognitive Brain Context: ${brainContext}`;
 
     // 1. Generate Goals
     let goals: string[] = [];
@@ -448,6 +640,36 @@ Return ONLY a JSON object with strictly these keys: "what_worked" (string), "wha
     missions.unshift(mission);
     res.json(mission);
     
+    // Cognitive Brain Mission Consolidation
+    PersistentBrain.processMissionComplete(ai, { ...mission, finalReportData: { executive_summary: mission.improvement_log.what_worked, key_findings: mission.discovery } }).catch(e => console.error(e));
+    
+    // Cognitive Architecture Reflection & Update
+    import("./src/server/cognitive/cognitive_architecture.js").catch(e => import("./src/server/cognitive/cognitive_architecture.ts")).then(({ CognitiveArchitecture }) => {
+        CognitiveArchitecture.updateStateFromMission(ai, mission).then(() => {
+             CognitiveArchitecture.reflectOnMission(ai, mission);
+             CognitiveArchitecture.generateGoalsFromGaps(ai, ["Mission gap analysis", "Unknown variables"]).then(goals => {
+                 if (goals && goals.length > 0) CognitiveArchitecture.planMultiStepTask(ai, goals[0]);
+             });
+        });
+    });
+
+    // Executive Function
+    import("./src/server/executive/executive_function.js").catch(e => import("./src/server/executive/executive_function.ts")).then(({ ExecutiveFunction }) => {
+        ExecutiveFunction.submitTask({
+             name: `Follow-up on ${mission_id}`,
+             description: `Analyze outcome of mission ${mission_id} and extract actionable items.`,
+             priority: 80,
+             estimated_difficulty: 6,
+             expected_value: 70
+        });
+    });
+
+    // Autonomous Learning Skill Extraction
+    import("./src/server/learning/autonomous_learning.js").catch(e => import("./src/server/learning/autonomous_learning.ts")).then(({ AutonomousLearningEngine }) => {
+        AutonomousLearningEngine.extractSkill(ai, mission);
+        AutonomousLearningEngine.evaluateMission(ai, mission);
+    });
+
     // Update Knowledge Graph asynchronously
     kgInstance.update(ai, mission).catch(e => console.error("KG Update Failed", e));
   });

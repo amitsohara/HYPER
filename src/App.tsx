@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical } from "lucide-react";
+import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope } from "lucide-react";
 import { EvolutionDashboard } from "./components/EvolutionDashboard";
 import { KnowledgeGraphDashboard } from "./components/KnowledgeGraphDashboard";
 import { ResearchDashboard } from "./components/ResearchDashboard";
 import { AutonomousDashboard } from "./components/AutonomousDashboard";
+import { PersistentBrainDashboard } from "./components/PersistentBrainDashboard";
+import { WorldModelDashboard } from "./components/WorldModelDashboard";
+import { CognitiveDashboard } from "./components/CognitiveDashboard";
+import { ExecutiveDashboard } from "./components/ExecutiveDashboard";
+import { LearningDashboard } from "./components/LearningDashboard";
+import { SocietyDashboard } from "./components/SocietyDashboard";
+import { DiscoveryDashboard } from "./components/DiscoveryDashboard";
 
 import { safeFetchJSON } from "./fetchUtils";
 
@@ -13,7 +20,7 @@ export default function App() {
   const [simulationMode, setSimulationMode] = useState("realistic");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous">("autonomous");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery">("world");
 
   const [agentVersions, setAgentVersions] = useState<any>({});
   const [agentPerformances, setAgentPerformances] = useState<any[]>([]);
@@ -104,10 +111,10 @@ export default function App() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-2">
-                {activeTab === 'missions' ? 'Mission Command' : activeTab === 'evolution' ? 'Evolution Engine' : activeTab === 'research' ? 'Research Scientist' : activeTab === 'autonomous' ? 'Autonomous Loop' : 'Knowledge Graph Brain'}
+                {activeTab === 'missions' ? 'Mission Command' : activeTab === 'evolution' ? 'Evolution Engine' : activeTab === 'research' ? 'Research Scientist' : activeTab === 'autonomous' ? 'Autonomous Loop' : activeTab === 'brain' ? 'Persistent Cognitive Brain' : activeTab === 'world' ? 'World Model Engine' : activeTab === 'cognitive' ? 'Cognitive Architecture' : activeTab === 'executive' ? 'Executive Function' : activeTab === 'learning' ? 'Autonomous Learning' : activeTab === 'society' ? 'Multi-Agent Society' : activeTab === 'discovery' ? 'Scientific Discovery' : 'Knowledge Graph Brain'}
               </h1>
               <p className="text-lg text-slate-400">
-                {activeTab === 'missions' ? 'Define high-level objectives. The multi-agent system will decompose, assign, and execute them.' : activeTab === 'evolution' ? 'Track agent performance and evolve system prompts based on mission outcomes.' : activeTab === 'research' ? 'Formulate hypotheses, design experiments, and generate scientific reports.' : activeTab === 'autonomous' ? 'Identify knowledge gaps and autonomously pursue follow-up research.' : 'A self-assembling network of entities, concepts, and relationships extracted from completed missions.'}
+                {activeTab === 'missions' ? 'Define high-level objectives. The multi-agent system will decompose, assign, and execute them.' : activeTab === 'evolution' ? 'Track agent performance and evolve system prompts based on mission outcomes.' : activeTab === 'research' ? 'Formulate hypotheses, design experiments, and generate scientific reports.' : activeTab === 'autonomous' ? 'Identify knowledge gaps and autonomously pursue follow-up research.' : activeTab === 'brain' ? 'System memory, beliefs, and concept structures evolving over time.' : activeTab === 'world' ? 'Simulate future worlds and evaluate strategic interventions.' : activeTab === 'cognitive' ? 'Internal reasoning, autonomous goals, planning, and meta-reflection.' : activeTab === 'executive' ? 'Task prioritization, dependency management, and dynamic resource allocation.' : activeTab === 'learning' ? 'Extract reusable skills from missions, replay past missions, and track learning progress.' : activeTab === 'society' ? 'Hundreds of agents collaborating, forming teams, voting, and negotiating.' : activeTab === 'discovery' ? 'Generate hypotheses, test alternative explanations, and document findings across disciplines.' : 'A self-assembling network of entities, concepts, and relationships extracted from completed missions.'}
               </p>
             </div>
             <div className="flex flex-wrap gap-1 bg-[#111] p-1 rounded-xl border border-slate-800">
@@ -145,6 +152,55 @@ export default function App() {
                 <Activity className="w-4 h-4" />
                 Autonomous Loop
               </button>
+              <button 
+                onClick={() => setActiveTab("brain")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "brain" ? "bg-emerald-900/50 text-emerald-200" : "text-slate-400 hover:text-emerald-300"}`}
+              >
+                <BrainCircuit className="w-4 h-4" />
+                Persistent Brain
+              </button>
+              <button 
+                onClick={() => setActiveTab("world")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "world" ? "bg-blue-900/50 text-blue-200" : "text-slate-400 hover:text-blue-300"}`}
+              >
+                <Globe className="w-4 h-4" />
+                World Model
+              </button>
+              <button 
+                onClick={() => setActiveTab("cognitive")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "cognitive" ? "bg-purple-900/50 text-purple-200" : "text-slate-400 hover:text-purple-300"}`}
+              >
+                <BrainCircuit className="w-4 h-4" />
+                Cognitive Engine
+              </button>
+              <button 
+                onClick={() => setActiveTab("executive")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "executive" ? "bg-indigo-900/50 text-indigo-200" : "text-slate-400 hover:text-indigo-300"}`}
+              >
+                <Server className="w-4 h-4" />
+                Executive
+              </button>
+              <button 
+                onClick={() => setActiveTab("learning")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "learning" ? "bg-pink-900/50 text-pink-200" : "text-slate-400 hover:text-pink-300"}`}
+              >
+                <FlaskConical className="w-4 h-4" />
+                Learning
+              </button>
+              <button 
+                onClick={() => setActiveTab("society")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "society" ? "bg-blue-900/50 text-blue-200" : "text-slate-400 hover:text-blue-300"}`}
+              >
+                <Users className="w-4 h-4" />
+                Society
+              </button>
+              <button 
+                onClick={() => setActiveTab("discovery")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "discovery" ? "bg-indigo-900/50 text-indigo-200" : "text-slate-400 hover:text-indigo-300"}`}
+              >
+                <Microscope className="w-4 h-4" />
+                Discovery
+              </button>
             </div>
           </div>
         </header>
@@ -168,6 +224,20 @@ export default function App() {
           <ResearchDashboard simulationMode={simulationMode} setSimulationMode={setSimulationMode} />
         ) : activeTab === "autonomous" ? (
           <AutonomousDashboard />
+        ) : activeTab === "brain" ? (
+          <PersistentBrainDashboard />
+        ) : activeTab === "world" ? (
+          <WorldModelDashboard />
+        ) : activeTab === "cognitive" ? (
+          <CognitiveDashboard />
+        ) : activeTab === "executive" ? (
+          <ExecutiveDashboard />
+        ) : activeTab === "learning" ? (
+          <LearningDashboard />
+        ) : activeTab === "society" ? (
+          <SocietyDashboard />
+        ) : activeTab === "discovery" ? (
+          <DiscoveryDashboard />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">
