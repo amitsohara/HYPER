@@ -14,31 +14,56 @@ class PostgresDB:
     def initialize_tables(self):
         query = """
         CREATE TABLE IF NOT EXISTS benchmark_runs (
-            id SERIAL PRIMARY KEY,
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             version VARCHAR(255) NOT NULL,
-            overall_score INTEGER NOT NULL,
-            reasoning_score INTEGER NOT NULL,
-            planning_score INTEGER NOT NULL,
-            memory_score INTEGER NOT NULL,
-            learning_score INTEGER NOT NULL,
-            research_score INTEGER NOT NULL,
-            simulation_score INTEGER NOT NULL,
-            creativity_score INTEGER NOT NULL,
-            causal_score INTEGER NOT NULL,
-            meta_cognition_score INTEGER NOT NULL,
-            tool_use_score INTEGER NOT NULL,
-            theory_of_mind_score INTEGER NOT NULL,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            mission_id VARCHAR(255),
+            overall_score FLOAT NOT NULL,
+            reasoning_score FLOAT,
+            planning_score FLOAT,
+            memory_score FLOAT,
+            learning_score FLOAT,
+            research_score FLOAT,
+            simulation_score FLOAT,
+            creativity_score FLOAT,
+            causal_score FLOAT,
+            meta_cognition_score FLOAT,
+            tool_use_score FLOAT,
+            theory_of_mind_score FLOAT,
+            status VARCHAR(50) DEFAULT 'completed',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         
+        CREATE TABLE IF NOT EXISTS performance_metrics (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            run_id UUID REFERENCES benchmark_runs(id) ON DELETE CASCADE,
+            metric_name VARCHAR(100) NOT NULL,
+            metric_value FLOAT NOT NULL,
+            expected_value FLOAT,
+            deviation FLOAT,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS capability_history (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            version VARCHAR(255) NOT NULL,
+            capability_name VARCHAR(100) NOT NULL,
+            score FLOAT NOT NULL,
+            regression_detected BOOLEAN DEFAULT FALSE,
+            change_from_previous FLOAT DEFAULT 0.0,
+            run_id UUID REFERENCES benchmark_runs(id) ON DELETE CASCADE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
         CREATE TABLE IF NOT EXISTS benchmark_missions (
-            id SERIAL PRIMARY KEY,
-            mission_id VARCHAR(50) UNIQUE NOT NULL,
-            category VARCHAR(50) NOT NULL,
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            mission_id VARCHAR(100) UNIQUE NOT NULL,
+            category VARCHAR(100) NOT NULL,
             difficulty VARCHAR(50) NOT NULL,
             mission_text TEXT NOT NULL,
             expected_capabilities TEXT NOT NULL,
-            evaluation_rubric TEXT NOT NULL
+            evaluation_rubric TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """
         try:

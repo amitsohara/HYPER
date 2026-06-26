@@ -1,53 +1,76 @@
-import { PersistentBrainDB, MemoryDB } from './db.js';
+import { db } from '../firebase.js';
+import { collection, addDoc, getDocs, query, orderBy, limit, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { GoogleGenAI } from '@google/genai';
 import { generateWithRetry, cleanJSON } from '../engines.js';
 
 export class PersistentBrain {
-  static async getDB(): Promise<MemoryDB> {
-    return await PersistentBrainDB.load();
-  }
-
-  static async saveDB(db: MemoryDB) {
-    await PersistentBrainDB.save(db);
-  }
-
   static async storeEpisodicMemory(memory: any) {
-    const db = await this.getDB();
-    db.episodic.push({ ...memory, id: Math.random().toString(36).substring(7), timestamp: new Date().toISOString(), type: 'episodic', importance: 1.0 });
-    await this.saveDB(db);
+    if (!db) return;
+    try {
+      await addDoc(collection(db, 'episodic_memories'), {
+        ...memory,
+        timestamp: new Date().toISOString(),
+        type: 'episodic',
+        importance: 1.0
+      });
+    } catch (e) {
+      console.error('Error storing episodic memory:', e);
+    }
   }
 
   static async storeSemanticMemory(concept: string, fact: string) {
-    const db = await this.getDB();
-    db.semantic.push({ id: Math.random().toString(36).substring(7), concept, fact, timestamp: new Date().toISOString(), importance: 1.0 });
-    await this.saveDB(db);
+    if (!db) return;
+    try {
+      await addDoc(collection(db, 'semantic_memories'), {
+        concept,
+        fact,
+        timestamp: new Date().toISOString(),
+        importance: 1.0
+      });
+    } catch (e) {
+      console.error('Error storing semantic memory:', e);
+    }
   }
 
   static async storeProceduralMemory(pattern: any) {
-    const db = await this.getDB();
-    db.procedural.push({ id: Math.random().toString(36).substring(7), ...pattern, timestamp: new Date().toISOString(), importance: 1.0 });
-    await this.saveDB(db);
+    if (!db) return;
+    try {
+      await addDoc(collection(db, 'procedural_memories'), {
+        ...pattern,
+        timestamp: new Date().toISOString(),
+        importance: 1.0
+      });
+    } catch (e) {
+      console.error('Error storing procedural memory:', e);
+    }
   }
 
   static async updateConceptNode(concept: string, related: string[]) {
-    const db = await this.getDB();
-    let node = db.concepts.find(c => c.name === concept);
-    if (!node) {
-      node = { name: concept, connections: [], strength: 1.0 };
-      db.concepts.push(node);
-    } else {
-      node.strength += 0.1;
-    }
-    for (const rel of related) {
-      if (!node.connections.includes(rel)) {
-        node.connections.push(rel);
+    if (!db) return;
+    try {
+      const docRef = doc(db, 'concepts', concept);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const connections = new Set([...(data.connections || []), ...related]);
+        await updateDoc(docRef, {
+          strength: (data.strength || 1.0) + 0.1,
+          connections: Array.from(connections)
+        });
+      } else {
+        await setDoc(docRef, {
+          name: concept,
+          connections: related,
+          strength: 1.0
+        });
       }
+    } catch (e) {
+      console.error('Error updating concept node:', e);
     }
-    await this.saveDB(db);
   }
 
   static async reconstructContext(ai: GoogleGenAI, mission: string): Promise<string> {
-    const db = await this.getDB();
+    if (!db) return "{}";
     
     // Simple semantic search approximation
     const prompt = `Given the mission: "${mission}", extract the top 3 core concepts/keywords as a JSON array of strings. Format: ["concept1", "concept2"]`;
@@ -61,21 +84,44 @@ export class PersistentBrain {
         concepts = await cleanJSON(res?.text || "[]", ai) || [];
     } catch(e) {}
     
-    const relevantEpisodic = db.episodic.filter(m => concepts.some(c => JSON.stringify(m).toLowerCase().includes(c.toLowerCase()))).slice(-3);
-    const relevantSemantic = db.semantic.filter(m => concepts.some(c => m.concept.toLowerCase().includes(c.toLowerCase()) || m.fact.toLowerCase().includes(c.toLowerCase()))).slice(-5);
-    const relevantBeliefs = db.beliefs.filter(b => concepts.some(c => b.belief.toLowerCase().includes(c.toLowerCase())));
+    try {
+      // Fetch recent episodic memories
+      const episodicQ = query(collection(db, 'episodic_memories'), orderBy('timestamp', 'desc'), limit(10));
+      const episodicSnap = await getDocs(episodicQ);
+      const allEpisodic = episodicSnap.docs.map(d => d.data());
+      const relevantEpisodic = allEpisodic.filter(m => concepts.some(c => JSON.stringify(m).toLowerCase().includes(c.toLowerCase()))).slice(-3);
 
-    return JSON.stringify({
-      relevant_history: relevantEpisodic,
-      facts: relevantSemantic,
-      active_beliefs: relevantBeliefs
-    });
+      // Fetch recent semantic memories
+      const semanticQ = query(collection(db, 'semantic_memories'), orderBy('timestamp', 'desc'), limit(20));
+      const semanticSnap = await getDocs(semanticQ);
+      const allSemantic = semanticSnap.docs.map(d => d.data());
+      const relevantSemantic = allSemantic.filter(m => concepts.some(c => m.concept.toLowerCase().includes(c.toLowerCase()) || m.fact.toLowerCase().includes(c.toLowerCase()))).slice(-5);
+
+      // Fetch beliefs
+      const beliefsQ = query(collection(db, 'beliefs'), orderBy('last_updated', 'desc'), limit(20));
+      const beliefsSnap = await getDocs(beliefsQ);
+      const allBeliefs = beliefsSnap.docs.map(d => d.data());
+      const relevantBeliefs = allBeliefs.filter(b => concepts.some(c => (b.belief || "").toLowerCase().includes(c.toLowerCase())));
+
+      return JSON.stringify({
+        relevant_history: relevantEpisodic,
+        facts: relevantSemantic,
+        active_beliefs: relevantBeliefs
+      });
+    } catch (e) {
+      console.error('Error reconstructing context:', e);
+      return "{}";
+    }
   }
 
   static async updateBeliefs(ai: GoogleGenAI, missionData: any) {
-    const db = await this.getDB();
-    const prompt = `You are the Belief Engine. Review the latest mission data: ${JSON.stringify(missionData)}
-Current Beliefs: ${JSON.stringify(db.beliefs)}
+    if (!db) return;
+    try {
+      const beliefsSnap = await getDocs(collection(db, 'beliefs'));
+      const currentBeliefs = beliefsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const prompt = `You are the Belief Engine. Review the latest mission data: ${JSON.stringify(missionData)}
+Current Beliefs: ${JSON.stringify(currentBeliefs)}
 Identify if any existing beliefs should be updated (confidence changed, evidence added) OR if new beliefs should be formed.
 Return a JSON object:
 {
@@ -86,57 +132,45 @@ Return a JSON object:
     { "id": "existing_id", "belief": "Updated Statement", "confidence": 0.9, "supporting_evidence": ["..."], "contradicting_evidence": ["..."] }
   ]
 }`;
-    try {
-        const res = await generateWithRetry(ai, {
-           model: 'gemini-3.1-flash-lite',
-           contents: prompt,
-           config: { responseMimeType: "application/json" }
-        }, 3);
-        const updates = await cleanJSON(res?.text || "{}", ai);
-        
-        if (updates.new_beliefs) {
-           for (const nb of updates.new_beliefs) {
-               db.beliefs.push({
-                   id: Math.random().toString(36).substring(7),
-                   ...nb,
-                   last_updated: new Date().toISOString(),
-                   version: 1
-               });
-           }
-        }
-        if (updates.updated_beliefs) {
-           for (const ub of updates.updated_beliefs) {
-               const idx = db.beliefs.findIndex(b => b.id === ub.id);
-               if (idx !== -1) {
-                   db.beliefs[idx] = {
-                       ...db.beliefs[idx],
-                       ...ub,
-                       version: (db.beliefs[idx].version || 1) + 1,
-                       last_updated: new Date().toISOString()
-                   };
-               }
-           }
-        }
-        await this.saveDB(db);
+      const res = await generateWithRetry(ai, {
+         model: 'gemini-3.1-flash-lite',
+         contents: prompt,
+         config: { responseMimeType: "application/json" }
+      }, 3);
+      const updates = await cleanJSON(res?.text || "{}", ai);
+      
+      if (updates.new_beliefs) {
+         for (const nb of updates.new_beliefs) {
+            await addDoc(collection(db, 'beliefs'), {
+              ...nb,
+              last_updated: new Date().toISOString(),
+              version: 1
+            });
+         }
+      }
+      if (updates.updated_beliefs) {
+         for (const ub of updates.updated_beliefs) {
+            const docRef = doc(db, 'beliefs', ub.id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              await updateDoc(docRef, {
+                ...ub,
+                version: (docSnap.data().version || 1) + 1,
+                last_updated: new Date().toISOString()
+              });
+            }
+         }
+      }
     } catch(e) { console.error("Belief update failed", e); }
   }
 
   static async consolidateMemory(ai: GoogleGenAI) {
-      const db = await this.getDB();
-      // Decay importance of old episodic memories
-      const now = Date.now();
-      db.episodic.forEach(e => {
-          const ageDays = (now - new Date(e.timestamp).getTime()) / (1000 * 60 * 60 * 24);
-          if (ageDays > 7) e.importance *= 0.9;
-      });
-      // Sort and keep top important ones, or just let them stay with low importance
-      await this.saveDB(db);
+      // Stub for memory consolidation if needed
   }
 
   static async processMissionComplete(ai: GoogleGenAI, reportFull: any) {
       await this.storeEpisodicMemory({ mission_id: reportFull.id, mission_text: reportFull.mission_text, summary: reportFull.finalReportData?.executive_summary });
       
-      // Extract semantics & concepts
       try {
           const prompt = `Extract core semantic facts and concepts from this mission report: ${JSON.stringify(reportFull.finalReportData?.key_findings || {})}
 Return JSON:

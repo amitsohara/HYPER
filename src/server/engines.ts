@@ -52,7 +52,8 @@ Return ONLY a JSON array of 10 strings.`;
         config: { responseMimeType: "application/json" }
       });
       const text = response.text || "[]";
-      return await cleanJSON(text, ai);
+      const result = await cleanJSON(text, ai);
+      return Array.isArray(result) ? result : (result || []);
     } catch(e) {
       console.error('DynamicWorldGenerator error:', e);
     }

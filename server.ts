@@ -454,35 +454,148 @@ async function startServer() {
 
   // --- BRAIN API ROUTES ---
   app.get("/brain/db", async (req, res) => {
-    const { PersistentBrain } =
-      await import("./src/server/brain/persistent_brain.js").catch(
-        (e) => import("./src/server/brain/persistent_brain.ts"),
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
       );
-    res.json(await PersistentBrain.getDB());
+      const { collection, getDocs } = await import("firebase/firestore");
+      const episodicSnap = await getDocs(collection(db, 'episodic_memories'));
+      const semanticSnap = await getDocs(collection(db, 'semantic_memories'));
+      const proceduralSnap = await getDocs(collection(db, 'procedural_memories'));
+      const beliefsSnap = await getDocs(collection(db, 'beliefs'));
+      const conceptsSnap = await getDocs(collection(db, 'concepts'));
+      
+      res.json({
+        episodic: episodicSnap.docs.map(d => ({id: d.id, ...d.data()})),
+        semantic: semanticSnap.docs.map(d => ({id: d.id, ...d.data()})),
+        procedural: proceduralSnap.docs.map(d => ({id: d.id, ...d.data()})),
+        beliefs: beliefsSnap.docs.map(d => ({id: d.id, ...d.data()})),
+        concepts: conceptsSnap.docs.map(d => ({id: d.id, ...d.data()})),
+      });
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
   });
 
   app.get("/brain/beliefs", async (req, res) => {
-    const { PersistentBrain } =
-      await import("./src/server/brain/persistent_brain.js").catch(
-        (e) => import("./src/server/brain/persistent_brain.ts"),
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
       );
-    res.json((await PersistentBrain.getDB()).beliefs);
+      const { collection, getDocs } = await import("firebase/firestore");
+      const beliefsSnap = await getDocs(collection(db, 'beliefs'));
+      res.json(beliefsSnap.docs.map(d => ({id: d.id, ...d.data()})));
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
   });
 
   app.get("/brain/timeline", async (req, res) => {
-    const { PersistentBrain } =
-      await import("./src/server/brain/persistent_brain.js").catch(
-        (e) => import("./src/server/brain/persistent_brain.ts"),
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
       );
-    res.json((await PersistentBrain.getDB()).episodic);
+      const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
+      const q = query(collection(db, 'episodic_memories'), orderBy('timestamp', 'desc'));
+      const episodicSnap = await getDocs(q);
+      res.json(episodicSnap.docs.map(d => ({id: d.id, ...d.data()})));
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
   });
 
   app.get("/brain/concepts", async (req, res) => {
-    const { PersistentBrain } =
-      await import("./src/server/brain/persistent_brain.js").catch(
-        (e) => import("./src/server/brain/persistent_brain.ts"),
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
       );
-    res.json((await PersistentBrain.getDB()).concepts);
+      const { collection, getDocs } = await import("firebase/firestore");
+      const conceptsSnap = await getDocs(collection(db, 'concepts'));
+      res.json(conceptsSnap.docs.map(d => ({id: d.id, ...d.data()})));
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  // --- SOCIAL COGNITIVE INTELLIGENCE API ROUTES ---
+  app.post("/api/social/analyze", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI" });
+    const { mission_text } = req.body;
+    const { SocialCognitiveEngine } = await import("./src/server/social/social_cognitive_engine.js").catch(
+      (e) => import("./src/server/social/social_cognitive_engine.ts")
+    );
+    try {
+      const data = await SocialCognitiveEngine.analyzeSocialContext(ai, mission_text);
+      res.json(data);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/social/history", async (req, res) => {
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
+      );
+      const { collection, getDocs, query, orderBy } = await import("firebase/firestore");
+      const q = query(collection(db, 'social_memory'), orderBy('timestamp', 'desc'));
+      const snap = await getDocs(q);
+      res.json(snap.docs.map(d => ({id: d.id, ...d.data()})));
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/social/relationships", async (req, res) => {
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
+      );
+      const { collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
+      const q = query(collection(db, 'social_memory'), orderBy('timestamp', 'desc'), limit(10));
+      const snap = await getDocs(q);
+      
+      const allNodes: any[] = [];
+      const allEdges: any[] = [];
+      
+      snap.docs.forEach(d => {
+        const data = d.data();
+        if (data.relationship_graph?.nodes) {
+          allNodes.push(...data.relationship_graph.nodes);
+        }
+        if (data.relationship_graph?.edges) {
+          allEdges.push(...data.relationship_graph.edges);
+        }
+      });
+      
+      res.json({ nodes: allNodes, edges: allEdges });
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/social/trust", async (req, res) => {
+    try {
+      const { db } = await import("./src/server/firebase.js").catch(
+        (e) => import("./src/server/firebase.ts"),
+      );
+      const { collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
+      const q = query(collection(db, 'social_memory'), orderBy('timestamp', 'desc'), limit(10));
+      const snap = await getDocs(q);
+      
+      const allTrust: any[] = [];
+      
+      snap.docs.forEach(d => {
+        const data = d.data();
+        if (data.trust_model && Array.isArray(data.trust_model)) {
+          allTrust.push(...data.trust_model);
+        }
+      });
+      
+      res.json({ trust_models: allTrust });
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
   });
 
   const simStore: any[] = [];

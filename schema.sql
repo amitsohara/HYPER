@@ -107,3 +107,58 @@ CREATE TABLE experience_replays (
 -- Note:
 -- Neo4j graphs would be constructed by creating (Belief)-[:CONTRADICTS]->(Belief), (Goal)-[:DEPENDS_ON]->(Goal)
 -- Qdrant vectors would index belief_text, skill_description, and mission_text for semantic retrieval.
+
+-- Phase 26: Benchmarking and Intelligence Evaluation
+
+CREATE TABLE benchmark_runs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    version VARCHAR(255) NOT NULL,
+    mission_id VARCHAR(255),
+    overall_score FLOAT NOT NULL,
+    reasoning_score FLOAT,
+    planning_score FLOAT,
+    memory_score FLOAT,
+    learning_score FLOAT,
+    research_score FLOAT,
+    simulation_score FLOAT,
+    creativity_score FLOAT,
+    causal_score FLOAT,
+    meta_cognition_score FLOAT,
+    tool_use_score FLOAT,
+    theory_of_mind_score FLOAT,
+    status VARCHAR(50) DEFAULT 'completed',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE performance_metrics (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    run_id UUID REFERENCES benchmark_runs(id) ON DELETE CASCADE,
+    metric_name VARCHAR(100) NOT NULL,
+    metric_value FLOAT NOT NULL,
+    expected_value FLOAT,
+    deviation FLOAT,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE capability_history (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    version VARCHAR(255) NOT NULL,
+    capability_name VARCHAR(100) NOT NULL,
+    score FLOAT NOT NULL,
+    regression_detected BOOLEAN DEFAULT FALSE,
+    change_from_previous FLOAT DEFAULT 0.0,
+    run_id UUID REFERENCES benchmark_runs(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE benchmark_missions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    mission_id VARCHAR(100) UNIQUE NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    difficulty VARCHAR(50) NOT NULL,
+    mission_text TEXT NOT NULL,
+    expected_capabilities TEXT NOT NULL,
+    evaluation_rubric TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

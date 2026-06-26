@@ -18,10 +18,31 @@ export class KnowledgeGraph {
 
     // Extract and update the graph
     async update(ai: GoogleGenAI, missionData: any): Promise<void> {
+        if (missionData.social_cognition?.relationship_graph?.nodes) {
+            for (const n of missionData.social_cognition.relationship_graph.nodes) {
+                if (!this.nodes.has(n.id)) {
+                    this.nodes.set(n.id, n);
+                } else {
+                    const existing = this.nodes.get(n.id)!;
+                    existing.labels = Array.from(new Set([...existing.labels, ...(n.labels || [])]));
+                    this.nodes.set(n.id, existing);
+                }
+            }
+        }
+        if (missionData.social_cognition?.relationship_graph?.edges) {
+            for (const e of missionData.social_cognition.relationship_graph.edges) {
+                const isDup = this.edges.find(ex => ex.source === e.source && ex.target === e.target && ex.type === e.type);
+                if (!isDup) {
+                    this.edges.push(e);
+                }
+            }
+        }
+
         const prompt = `You are the EntityExtractor and RelationshipBuilder. Extract knowledge graph nodes and edges from this mission data.
 Mission: ${missionData.mission_text}
 Goals: ${JSON.stringify(missionData.goals)}
-Discoveries: ${JSON.stringify(missionData.discovery?.ideas)}
+Discoveries: ${JSON.stringify(missionData.scientific_discovery?.ideas || {})}
+Social Nodes: ${JSON.stringify(missionData.social_cognition?.relationship_graph?.nodes || [])}
 
 Return EXACTLY a JSON object with:
 {

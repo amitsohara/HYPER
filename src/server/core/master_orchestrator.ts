@@ -90,10 +90,12 @@ export class MasterOrchestrator {
           mission_id,
           mission_text,
         });
-        const gaps = await CognitiveArchitecture.reflectOnMission(ai, {
+        await CognitiveArchitecture.reflectOnMission(ai, {
           mission_id,
           mission_text,
         });
+        const state = await CognitiveArchitecture.getState();
+        const gaps = state.knowledge_gaps || [];
         let goals: any = null;
         if (gaps && gaps.length > 0) {
           goals = await CognitiveArchitecture.generateGoalsFromGaps(ai, gaps);
@@ -105,12 +107,12 @@ export class MasterOrchestrator {
         if (goals) {
           await CognitiveArchitecture.planMultiStepTask(ai, goals);
         }
-        const state = CognitiveArchitecture.getState();
+        const finalState = await CognitiveArchitecture.getState();
         return {
-          cognitive_state: state,
-          beliefs: state.beliefs,
-          goals: state.goals,
-          plan: state.plans,
+          cognitive_state: finalState,
+          beliefs: finalState.beliefs,
+          goals: finalState.goals,
+          plan: finalState.plans,
         };
       },
     );
@@ -118,6 +120,18 @@ export class MasterOrchestrator {
     result.beliefs = cognitiveData.beliefs || [];
     result.goals = cognitiveData.goals || [];
     result.plan = cognitiveData.plan || [];
+
+    // 2.5 Social Cognitive Intelligence Layer
+    const scilData = await safeExecute(
+      "Social Cognitive Intelligence Layer",
+      async () => {
+        const { SocialCognitiveEngine } = await import(
+          "../social/social_cognitive_engine.js"
+        ).catch((e) => import("../social/social_cognitive_engine.ts"));
+        return await SocialCognitiveEngine.analyzeSocialContext(ai, mission_text);
+      }
+    );
+    result.social_cognition = scilData || {};
 
     // 3. Executive Function / Task Manager
     const execData = await safeExecute("Executive Function", async () => {
@@ -341,9 +355,11 @@ export class MasterOrchestrator {
       "Final Report Generator",
       async () => {
         const prompt = `Synthesize a final report for this mission: "${mission_text}".
+Incorporate the following Social Cognitive Intelligence:
+${JSON.stringify(result.social_cognition || {})}
 Return JSON:
 {
-  "final_report": "Comprehensive summary...",
+  "final_report": "Comprehensive summary including Technical Recommendation, Human Impact, Leadership Advice, Communication Advice, Conflict Risks, and Next Best Action.",
   "next_actions": ["Action 1", "Action 2"]
 }`;
         const reportRes = await generateWithRetry(ai, {
@@ -382,14 +398,7 @@ Return JSON:
         await import("../benchmark/benchmark_engine.js").catch(
           (e) => import("../benchmark/benchmark_engine.ts"),
         );
-      // Generate a random mock version, but in a real system we'd track model iteration.
-      const autoVersion =
-        "HyperMind-X v" +
-        (Math.floor(Math.random() * 10) + 1) +
-        "." +
-        Math.floor(Math.random() * 9) +
-        " (Auto-Eval)";
-      await BenchmarkEngine.runSuite(ai, autoVersion);
+      await BenchmarkEngine.evaluateMission(ai, mission_text, result);
     });
 
     MasterOrchestrator.currentStatus = { mission_id: null, stage: "idle" };

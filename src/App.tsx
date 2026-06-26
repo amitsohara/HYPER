@@ -20,13 +20,15 @@ import { CollectiveIntelligenceDashboard } from "./components/CollectiveIntellig
 
 import { safeFetchJSON } from "./fetchUtils";
 
+import { SocialIntelligenceDashboard } from "./components/SocialIntelligenceDashboard";
+
 export default function App() {
   const [missions, setMissions] = useState<any[]>([]);
   const [newMission, setNewMission] = useState("");
   const [simulationMode, setSimulationMode] = useState("realistic");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective">("world");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social">("world");
 
   const [agentVersions, setAgentVersions] = useState<any>({});
   const [agentPerformances, setAgentPerformances] = useState<any[]>([]);
@@ -265,6 +267,13 @@ export default function App() {
                 <Network className="w-4 h-4" />
                 Collective
               </button>
+              <button 
+                onClick={() => setActiveTab("social")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "social" ? "bg-pink-900/50 text-pink-200" : "text-slate-400 hover:text-pink-300"}`}
+              >
+                <Users className="w-4 h-4" />
+                Social
+              </button>
             </div>
           </div>
         </header>
@@ -315,6 +324,8 @@ export default function App() {
           <IntelligenceDashboard />
         ) : activeTab === "collective" ? (
           <CollectiveIntelligenceDashboard mission={missions[0] || null} />
+        ) : activeTab === "social" ? (
+          <SocialIntelligenceDashboard />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">

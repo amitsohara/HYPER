@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "BenchmarkResult": {
+      "title": "Benchmark Result",
+      "description": "A single run of the benchmark suite",
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "overall": { "type": "number" },
+        "scores": { "type": "object" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/benchmark_results/{resultId}": {
+      "schema": { "$ref": "#/entities/BenchmarkResult" },
+      "description": "Benchmark runs"
+    }
+  }
+}
