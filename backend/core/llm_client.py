@@ -2,7 +2,7 @@ import os
 import json
 from google import genai
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy"))
+client = genai.Client(api_key="-AQ.Ab8RN6I4_e1DI4H-Xh5GXmZxEC-77Mg9Wvt3tYXmK_mejkxT4A")
 
 def generate_json(prompt: str) -> dict:
     try:

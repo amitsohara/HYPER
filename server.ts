@@ -5,6 +5,7 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 
 async function startServer() {
+  process.env.GEMINI_API_KEY = "-AQ.Ab8RN6I4_e1DI4H-Xh5GXmZxEC-77Mg9Wvt3tYXmK_mejkxT4A";
   const app = express();
   const PORT = 3000;
 
