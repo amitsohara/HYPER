@@ -1,1 +1,12 @@
-{"business_strategy":50,"research_quality":50,"planning_quality":50,"risk_analysis":50,"budgeting":50,"technical_reasoning":50,"social_intelligence":50,"mission_compilation":50,"token_efficiency":50,"benchmark_score":50}
+{
+  "business_strategy": 50,
+  "research_quality": 50,
+  "planning_quality": 50,
+  "risk_analysis": 50,
+  "budgeting": 50,
+  "technical_reasoning": 50,
+  "social_intelligence": 50,
+  "mission_compilation": 55,
+  "token_efficiency": 50,
+  "benchmark_score": 53
+}

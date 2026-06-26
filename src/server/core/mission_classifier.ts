@@ -32,8 +32,9 @@ Ensure the output is valid JSON.`;
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-latest",
-        contents: prompt
+        model: "gemini-flash-lite-latest",
+        contents: prompt,
+        bypassBudget: true
       });
       const parsed = await cleanJSON(response?.text || "{}", ai);
       return {

@@ -4,7 +4,9 @@ import { generateWithRetry, cleanJSON } from "../engines.js";
 export class OptionGenerator {
   static async generate(ai: GoogleGenAI, missionText: string, evidence: any[]): Promise<any[]> {
     const prompt = `Based on the mission: "${missionText}" and the evidence gathered, generate multiple distinct candidate strategies. 
-Provide at least 4 options.
+Provide exactly 4 options. 
+CRITICAL: ALL 4 options MUST be completely unique and mutually exclusive. DO NOT generate duplicate or highly similar strategies.
+
 Each option should include:
 - id: A unique identifier (e.g., "opt_1")
 - description: A detailed description of the strategy
@@ -30,10 +32,23 @@ Return as a JSON array of these options:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-latest",
-        contents: prompt
+        model: "gemini-flash-lite-latest",
+        contents: prompt,
+        bypassBudget: true
       });
-      return await cleanJSON(response?.text || "[]", ai);
+      let parsed = await cleanJSON(response?.text || "[]", ai);
+      if (!parsed || parsed.length === 0) {
+         parsed = [{
+           id: "fallback_opt",
+           description: "Default fallback strategy based on available information.",
+           expected_outcome: "Partial completion",
+           estimated_resources: "Minimal",
+           estimated_timeline: "Immediate",
+           key_risks: ["Lack of data"],
+           assumptions: ["Basic assumptions"]
+         }];
+      }
+      return parsed;
     } catch (e) {
       console.warn("Option generation failed", e);
       return [];

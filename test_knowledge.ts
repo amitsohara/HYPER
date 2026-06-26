@@ -19,8 +19,8 @@ async function test() {
     let allEvidence = [];
     for (const need of needs) {
         console.log("Acquiring for:", need.query);
-        const raw = await routeAndAcquire(need);
-        const scored = raw.map(e => generateCitation(scoreCredibility(e)));
+        const raw = await routeAndAcquire(ai, need);
+        const scored = raw.map((e: any) => generateCitation(scoreCredibility(e)));
         allEvidence.push(...scored);
     }
     

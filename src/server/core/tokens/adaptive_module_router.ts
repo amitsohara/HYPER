@@ -11,7 +11,15 @@ export class AdaptiveModuleRouter {
       "social_cognition",
       "agent_debate",
       "benchmark_results",
-      "beliefs"
+      "beliefs",
+      "multi_agent_society",
+      "recursive_improvement",
+      "autonomous_learning",
+      "embodied_intelligence",
+      "theory_of_mind",
+      "common_sense",
+      "collective_intelligence",
+      "knowledge_graph"
     ];
 
     if (mode === "deep") {
@@ -26,6 +34,10 @@ export class AdaptiveModuleRouter {
     const prompt = `Given the mission: "${mission}" and the mode "${mode}", select the most relevant modules to run from this list to optimize resources:
 ${JSON.stringify(allModules)}
 
+CRITICAL TOKEN LIMIT: For "balanced" mode, you MUST select NO MORE THAN 2 modules. The remaining modules MUST be put in "skipped".
+
+CRITICAL RULE: Run "social_cognition" for ANY mission involving: climate, disaster, health, jobs, education, government, policy, business, leadership, conflict, society, humans, agriculture, migration, or poverty. If the mission touches human/social effects, "social_cognition" MUST be in the "active" array.
+
 Return a JSON object containing an array "active" and an array "skipped":
 {
   "active": ["module1", "module2"],
@@ -35,7 +47,7 @@ Return a JSON object containing an array "active" and an array "skipped":
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-latest",
+        model: "gemini-flash-lite-latest",
         contents: prompt
       });
       const result = await cleanJSON(response?.text || "{}", ai);

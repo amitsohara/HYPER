@@ -9,7 +9,8 @@ export type EventType =
     | "MISSION_STAGE_CHANGED"
     | "EVIDENCE_ADDED"
     | "GOAL_COMPLETED"
-    | "ATTENTION_SHIFTED";
+    | "ATTENTION_SHIFTED"
+    | "LEARNING_CYCLE_COMPLETED";
 
 export interface StateEvent {
     id: string;

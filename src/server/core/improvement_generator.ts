@@ -34,7 +34,7 @@ Respond with JSON:
 `;
     try {
     const res = await generateWithRetry(ai, {
-        model: "gemini-flash-latest",
+        model: "gemini-flash-lite-latest",
         contents: prompt,
         config: { responseMimeType: "application/json" }
     }, 3);

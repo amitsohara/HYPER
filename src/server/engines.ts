@@ -3,14 +3,14 @@ import { tokenBudgetStorage } from "./core/tokens/token_context.js";
 import { globalPromptCache } from "./core/tokens/prompt_cache.js";
 import { CostEstimator } from "./core/tokens/cost_estimator.js";
 
-export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: number = 3): Promise<any> {
+export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: number = 6): Promise<any> {
     const budgetManager = tokenBudgetStorage.getStore();
     
     // Estimate tokens
     const promptStr = typeof config.contents === 'string' ? config.contents : JSON.stringify(config.contents);
     const estTokens = CostEstimator.estimateTokens(promptStr);
 
-    if (budgetManager) {
+    if (budgetManager && !config.bypassBudget) {
         if (!budgetManager.canAfford(estTokens)) {
             console.warn(`Token budget exceeded! Mode: ${budgetManager.getMode()}`);
             throw new Error("Token budget exceeded.");
@@ -23,7 +23,23 @@ export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: n
         return cached.response;
     }
 
-    for (let i = 0; i < retries; i++) {
+    const fallbackChain = [
+        'gemini-flash-lite-latest',
+        'gemini-3.1-flash-lite',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-pro',
+        'gemini-pro-latest',
+        'gemini-pro'
+    ];
+    let fallbackIndex = fallbackChain.indexOf(config.model);
+    if (fallbackIndex === -1) fallbackIndex = 0;
+
+    let attemptCount = 0;
+    const maxAttempts = retries + fallbackChain.length * 3; // Give enough attempts to wait out rate limits
+
+    while (attemptCount < maxAttempts) {
+        attemptCount++;
         try {
             const response = await ai.models.generateContent(config);
             // Rough estimation for completion
@@ -34,21 +50,58 @@ export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: n
             
             globalPromptCache.set(promptStr, response, estTokens + completionTokens);
             
+            // Sleep to avoid rate limiting
+            await new Promise(r => setTimeout(r, 2000));
+
             return response;
         } catch (e: any) {
-            console.warn(`Attempt ${i+1} failed for ${config.model}: ${e.message}`);
-            if (i === retries - 1) throw e;
+            console.warn(`Attempt ${attemptCount} failed for ${config.model}: ${e.message}`);
             
-            if (e.message?.includes("429") || e.status === 429 || e.message?.includes("quota") || e.message?.includes("RESOURCE_EXHAUSTED") || e.status === "RESOURCE_EXHAUSTED") {
-                let delay = 35000;
-                const match = e.message?.match(/retry in ([\d\.]+)s/i);
+            const isRateLimit = e.message?.includes("429") || e.status === 429 || e.message?.includes("quota") || e.message?.includes("RESOURCE_EXHAUSTED") || e.status === "RESOURCE_EXHAUSTED";
+            const isUnavailable = e.message?.includes("503") || e.status === 503 || e.message?.includes("UNAVAILABLE") || e.status === "UNAVAILABLE";
+            const isNotFound = e.message?.includes("404") || e.status === 404 || e.message?.includes("NOT_FOUND") || e.status === "NOT_FOUND";
+
+            if (isRateLimit || isUnavailable || isNotFound) {
+                let delay = isUnavailable ? 5000 : 35000;
+                if (isNotFound) delay = 1000;
+
+                const match = typeof e.message === 'string' ? e.message.match(/retry in ([\d\.]+)s/i) : null;
                 if (match && match[1]) {
                     delay = (parseFloat(match[1]) + 2) * 1000;
+                } else {
+                    const match2 = String(e).match(/retry in ([\d\.]+)s/i);
+                    if (match2 && match2[1]) {
+                        delay = (parseFloat(match2[1]) + 2) * 1000;
+                    }
                 }
-                console.warn(`Rate limited on ${config.model}. Waiting ${delay}ms before retry...`);
+                
+                if (isNotFound) {
+                    if (fallbackIndex < fallbackChain.length - 1) {
+                        fallbackIndex++;
+                        config.model = fallbackChain[fallbackIndex];
+                        console.warn(`Model not found. Falling back to ${config.model}`);
+                        await new Promise(r => setTimeout(r, 1000));
+                        continue;
+                    } else {
+                        throw new Error(`All fallback models exhausted due to Not Found errors.`);
+                    }
+                }
+
+                // Fallback models to bypass quota issues
+                if (isRateLimit && fallbackIndex < fallbackChain.length - 1) {
+                    fallbackIndex++;
+                    config.model = fallbackChain[fallbackIndex];
+                    if (delay > 20000) delay = 2000; // Small delay before switching model
+                    console.warn(`Falling back to ${config.model}`);
+                } else if (attemptCount >= maxAttempts || (!isRateLimit && !isUnavailable && !isNotFound)) {
+                    throw e;
+                }
+
+                console.warn(`${isNotFound ? 'Not Found' : 'Rate limited or Unavailable'}. Waiting ${delay}ms before retry...`);
                 await new Promise(r => setTimeout(r, delay));
             } else {
-                await new Promise(r => setTimeout(r, 2000 * Math.pow(2, i))); // Exponential Backoff
+                if (attemptCount >= maxAttempts) throw e;
+                await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attemptCount - 1))); // Exponential Backoff
             }
         }
     }
@@ -66,7 +119,7 @@ export async function cleanJSON(text: string, ai: GoogleGenAI): Promise<any> {
         const sysPrompt = "You are an expert JSON repair tool. Repair the following invalid JSON and return ONLY the fully corrected valid JSON without any markdown formatting or explanations. Error encountered: " + e.message + "\n\nRaw JSON:\n" + t;
         try {
             const repairRes = await generateWithRetry(ai, {
-                model: 'gemini-flash-latest',
+                model: 'gemini-flash-lite-latest',
                 contents: sysPrompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -85,12 +138,16 @@ export class DynamicWorldGenerator {
     const prompt = `Generate exactly 10 diverse, distinct, and highly specific synthetic environments/worlds to test the following mission: "${mission}". 
 Simulation Mode: ${mode}
 Relevant Past Lessons (if any): ${memoryContext}
+
+CRITICAL: If the mission is about business, startups, software, or technology, the "worlds" MUST BE REALISTIC BUSINESS SCENARIOS (e.g. "B2B SaaS in economic downturn", "Consumer app in highly competitive market", "Hardware startup with supply chain issues"). DO NOT generate sci-fi worlds like Mars colonies or post-collapse cities unless the mission explicitly requests sci-fi.
+
 Return ONLY a JSON array of 10 strings.`;
     
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-flash-latest',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
+        bypassBudget: true,
         config: { responseMimeType: "application/json" }
       });
       const text = response.text || "[]";
@@ -128,8 +185,9 @@ Ensure all ${agents.length} agents (${agents.map(a => a.name).join(', ')}) are i
 
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-flash-latest',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
+        bypassBudget: true,
         config: { responseMimeType: "application/json" }
       });
       const text = response?.text || "[]";
@@ -163,8 +221,9 @@ Generate a detailed score evaluation for EACH scenario. Return ONLY a JSON array
 
     try {
        const response = await generateWithRetry(ai, {
-        model: 'gemini-flash-latest',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
+        bypassBudget: true,
         config: { responseMimeType: "application/json" }
       });
       const text = response?.text || "[]";
@@ -201,8 +260,9 @@ Return ONLY a JSON object with:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-flash-latest',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
+        bypassBudget: true,
         config: { responseMimeType: "application/json" }
       }, 5);
       const text = response?.text || "{}";

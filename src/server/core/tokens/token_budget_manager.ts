@@ -8,11 +8,11 @@ export interface TokenUsage {
 
 export class TokenBudgetManager {
   private static readonly BUDGETS: Record<MissionMode, number> = {
-    fast: 10000,
-    balanced: 50000,
-    deep: 150000,
-    research: 100000,
-    simulation: 80000
+    fast: 5000,
+    balanced: 15000,
+    deep: 30000,
+    research: 25000,
+    simulation: 20000
   };
 
   private mode: MissionMode;

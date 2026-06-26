@@ -62,6 +62,17 @@ export class ResearchDomainCompiler implements DomainCompiler {
   }
 }
 
+export class GovernmentDomainCompiler implements DomainCompiler {
+  async compile(ai: GoogleGenAI, normalizedData: any): Promise<any> {
+    const [execSummary, riskBudget, actionPlan] = await Promise.all([
+      ExecutiveSummaryGenerator.generate(ai, normalizedData, "Focus on policy impact, societal outcomes, geopolitical analysis, and strategic statecraft."),
+      RiskBudgetExtractor.extract(ai, normalizedData, "Focus on systemic risks, political instability, public funding, infrastructure requirements, and humanitarian impact."),
+      ActionPlanGenerator.generate(ai, normalizedData, "Focus on policy implementation, diplomatic negotiations, crisis response phases, and public relations.")
+    ]);
+    return { ...execSummary, ...riskBudget, ...actionPlan };
+  }
+}
+
 export class DomainCompilerFactory {
   static getCompiler(type: string): DomainCompiler {
     switch (type.toLowerCase()) {
@@ -73,6 +84,10 @@ export class DomainCompilerFactory {
         return new ManufacturingDomainCompiler();
       case "research":
         return new ResearchDomainCompiler();
+      case "government":
+      case "social":
+      case "geopolitical":
+        return new GovernmentDomainCompiler();
       default:
         return new DefaultDomainCompiler();
     }

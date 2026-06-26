@@ -20,7 +20,7 @@ Return EXACTLY a JSON object with:
 }`;
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-flash-latest',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 3);
@@ -48,7 +48,7 @@ Synthesize this data and return EXACTLY a JSON object with:
 }`;
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-flash-latest',
+        model: 'gemini-flash-lite-latest',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 3);

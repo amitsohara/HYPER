@@ -1,5 +1,5 @@
 export class CostEstimator {
-  // Approximate pricing for gemini-flash-latest
+  // Approximate pricing for gemini-flash-lite-latest
   // $0.075 per 1M input tokens
   // $0.30 per 1M output tokens
   private static readonly INPUT_PRICE_PER_M = 0.075;

@@ -53,7 +53,7 @@ Return JSON:
   "trust_score": 65
 }`;
             const res = await generateWithRetry(ai, {
-                model: 'gemini-flash-latest',
+                model: 'gemini-flash-lite-latest',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             });

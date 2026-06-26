@@ -18,7 +18,7 @@ ${stringified.substring(0, 30000)} // Truncating if extremely large to avoid pro
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-latest",
+        model: "gemini-flash-lite-latest",
         contents: prompt
       });
       return response?.text || "Compression failed.";

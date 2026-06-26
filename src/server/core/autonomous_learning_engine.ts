@@ -6,8 +6,8 @@ import { generateImprovements } from "./improvement_generator";
 import { validateImprovement } from "./benchmark_validator";
 import { evaluatePolicy } from "./learning_policy";
 import { saveStrategy } from "./strategy_library";
-import { updateCompetence } from "./competence_tracker";
-import { CognitiveCore } from "./hcc/cognitive_core";
+import { updateCompetence } from "./competence_tracker.js";
+import { HyperMindCognitiveCore } from "./hcc/cognitive_core.js";
 import fs from 'fs';
 import path from 'path';
 
@@ -19,7 +19,7 @@ function ensureDb() {
     if (!fs.existsSync(LEARNING_DB)) fs.writeFileSync(LEARNING_DB, '[]');
 }
 
-export async function runLearningCycle(ai: GoogleGenAI, missionId: string, missionReport: string, core: CognitiveCore) {
+export async function runLearningCycle(ai: GoogleGenAI, missionId: string, missionReport: string, core: HyperMindCognitiveCore) {
     const evaluation = await evaluateMission(ai, missionReport);
     const weaknesses = await detectWeaknesses(ai, missionReport);
     const skills = await extractSkills(ai, missionReport, missionId);

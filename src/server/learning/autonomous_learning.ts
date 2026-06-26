@@ -59,8 +59,9 @@ Return JSON:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-flash-latest',
+                model: 'gemini-flash-lite-latest',
                 contents: prompt,
+                bypassBudget: true,
                 config: { responseMimeType: "application/json" }
             }, 3);
             const data = await cleanJSON(res?.text || "{}", ai);
@@ -100,8 +101,9 @@ Return JSON:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-flash-latest',
+                model: 'gemini-flash-lite-latest',
                 contents: prompt,
+                bypassBudget: true,
                 config: { responseMimeType: "application/json" }
             }, 3);
             const data = await cleanJSON(res?.text || "{}", ai);

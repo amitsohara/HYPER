@@ -33,8 +33,9 @@ Return a JSON object mapping option IDs to their metrics:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-latest",
-        contents: prompt
+        model: "gemini-flash-lite-latest",
+        contents: prompt,
+        bypassBudget: true
       });
       return await cleanJSON(response?.text || "{}", ai);
     } catch (e) {

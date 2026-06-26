@@ -45,7 +45,7 @@ Return JSON:
   "recommended_interventions": ["Intervention 1", "Intervention 2"]
 }`;
         const res = await generateWithRetry(ai, {
-            model: 'gemini-flash-latest',
+            model: 'gemini-flash-lite-latest',
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
@@ -64,7 +64,7 @@ Return JSON:
   "simulated_systems": ["City", "Economy", "Climate", "Infrastructure", "Policy"]
 }`;
             const resScope = await generateWithRetry(ai, {
-                model: 'gemini-flash-latest',
+                model: 'gemini-flash-lite-latest',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             });

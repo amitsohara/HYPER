@@ -19,11 +19,11 @@ export class StrategicDecisionEngine {
     traceSteps.push({ name: "Evidence Collection", details: { sources: evidence.map(e => e.source) } });
 
     // Step 2: Generate Options
-    const options = await OptionGenerator.generate(ai, missionText, evidence);
+    let options = await OptionGenerator.generate(ai, missionText, evidence);
     traceSteps.push({ name: "Option Generation", details: { num_options: options.length } });
 
     if (!options || options.length === 0) {
-      throw new Error("No strategic options generated.");
+      options = [{ id: "fallback", description: "Fallback strategy", expected_outcome: "Unknown" }];
     }
 
     // Step 3: Tradeoff Analysis

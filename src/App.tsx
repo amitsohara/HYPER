@@ -21,6 +21,7 @@ import { CollectiveIntelligenceDashboard } from "./components/CollectiveIntellig
 import { SocialIntelligenceDashboard } from "./components/SocialIntelligenceDashboard";
 import { CognitiveCoreView } from "./components/CognitiveCoreView";
 import { KnowledgeDashboard } from "./components/KnowledgeDashboard";
+import MetaCognitionDashboard from "./components/MetaCognitionDashboard";
 
 import { safeFetchJSON } from "./fetchUtils";
 
@@ -213,6 +214,13 @@ export default function App() {
                 Cognitive Engine
               </button>
               <button 
+                onClick={() => setActiveTab("meta")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "meta" ? "bg-fuchsia-900/50 text-fuchsia-200" : "text-slate-400 hover:text-fuchsia-300"}`}
+              >
+                <Cpu className="w-4 h-4" />
+                Meta-Cognition
+              </button>
+              <button 
                 onClick={() => setActiveTab("executive")} 
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "executive" ? "bg-indigo-900/50 text-indigo-200" : "text-slate-400 hover:text-indigo-300"}`}
               >
@@ -332,6 +340,8 @@ export default function App() {
           <PersistentBrainDashboard mission={missions[0] || null} />
         ) : activeTab === "world" ? (
           <WorldModelDashboard mission={missions[0] || null} />
+        ) : activeTab === "meta" ? (
+          <MetaCognitionDashboard />
         ) : activeTab === "cognitive" ? (
           <CognitiveDashboard mission={missions[0] || null} />
         ) : activeTab === "executive" ? (

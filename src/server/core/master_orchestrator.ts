@@ -19,6 +19,7 @@ import { AdaptiveModuleRouter } from "./tokens/adaptive_module_router.js";
 import { ContextCompressor } from "./tokens/context_compressor.js";
 import { CostEstimator } from "./tokens/cost_estimator.js";
 import { HyperMindCognitiveCore } from "./hcc/cognitive_core.js";
+import { MetaCognitionEngine } from "./meta_cognition_engine.js";
 
 // We need a shared KG instance if we want, or we can use the one from server.ts.
 // In server.ts, kgInstance is instantiated as `const kgInstance = new KnowledgeGraph();`
@@ -27,6 +28,7 @@ import { HyperMindCognitiveCore } from "./hcc/cognitive_core.js";
 export class MasterOrchestrator {
   static currentStatus: any = { mission_id: null, stage: "idle" };
   static activeCore: HyperMindCognitiveCore | null = null;
+  static currentMetaCognition: any = null;
 
   static async runMission(
     ai: GoogleGenAI,
@@ -47,15 +49,19 @@ export class MasterOrchestrator {
 
       MasterOrchestrator.currentStatus = {
         mission_id,
-        stage: "Starting pipeline...",
+        stage: "Running Meta-Cognition Engine...",
       };
 
-      const routing = await AdaptiveModuleRouter.route(ai, mission_text, mission_mode as any);
+      const mceOutput = await MetaCognitionEngine.run(ai, mission_text, mission_mode as any);
+      MasterOrchestrator.currentMetaCognition = mceOutput;
+
+      const activeModules = mceOutput.execution_plan.selected_modules.map((m: any) => m.module);
+      const skippedModules = mceOutput.execution_plan.skipped_modules.map((m: any) => m.module);
 
       core.updateState({
-          mission_type: "ANALYSIS", // could classify
-          active_modules: routing.active,
-          pending_modules: routing.active,
+          mission_type: mceOutput.understanding.mission_type,
+          active_modules: activeModules,
+          pending_modules: activeModules,
           version: core.getState().version + 1
       }, "MasterOrchestrator");
 
@@ -65,13 +71,15 @@ export class MasterOrchestrator {
         simulation_mode,
         mission_mode,
         timestamp,
-        modules_used: routing.active,
-        modules_skipped: routing.skipped
+        meta_cognition: mceOutput,
+        modules_used: activeModules,
+        modules_skipped: skippedModules
       };
 
       const safeExecute = async (moduleName: string, id: string, fn: () => Promise<any>) => {
-        if (routing.skipped.includes(id)) {
-            console.log(`[Orchestrator] Skipping ${moduleName} (Adaptive Routing)`);
+        if (skippedModules.includes(id)) {
+            console.log(`[Orchestrator] Skipping ${moduleName} (MCE Routing)`);
+            budgetManager.recordSavings(2000); // Record estimated savings
             return null; // Skip module
         }
 
@@ -183,7 +191,7 @@ export class MasterOrchestrator {
           const needs = await planKnowledgeAcquisition(ai, mission_text);
           let allEvidence: any[] = [];
           for (const need of needs) {
-            const rawEvidence = await routeAndAcquire(need);
+            const rawEvidence = await routeAndAcquire(ai, need);
             const scoredEvidence = rawEvidence.map((e: any) => generateCitation(scoreCredibility(e)));
             allEvidence.push(...scoredEvidence);
           }
@@ -217,8 +225,9 @@ export class MasterOrchestrator {
       const execData = await safeExecute("Reasoning & Planning Layer", "executive", async () => {
         const tasks = [];
         for (const step of result.plan) {
+          const stepName = typeof step === 'string' ? step : (step.action || step.title || step.name || JSON.stringify(step));
           const task = await ExecutiveFunction.submitTask({
-            name: `Mission Step: ${step}`,
+            name: `Mission Step: ${stepName}`,
             description: `Executing step from mission ${mission_id}`,
             priority: 50,
             estimated_difficulty: 5,
@@ -369,7 +378,7 @@ export class MasterOrchestrator {
         });
         core.publishEvent("LEARNING_ADDED", { skill: learned }, "AutonomousLearning");
         return {
-          learning_events: [learned],
+          learning_events: learned ? [learned] : [],
           extracted_skills: await AutonomousLearningEngine.getSkills(),
         };
       }) || {};
@@ -460,9 +469,10 @@ Return JSON:
   "next_actions": ["Action 1", "Action 2"]
 }`;
           const reportRes = await generateWithRetry(ai, {
-            model: "gemini-flash-latest",
+            model: "gemini-flash-lite-latest",
             contents: prompt,
             config: { responseMimeType: "application/json" },
+            bypassBudget: true
           });
           const reportData = await cleanJSON(reportRes?.text || "{}", ai);
           core.updateState({ current_recommendation: reportData }, "MissionCompiler");

@@ -18,8 +18,9 @@ Respond in JSON format:
 `;
     try {
         const res = await generateWithRetry(ai, {
-            model: "gemini-flash-latest",
+            model: "gemini-flash-lite-latest",
             contents: prompt,
+        bypassBudget: true,
             config: { responseMimeType: "application/json" }
         }, 3);
         return JSON.parse(res?.text || '{"knowledge_needs":[]}').knowledge_needs || [];

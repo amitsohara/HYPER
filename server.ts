@@ -72,6 +72,39 @@ async function startServer() {
     res.json(kgInstance.exportGraph());
   });
 
+  app.get("/api/meta/mission", async (req, res) => {
+    const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+    res.json(MasterOrchestrator.currentMetaCognition?.understanding || {});
+  });
+
+  app.get("/api/meta/capabilities", async (req, res) => {
+    const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+    res.json(MasterOrchestrator.currentMetaCognition?.capabilities || []);
+  });
+
+  app.get("/api/meta/execution-plan", async (req, res) => {
+    const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+    res.json(MasterOrchestrator.currentMetaCognition?.execution_plan || {});
+  });
+
+  app.get("/api/meta/module-scores", async (req, res) => {
+    const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+    const cap = MasterOrchestrator.currentMetaCognition?.capabilities || [];
+    res.json(cap.map((c: any) => ({
+      module: c.module,
+      utility_score: ((c.relevance_score || 0) + (c.contribution_score || 0)) / 2,
+      relevance_score: c.relevance_score,
+      contribution_score: c.contribution_score,
+      expected_benefit: c.expected_benefit,
+      confidence: c.confidence
+    })));
+  });
+
+  app.get("/api/meta/mission-graph", async (req, res) => {
+    const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+    res.json(MasterOrchestrator.currentMetaCognition?.mission_graph || { nodes: [], edges: [] });
+  });
+
   app.get("/missions", (req, res) => {
     res.json(missions);
   });
