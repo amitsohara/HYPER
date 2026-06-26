@@ -873,6 +873,25 @@ async function startServer() {
     }
   });
 
+  app.get("/api/knowledge/evidence", async (req, res) => {
+    try {
+      const { getEvidence } = await import("./src/server/core/knowledge/evidence_store.js");
+      res.json({ evidence: getEvidence() });
+    } catch(e: any) {
+      res.status(500).json({ error: e.message || String(e) });
+    }
+  });
+
+  app.post("/api/knowledge/plan", async (req, res) => {
+    try {
+      const { planKnowledgeAcquisition } = await import("./src/server/core/knowledge/knowledge_planner.js");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      res.json({ needs: await planKnowledgeAcquisition(ai, req.body.mission) });
+    } catch(e: any) {
+      res.status(500).json({ error: e.message || String(e) });
+    }
+  });
+
   app.get("/society/state", async (req, res) => {
     const { MultiAgentSociety } =
       await import("./src/server/society/multi_agent_society.js").catch(

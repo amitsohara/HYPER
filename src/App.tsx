@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope, Eye, Scale, Trophy, Cpu } from "lucide-react";
+import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope, Eye, Scale, Trophy, Cpu, Database } from "lucide-react";
 import { EvolutionDashboard } from "./components/EvolutionDashboard";
 import { KnowledgeGraphDashboard } from "./components/KnowledgeGraphDashboard";
 import { ResearchDashboard } from "./components/ResearchDashboard";
@@ -20,6 +20,7 @@ import { IntelligenceDashboard } from "./components/IntelligenceDashboard";
 import { CollectiveIntelligenceDashboard } from "./components/CollectiveIntelligenceDashboard";
 import { SocialIntelligenceDashboard } from "./components/SocialIntelligenceDashboard";
 import { CognitiveCoreView } from "./components/CognitiveCoreView";
+import { KnowledgeDashboard } from "./components/KnowledgeDashboard";
 
 import { safeFetchJSON } from "./fetchUtils";
 
@@ -295,6 +296,13 @@ export default function App() {
                 <Cpu className="w-4 h-4" />
                 Cognitive Core
               </button>
+              <button 
+                onClick={() => setActiveTab("knowledge")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "knowledge" ? "bg-emerald-900/50 text-emerald-200" : "text-slate-400 hover:text-emerald-300"}`}
+              >
+                <Database className="w-4 h-4" />
+                Knowledge
+              </button>
             </div>
             )}
           </div>
@@ -350,6 +358,8 @@ export default function App() {
           <SocialIntelligenceDashboard />
         ) : activeTab === "core" ? (
           <CognitiveCoreView />
+        ) : activeTab === "knowledge" ? (
+          <KnowledgeDashboard mission={missions[0] || null} />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">

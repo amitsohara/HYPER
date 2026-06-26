@@ -169,7 +169,37 @@ export class MasterOrchestrator {
       result.goals = cognitiveData.goals || [];
       result.plan = cognitiveData.plan || [];
 
-      // 2.5 Social Cognitive Intelligence Layer
+      // 2.5 Knowledge Acquisition Layer
+      const knowledgeData = await safeExecute(
+        "Knowledge Acquisition Layer", "knowledge_acquisition",
+        async () => {
+          const { planKnowledgeAcquisition } = await import("./knowledge/knowledge_planner.js");
+          const { routeAndAcquire } = await import("./knowledge/source_router.js");
+          const { scoreCredibility } = await import("./knowledge/source_credibility_scorer.js");
+          const { generateCitation } = await import("./knowledge/citation_manager.js");
+          const { rankEvidence } = await import("./knowledge/evidence_ranker.js");
+          const { saveEvidence } = await import("./knowledge/evidence_store.js");
+          
+          const needs = await planKnowledgeAcquisition(ai, mission_text);
+          let allEvidence: any[] = [];
+          for (const need of needs) {
+            const rawEvidence = await routeAndAcquire(need);
+            const scoredEvidence = rawEvidence.map((e: any) => generateCitation(scoreCredibility(e)));
+            allEvidence.push(...scoredEvidence);
+          }
+          const rankedEvidence = await rankEvidence(ai, allEvidence, mission_text);
+          
+          if (rankedEvidence.length > 0) {
+              saveEvidence(rankedEvidence);
+              core.addWorkingMemory(`Acquired Knowledge: ${JSON.stringify(rankedEvidence.slice(0, 3).map(e => e.summary))}`, 0.8);
+          }
+
+          return { knowledge_needs: needs, acquired_evidence: rankedEvidence };
+        }
+      ) || {};
+      result.knowledge_acquisition = knowledgeData;
+
+      // 2.6 Social Cognitive Intelligence Layer
       const scilData = await safeExecute(
         "Social Cognitive Intelligence Layer", "social_cognition",
         async () => {
@@ -426,7 +456,7 @@ ${core.getContext()}
 
 Return JSON:
 {
-  "final_report": "Comprehensive summary including Technical Recommendation, Human Impact, Leadership Advice, Communication Advice, Conflict Risks, and Next Best Action.",
+  "final_report": "Comprehensive summary including Technical Recommendation, Human Impact, Leadership Advice, Communication Advice, Conflict Risks, and Next Best Action. Include citations for all claims based on the Acquired Knowledge evidence.",
   "next_actions": ["Action 1", "Action 2"]
 }`;
           const reportRes = await generateWithRetry(ai, {
