@@ -111,7 +111,7 @@ Return a JSON object with:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-1.5-flash',
+                model: 'gemini-flash-latest',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);

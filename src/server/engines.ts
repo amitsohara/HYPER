@@ -66,7 +66,7 @@ export async function cleanJSON(text: string, ai: GoogleGenAI): Promise<any> {
         const sysPrompt = "You are an expert JSON repair tool. Repair the following invalid JSON and return ONLY the fully corrected valid JSON without any markdown formatting or explanations. Error encountered: " + e.message + "\n\nRaw JSON:\n" + t;
         try {
             const repairRes = await generateWithRetry(ai, {
-                model: 'gemini-1.5-flash',
+                model: 'gemini-flash-latest',
                 contents: sysPrompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -89,7 +89,7 @@ Return ONLY a JSON array of 10 strings.`;
     
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-1.5-flash',
+        model: 'gemini-flash-latest',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });
@@ -128,7 +128,7 @@ Ensure all ${agents.length} agents (${agents.map(a => a.name).join(', ')}) are i
 
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-1.5-flash',
+        model: 'gemini-flash-latest',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });
@@ -163,7 +163,7 @@ Generate a detailed score evaluation for EACH scenario. Return ONLY a JSON array
 
     try {
        const response = await generateWithRetry(ai, {
-        model: 'gemini-1.5-flash',
+        model: 'gemini-flash-latest',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });
@@ -201,7 +201,7 @@ Return ONLY a JSON object with:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-1.5-flash',
+        model: 'gemini-flash-latest',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 5);

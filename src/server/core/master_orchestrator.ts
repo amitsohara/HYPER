@@ -430,7 +430,7 @@ Return JSON:
   "next_actions": ["Action 1", "Action 2"]
 }`;
           const reportRes = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-flash-latest",
             contents: prompt,
             config: { responseMimeType: "application/json" },
           });
@@ -468,6 +468,13 @@ Return JSON:
             (e) => import("../benchmark/benchmark_engine.ts"),
           );
         await BenchmarkEngine.evaluateMission(ai, mission_text, result);
+      });
+
+      // Autonomous Learning Engine
+      await safeExecute("Autonomous Learning", "autonomous_learning", async () => {
+        const { runLearningCycle } = await import("./autonomous_learning_engine.js");
+        const learning_summary = await runLearningCycle(ai, mission_id, result.final_report, core);
+        result.learning_summary = learning_summary;
       });
 
       MasterOrchestrator.currentStatus = { mission_id: null, stage: "idle" };

@@ -5,7 +5,6 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 
 async function startServer() {
-  process.env.GEMINI_API_KEY = "-AQ.Ab8RN6I4_e1DI4H-Xh5GXmZxEC-77Mg9Wvt3tYXmK_mejkxT4A";
   const app = express();
   const PORT = 3000;
 
@@ -808,53 +807,70 @@ async function startServer() {
     res.json({ success: true });
   });
 
-  app.get("/learning/state", async (req, res) => {
-    const { AutonomousLearningEngine } =
-      await import("./src/server/learning/autonomous_learning.js").catch(
-        (e) => import("./src/server/learning/autonomous_learning.ts"),
-      );
-    res.json(await AutonomousLearningEngine.getState());
+  app.get("/api/learning/skills", async (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    const LEARNING_DB = path.join(process.cwd(), 'data', 'learning_history.json');
+    if (!fs.existsSync(LEARNING_DB)) return res.json({ skills: [] });
+    const history = JSON.parse(fs.readFileSync(LEARNING_DB, 'utf8'));
+    const skills = history.flatMap((h: any) => h.skills_extracted || []);
+    res.json({ skills });
   });
 
-  app.get("/learning/skills", async (req, res) => {
-    const { AutonomousLearningEngine } =
-      await import("./src/server/learning/autonomous_learning.js").catch(
-        (e) => import("./src/server/learning/autonomous_learning.ts"),
-      );
-    res.json({ skills: await AutonomousLearningEngine.getSkills() });
+  app.get("/api/learning/strategies", async (req, res) => {
+    const { getStrategies } = await import("./src/server/core/strategy_library.js");
+    res.json({ strategies: getStrategies() });
   });
 
-  app.post("/learning/extract", async (req, res) => {
-    const { AutonomousLearningEngine } =
-      await import("./src/server/learning/autonomous_learning.js").catch(
-        (e) => import("./src/server/learning/autonomous_learning.ts"),
-      );
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const skill = await AutonomousLearningEngine.extractSkill(
-      ai,
-      req.body.mission || { mission_text: "Manual extraction" },
-    );
-    res.json({ success: true, skill });
+  app.get("/api/learning/improvements", async (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    const LEARNING_DB = path.join(process.cwd(), 'data', 'learning_history.json');
+    if (!fs.existsSync(LEARNING_DB)) return res.json({ improvements: [] });
+    const history = JSON.parse(fs.readFileSync(LEARNING_DB, 'utf8'));
+    const improvements = history.flatMap((h: any) => h.improvements_accepted || []);
+    res.json({ improvements });
   });
 
-  app.post("/learning/replay", async (req, res) => {
-    const { AutonomousLearningEngine } =
-      await import("./src/server/learning/autonomous_learning.js").catch(
-        (e) => import("./src/server/learning/autonomous_learning.ts"),
-      );
-    // Replay a random past mission
-    const replay = await AutonomousLearningEngine.replayMission(
-      "mission_" + Math.random().toString(36).substring(7),
-    );
-    res.json({ success: true, replay });
+  app.get("/api/learning/competence", async (req, res) => {
+    const { getCompetence } = await import("./src/server/core/competence_tracker.js");
+    res.json(getCompetence());
   });
 
-  app.get("/learning/progress", async (req, res) => {
-    const { AutonomousLearningEngine } =
-      await import("./src/server/learning/autonomous_learning.js").catch(
-        (e) => import("./src/server/learning/autonomous_learning.ts"),
-      );
-    res.json({ progress: await AutonomousLearningEngine.getProgress() });
+  app.post("/api/learning/replay", async (req, res) => {
+    const { replayMission } = await import("./src/server/core/experience_replay.js");
+    res.json(await replayMission(req.body.mission_id || "test_mission"));
+  });
+
+  app.get("/api/learning/history", async (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    const LEARNING_DB = path.join(process.cwd(), 'data', 'learning_history.json');
+    if (!fs.existsSync(LEARNING_DB)) return res.json({ history: [] });
+    res.json({ history: JSON.parse(fs.readFileSync(LEARNING_DB, 'utf8')) });
+  });
+
+  app.post("/api/learning/evaluate-mission", async (req, res) => {
+    try {
+      const { evaluateMission } = await import("./src/server/core/mission_evaluator.js");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      res.json(await evaluateMission(ai, req.body.report));
+    } catch(e: any) {
+      res.status(500).json({ error: e.message || String(e) });
+    }
+  });
+
+  app.post("/api/learning/run", async (req, res) => {
+    try {
+      const { runLearningCycle } = await import("./src/server/core/autonomous_learning_engine.js");
+      const { HyperMindCognitiveCore } = await import("./src/server/core/hcc/cognitive_core.js");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const core = new HyperMindCognitiveCore("manual_run");
+      const summary = await runLearningCycle(ai, req.body.mission_id, req.body.report, core);
+      res.json(summary);
+    } catch(e: any) {
+      res.status(500).json({ error: e.message || String(e) });
+    }
   });
 
   app.get("/society/state", async (req, res) => {

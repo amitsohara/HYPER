@@ -44,7 +44,7 @@ Return JSON:
   "violated_assumptions": ["Assumption 1 is invalid"]
 }`;
       const res = await generateWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-flash-latest",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });

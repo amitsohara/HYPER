@@ -90,7 +90,7 @@ export class HyperMindCognitiveCore {
     }
 
     public publishEvent(type: EventType, payload: any, sourceModule: string) {
-        this.eventBus.publish({ type, payload, sourceModule });
+        this.eventBus.publish({ type, payload, sourceModule, version: this.state.version });
         this.state.version += 1;
         this.syncState();
     }
