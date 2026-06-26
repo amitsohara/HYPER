@@ -24,13 +24,13 @@ Return EXACTLY a JSON object with:
 }`;
     try {
        const resp = await generateWithRetry(ai, {
-           model: 'gemini-3.1-flash-lite',
+           model: 'gemini-1.5-flash',
            contents: prompt,
            config: { responseMimeType: "application/json" }
        }, 3);
        return await cleanJSON(resp?.text || "{}", ai);
     } catch(e) {
-       console.error("identifying gaps error", e);
+       console.warn("identifying gaps error", e);
        return { weak_assumptions: [], unanswered_questions: [], knowledge_gaps: [], follow_up_questions: [] };
     }
   }

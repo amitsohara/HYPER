@@ -15,7 +15,14 @@ The Social Cognitive Intelligence Layer (SCIL) equips HyperMind-X with the abili
 - **Relationship Graph**: Expands the Knowledge Graph with social entities (Person, Organization, Team) and relationships (trusts, supports, competes, etc.).
 
 ## Integration
-SCIL fits into the `MasterOrchestrator` directly following the `Belief Engine` and informs downstream tasks such as Goal Generation and the `Mission Compiler`.
+SCIL is officially one of the **five permanent core layers** of HyperMind-X, acting as the bridge between objective cognitive reasoning and actionable mission planning:
+1. Perception Layer
+2. Cognitive Intelligence Layer
+3. **Social Cognitive Intelligence Layer (SCIL)**
+4. Reasoning & Planning Layer
+5. Mission Compiler
+
+This makes HyperMind-X significantly more effective for business, leadership, education, healthcare, negotiation, and strategic decision-making because it explicitly models how people and organizations behave, complementing the system's technical capabilities.
 
 ## API Endpoints
 - `POST /api/social/analyze`: Runs SCIL inference.

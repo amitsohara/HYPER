@@ -53,7 +53,7 @@ Return JSON:
   "trust_score": 65
 }`;
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             });
@@ -86,7 +86,7 @@ Return JSON:
                 trust_score
             };
         } catch (e) {
-            console.error("Theory Of Mind Engine Error:", e);
+            console.warn("Theory Of Mind Engine Error:", e);
             return {
                 stakeholders: [],
                 inferred_beliefs: [],

@@ -1,13 +1,55 @@
 import { GoogleGenAI } from "@google/genai";
+import { tokenBudgetStorage } from "./core/tokens/token_context.js";
+import { globalPromptCache } from "./core/tokens/prompt_cache.js";
+import { CostEstimator } from "./core/tokens/cost_estimator.js";
 
 export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: number = 3): Promise<any> {
+    const budgetManager = tokenBudgetStorage.getStore();
+    
+    // Estimate tokens
+    const promptStr = typeof config.contents === 'string' ? config.contents : JSON.stringify(config.contents);
+    const estTokens = CostEstimator.estimateTokens(promptStr);
+
+    if (budgetManager) {
+        if (!budgetManager.canAfford(estTokens)) {
+            console.warn(`Token budget exceeded! Mode: ${budgetManager.getMode()}`);
+            throw new Error("Token budget exceeded.");
+        }
+    }
+
+    const cached = globalPromptCache.get(promptStr);
+    if (cached) {
+        if (budgetManager) budgetManager.recordSavings(cached.estimatedTokens);
+        return cached.response;
+    }
+
     for (let i = 0; i < retries; i++) {
         try {
-            return await ai.models.generateContent(config);
+            const response = await ai.models.generateContent(config);
+            // Rough estimation for completion
+            const completionTokens = CostEstimator.estimateTokens(response?.text || "");
+            if (budgetManager) {
+                budgetManager.consumeTokens(estTokens + completionTokens);
+            }
+            
+            globalPromptCache.set(promptStr, response, estTokens + completionTokens);
+            
+            return response;
         } catch (e: any) {
-            console.error(`Attempt ${i+1} failed for ${config.model}: ${e.message}`);
+            console.warn(`Attempt ${i+1} failed for ${config.model}: ${e.message}`);
             if (i === retries - 1) throw e;
-            await new Promise(r => setTimeout(r, 2000 * Math.pow(2, i))); // Exponential Backoff
+            
+            if (e.message?.includes("429") || e.status === 429 || e.message?.includes("quota") || e.message?.includes("RESOURCE_EXHAUSTED") || e.status === "RESOURCE_EXHAUSTED") {
+                let delay = 35000;
+                const match = e.message?.match(/retry in ([\d\.]+)s/i);
+                if (match && match[1]) {
+                    delay = (parseFloat(match[1]) + 2) * 1000;
+                }
+                console.warn(`Rate limited on ${config.model}. Waiting ${delay}ms before retry...`);
+                await new Promise(r => setTimeout(r, delay));
+            } else {
+                await new Promise(r => setTimeout(r, 2000 * Math.pow(2, i))); // Exponential Backoff
+            }
         }
     }
 }
@@ -24,7 +66,7 @@ export async function cleanJSON(text: string, ai: GoogleGenAI): Promise<any> {
         const sysPrompt = "You are an expert JSON repair tool. Repair the following invalid JSON and return ONLY the fully corrected valid JSON without any markdown formatting or explanations. Error encountered: " + e.message + "\n\nRaw JSON:\n" + t;
         try {
             const repairRes = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: sysPrompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -32,7 +74,7 @@ export async function cleanJSON(text: string, ai: GoogleGenAI): Promise<any> {
             rt = rt.replace(/^```json/i, "").replace(/^```/, "").replace(/```$/, "").trim();
             return JSON.parse(rt);
         } catch (repairErr) {
-            console.error("JSON repair also failed:", repairErr);
+            console.warn("JSON repair also failed:", repairErr);
             throw repairErr;
         }
     }
@@ -47,7 +89,7 @@ Return ONLY a JSON array of 10 strings.`;
     
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });
@@ -55,7 +97,7 @@ Return ONLY a JSON array of 10 strings.`;
       const result = await cleanJSON(text, ai);
       return Array.isArray(result) ? result : (result || []);
     } catch(e) {
-      console.error('DynamicWorldGenerator error:', e);
+      console.warn('DynamicWorldGenerator error:', e);
     }
     return [];
   }
@@ -86,14 +128,14 @@ Ensure all ${agents.length} agents (${agents.map(a => a.name).join(', ')}) are i
 
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });
       const text = response?.text || "[]";
       return await cleanJSON(text, ai) || [];
     } catch(e) {
-      console.error('AgentDebateEngine error:', e);
+      console.warn('AgentDebateEngine error:', e);
       return [];
     }
   }
@@ -121,14 +163,14 @@ Generate a detailed score evaluation for EACH scenario. Return ONLY a JSON array
 
     try {
        const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       });
       const text = response?.text || "[]";
       return await cleanJSON(text, ai) || [];
     } catch(e) {
-      console.error('CriticScoringEngine error:', e);
+      console.warn('CriticScoringEngine error:', e);
       return [];
     }
   }
@@ -159,14 +201,14 @@ Return ONLY a JSON object with:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 5);
       const text = response?.text || "{}";
       return await cleanJSON(text, ai);
     } catch(e) {
-      console.error('DiscoveryEngine error:', e);
+      console.warn('DiscoveryEngine error:', e);
       return {
         ideas: [], hypotheses: [], experiments: [], 
         breakthrough_ranking: { breakthrough_score: 0, novelty_score: 0, feasibility_score: 0, civilization_impact_score: 0, risk_score: 0 }

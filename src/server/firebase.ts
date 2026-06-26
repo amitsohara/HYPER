@@ -19,7 +19,7 @@ try {
     db = getFirestore(getApp(), config.firestoreDatabaseId);
   }
 } catch (e) {
-  console.error("Firebase initialization failed:", e);
+  console.warn("Firebase initialization failed:", e);
 }
 
 export { db };

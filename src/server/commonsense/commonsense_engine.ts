@@ -44,7 +44,7 @@ Return JSON:
   "violated_assumptions": ["Assumption 1 is invalid"]
 }`;
       const res = await generateWithRetry(ai, {
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
@@ -68,7 +68,7 @@ Return JSON:
         violated_assumptions,
       };
     } catch (e) {
-      console.error("Common Sense Engine Error:", e);
+      console.warn("Common Sense Engine Error:", e);
       return {
         common_sense_rules: [],
         impossible_plans: [],

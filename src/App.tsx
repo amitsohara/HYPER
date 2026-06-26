@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope, Eye, Scale, Trophy } from "lucide-react";
+import { Activity, Beaker, BrainCircuit, Play, Shield, Zap, Network, FlaskConical, Globe, Server, Users, Microscope, Eye, Scale, Trophy, Cpu } from "lucide-react";
 import { EvolutionDashboard } from "./components/EvolutionDashboard";
 import { KnowledgeGraphDashboard } from "./components/KnowledgeGraphDashboard";
 import { ResearchDashboard } from "./components/ResearchDashboard";
@@ -11,24 +11,28 @@ import { ExecutiveDashboard } from "./components/ExecutiveDashboard";
 import { LearningDashboard } from "./components/LearningDashboard";
 import { SocietyDashboard } from "./components/SocietyDashboard";
 import { DiscoveryDashboard } from "./components/DiscoveryDashboard";
+import { MissionReportDashboard } from "./components/MissionReportDashboard";
 import { EmbodiedDashboard } from "./components/EmbodiedDashboard";
 import { DigitalTwinDashboard } from "./components/DigitalTwinDashboard";
 import { TheoryOfMindDashboard } from "./components/TheoryOfMindDashboard";
 import { CommonSenseDashboard } from "./components/CommonSenseDashboard";
 import { IntelligenceDashboard } from "./components/IntelligenceDashboard";
 import { CollectiveIntelligenceDashboard } from "./components/CollectiveIntelligenceDashboard";
+import { SocialIntelligenceDashboard } from "./components/SocialIntelligenceDashboard";
+import { CognitiveCoreView } from "./components/CognitiveCoreView";
 
 import { safeFetchJSON } from "./fetchUtils";
-
-import { SocialIntelligenceDashboard } from "./components/SocialIntelligenceDashboard";
 
 export default function App() {
   const [missions, setMissions] = useState<any[]>([]);
   const [newMission, setNewMission] = useState("");
   const [simulationMode, setSimulationMode] = useState("realistic");
+  const [missionMode, setMissionMode] = useState("balanced");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social">("world");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social" | "core">("missions");
+
+  const [showDeveloper, setShowDeveloper] = useState(false);
 
   const [agentVersions, setAgentVersions] = useState<any>({});
   const [agentPerformances, setAgentPerformances] = useState<any[]>([]);
@@ -102,7 +106,7 @@ export default function App() {
       const res = await fetch("/mission", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mission_text: newMission, simulation_mode: simulationMode }),
+        body: JSON.stringify({ mission_text: newMission, simulation_mode: simulationMode, mission_mode: missionMode }),
       });
       let d: any = {};
       try {
@@ -141,7 +145,17 @@ export default function App() {
                 {activeTab === 'missions' ? 'Define high-level objectives. The multi-agent system will decompose, assign, and execute them.' : activeTab === 'evolution' ? 'Track agent performance and evolve system prompts based on mission outcomes.' : activeTab === 'research' ? 'Formulate hypotheses, design experiments, and generate scientific reports.' : activeTab === 'autonomous' ? 'Identify knowledge gaps and autonomously pursue follow-up research.' : activeTab === 'brain' ? 'System memory, beliefs, and concept structures evolving over time.' : activeTab === 'world' ? 'Simulate future worlds and evaluate strategic interventions.' : activeTab === 'cognitive' ? 'Internal reasoning, autonomous goals, planning, and meta-reflection.' : activeTab === 'executive' ? 'Task prioritization, dependency management, and dynamic resource allocation.' : activeTab === 'learning' ? 'Extract reusable skills from missions, replay past missions, and track learning progress.' : activeTab === 'society' ? 'Hundreds of agents collaborating, forming teams, voting, and negotiating.' : activeTab === 'discovery' ? 'Generate hypotheses, test alternative explanations, and document findings across disciplines.' : 'A self-assembling network of entities, concepts, and relationships extracted from completed missions.'}
               </p>
             </div>
-            <div className="flex flex-wrap gap-1 bg-[#111] p-1 rounded-xl border border-slate-800">
+            <div className="flex justify-end mb-4 w-full">
+              <button 
+                onClick={() => setShowDeveloper(!showDeveloper)}
+                className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg flex items-center gap-2 transition-colors border border-slate-700"
+              >
+                <Server className="w-3.5 h-3.5" />
+                {showDeveloper ? "Hide Developer Tabs" : "Show Developer Tabs"}
+              </button>
+            </div>
+            {showDeveloper && (
+              <div className="flex flex-wrap gap-1 bg-[#111] p-1 rounded-xl border border-slate-800">
               <button 
                 onClick={() => setActiveTab("missions")} 
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === "missions" ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"}`}
@@ -274,7 +288,15 @@ export default function App() {
                 <Users className="w-4 h-4" />
                 Social
               </button>
+              <button 
+                onClick={() => setActiveTab("core")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "core" ? "bg-purple-900/50 text-purple-200" : "text-slate-400 hover:text-purple-300"}`}
+              >
+                <Cpu className="w-4 h-4" />
+                Cognitive Core
+              </button>
             </div>
+            )}
           </div>
         </header>
 
@@ -326,6 +348,8 @@ export default function App() {
           <CollectiveIntelligenceDashboard mission={missions[0] || null} />
         ) : activeTab === "social" ? (
           <SocialIntelligenceDashboard />
+        ) : activeTab === "core" ? (
+          <CognitiveCoreView />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">
@@ -338,6 +362,18 @@ export default function App() {
                   className="flex-1 bg-[#111111] border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
                   disabled={loading}
                 />
+                <select
+                  value={missionMode}
+                  onChange={(e) => setMissionMode(e.target.value)}
+                  className="bg-[#111111] border border-slate-800 rounded-xl px-4 py-3 text-slate-300 focus:outline-none focus:border-blue-500 transition-colors"
+                  disabled={loading}
+                >
+                  <option value="fast">Fast</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="deep">Deep</option>
+                  <option value="research">Research</option>
+                  <option value="simulation">Simulation</option>
+                </select>
                 <select
                   value={simulationMode}
                   onChange={(e) => setSimulationMode(e.target.value)}
@@ -375,251 +411,9 @@ export default function App() {
                </div>
             )}
 
-            <section className="space-y-6">
-          <h2 className="text-2xl font-medium text-white flex items-center gap-2">
-            <Activity className="w-6 h-6 text-slate-500" />
-            Recent Missions
-          </h2>
-          
-          <div className="grid gap-6">
-            {missions.length === 0 && !error && (
-              <div className="text-center py-12 border border-dashed border-slate-800 rounded-2xl text-slate-500">
-                No missions executed yet. Start a new mission above.
-              </div>
-            )}
-            
-            {missions.map((mission) => (
-              <div key={mission.mission_id} className="bg-[#111111] border border-slate-800 rounded-2xl p-6 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-xl font-medium text-white">{mission?.mission_text || "Unknown Mission"}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] bg-blue-900/30 text-blue-400 px-2 py-0.5 rounded border border-blue-900/50 uppercase tracking-wider font-semibold">
-                        {mission?.simulation_mode || 'realistic'}
-                      </span>
-                      {mission?.reused_memories && mission.reused_memories.length > 0 && (
-                        <span className="text-[10px] bg-purple-900/30 text-purple-400 px-2 py-0.5 rounded border border-purple-900/50 uppercase tracking-wider font-semibold">
-                          Memories Reused ({mission.reused_memories.length})
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <span className="text-xs font-mono text-slate-500 bg-black px-2 py-1 rounded mt-1">
-                    {mission?.mission_id ? String(mission.mission_id).substring(0, 8) : "N/A"}
-                  </span>
-                </div>
-                
-                <div className="space-y-6 pt-4 border-t border-slate-800/50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                        <Shield className="w-4 h-4 text-emerald-500" />
-                        Goals
-                      </h4>
-                      <ul className="text-sm space-y-1">
-                        {Array.isArray(mission?.goals) ? mission.goals.map((g: any, i: number) => (
-                          <li key={i} className="flex gap-2 text-slate-300">
-                            <span className="text-slate-600">•</span>
-                            {typeof g === 'string' ? g : g?.description || g?.title || g?.task || g?.goal || JSON.stringify(g)}
-                          </li>
-                        )) : <li className="text-slate-500 text-xs">No goals</li>}
-                      </ul>
-                    </div>
-
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                        <BrainCircuit className="w-4 h-4 text-blue-500" />
-                        Synthetic Worlds
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {Array.isArray(mission?.synthetic_worlds) ? mission.synthetic_worlds.map((w: any, i: number) => (
-                          <span key={i} className="text-[10px] bg-blue-900/20 text-blue-300 px-2.5 py-1 rounded-lg border border-blue-900/50 max-w-full truncate" title={typeof w === 'string' ? w : ''}>
-                            {typeof w === 'string' ? w : JSON.stringify(w)}
-                          </span>
-                        )) : <span className="text-slate-500 text-xs">No worlds generated</span>}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                      <Beaker className="w-4 h-4 text-purple-500" />
-                      Scenario Results
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      {Array.isArray(mission?.scenario_results || mission?.scenarios) ? (mission.scenario_results || mission.scenarios).map((s: any, i: number) => (
-                        <div key={i} className="bg-black/30 border border-slate-800 p-3 rounded-lg flex flex-col gap-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-slate-400 truncate pr-2">{s?.world || "Unknown World"}</span>
-                            <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${s.score >= 80 ? 'text-emerald-400 bg-emerald-900/20' : 'text-amber-400 bg-amber-900/20'}`}>
-                              {s.score || 0}/100
-                            </span>
-                          </div>
-                          <p className="text-xs text-white bg-slate-800/40 p-2 rounded truncate" title={s?.scenario}>
-                            {s?.scenario || "No scenario text"}
-                          </p>
-                          <p className="text-xs text-slate-300 line-clamp-3">
-                            {s?.solution || "No solution provided"}
-                          </p>
-                        </div>
-                      )) : <p className="text-slate-500 text-xs">No scenarios executed.</p>}
-                    </div>
-                  </div>
-
-                  {mission?.discovery && (
-                    <div className="space-y-4 pt-4 border-t border-slate-800/50">
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-medium text-purple-400 flex items-center gap-1.5 uppercase tracking-wider">
-                          <BrainCircuit className="w-4 h-4 text-purple-500" />
-                          Discovery Engine Results
-                        </h4>
-                        {mission.discovery.breakthrough_ranking && (
-                          <div className="flex gap-2 ml-auto">
-                            <span className="text-[10px] bg-purple-900/30 text-purple-300 px-2 py-1 rounded border border-purple-900/50">
-                              Breakthrough: {mission.discovery.breakthrough_ranking.breakthrough_score}%
-                            </span>
-                            <span className="text-[10px] bg-emerald-900/30 text-emerald-300 px-2 py-1 rounded border border-emerald-900/50">
-                              Feasibility: {mission.discovery.breakthrough_ranking.feasibility_score}%
-                            </span>
-                            <span className="text-[10px] bg-blue-900/30 text-blue-300 px-2 py-1 rounded border border-blue-900/50">
-                              Impact: {mission.discovery.breakthrough_ranking.civilization_impact_score}%
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2 bg-purple-900/10 p-3 rounded-lg border border-purple-900/30">
-                          <h5 className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">New Hypotheses</h5>
-                          <ul className="text-xs space-y-2">
-                            {Array.isArray(mission.discovery.hypotheses) ? mission.discovery.hypotheses.map((h: any, i: number) => (
-                              <li key={i} className="flex gap-2 text-purple-200/80">
-                                <span className="text-purple-500 font-mono">{i+1}.</span>
-                                {h}
-                              </li>
-                            )) : <li className="text-slate-500 text-xs">No hypotheses</li>}
-                          </ul>
-                        </div>
-                        <div className="space-y-2 bg-blue-900/10 p-3 rounded-lg border border-blue-900/30">
-                          <h5 className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Experiments</h5>
-                          <ul className="text-xs space-y-2">
-                            {Array.isArray(mission.discovery.experiments) ? mission.discovery.experiments.map((e: any, i: number) => (
-                              <li key={i} className="flex gap-2 text-blue-200/80">
-                                <span className="text-blue-500 font-mono">{i+1}.</span>
-                                {e}
-                              </li>
-                            )) : <li className="text-slate-500 text-xs">No experiments</li>}
-                          </ul>
-                        </div>
-                        <div className="space-y-2 bg-slate-800/30 p-3 rounded-lg border border-slate-700/50 text-xs">
-                          <h5 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Discovery Ideas</h5>
-                          <div className="max-h-48 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
-                            {Array.isArray(mission.discovery.ideas) ? mission.discovery.ideas.map((idea: any, i: number) => (
-                              <div key={i} className="bg-black/40 p-2 rounded text-slate-300">
-                                <span className="text-slate-500 text-[10px] mr-1 block mb-0.5">Idea {i+1}</span>
-                                {idea}
-                              </div>
-                            )) : <span>No ideas</span>}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                        <Shield className="w-4 h-4 text-amber-500" />
-                        Best Solution
-                      </h4>
-                      {mission?.best_solution ? (
-                        <div className="bg-amber-900/10 border border-amber-900/30 p-3 rounded-lg">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs text-amber-400/80 uppercase tracking-wider">{mission.best_solution.world}</span>
-                            <span className="text-xs font-mono text-emerald-400 bg-emerald-900/20 px-2 py-0.5 rounded">Score: {mission.best_solution.score || mission?.evaluation?.quality_score || 0}/100</span>
-                          </div>
-                          <p className="text-sm text-slate-200 mb-2">{mission.best_solution.scenario}</p>
-                          <p className="text-sm text-amber-100/90 whitespace-pre-wrap">{mission.best_solution.solution}</p>
-                        </div>
-                      ) : (
-                        <span className="text-slate-500 text-sm">Pending</span>
-                      )}
-                    </div>
-                    
-                    {mission?.improvement_log ? (
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                          <BrainCircuit className="w-4 h-4 text-emerald-500" />
-                          Improvement Log
-                        </h4>
-                        <div className="text-sm space-y-2">
-                          <p className="text-xs text-emerald-300/80 bg-emerald-900/10 p-2 rounded border border-emerald-900/30">
-                            <span className="text-emerald-500 block mb-1">What Worked:</span>
-                            {mission.improvement_log.what_worked}
-                          </p>
-                          <p className="text-xs text-red-300/80 bg-red-900/10 p-2 rounded border border-red-900/30">
-                            <span className="text-red-500 block mb-1">What Failed:</span>
-                            {mission.improvement_log.what_failed}
-                          </p>
-                          <div className="flex gap-2">
-                            <p className="flex-1 text-xs text-blue-300 bg-blue-900/10 p-2 rounded border border-blue-900/30">
-                              <span className="text-blue-400 block mb-1">Next Improvement:</span>
-                              {mission.improvement_log.next_improvement}
-                            </p>
-                            <div className="w-24 shrink-0 text-center text-xs text-amber-300 bg-amber-900/10 p-2 rounded border border-amber-900/30 flex flex-col items-center justify-center">
-                              <span className="text-amber-500 block mb-1">Confidence</span>
-                              <span className="text-lg font-bold">{mission.improvement_log.confidence_score}%</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : ((mission?.lessons_learned || mission?.reflection?.lessons_learned) && (
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                          <BrainCircuit className="w-4 h-4 text-emerald-500" />
-                          Lessons Learned
-                        </h4>
-                        <div className="text-sm space-y-2">
-                          <p className="text-xs text-slate-300 bg-black/40 p-2 rounded border border-slate-800">
-                            <span className="text-slate-500 block mb-1">Key Insight:</span>
-                            {typeof (mission.lessons_learned || mission?.reflection?.lessons_learned) === 'string' ? (mission.lessons_learned || mission?.reflection?.lessons_learned) : JSON.stringify(mission.lessons_learned || mission?.reflection?.lessons_learned)}
-                          </p>
-                          <p className="text-xs text-slate-300 bg-black/40 p-2 rounded border border-slate-800">
-                            <span className="text-blue-400/80 block mb-1">Next Improvement Suggestion:</span>
-                            {typeof (mission.next_improvement || mission?.reflection?.improvement_suggestion) === 'string' ? (mission.next_improvement || mission?.reflection?.improvement_suggestion) : JSON.stringify(mission.next_improvement || mission?.reflection?.improvement_suggestion)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Agents Debate Log */}
-                  <div className="space-y-2 pt-4 border-t border-slate-800/50">
-                    <h4 className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
-                      <BrainCircuit className="w-4 h-4 text-blue-500" />
-                      Assigned Agents (Debate on Best Solution)
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                      {Array.isArray(mission?.debate_log || mission?.agents) && (mission.debate_log || mission.agents).length > 0 ? (mission.debate_log || mission.agents).map((a: any, i: number) => (
-                        <div key={i} className="bg-blue-900/10 border border-blue-900/50 p-2 rounded-lg">
-                          <span className="text-[10px] uppercase font-bold tracking-wider bg-blue-900/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-900/50 inline-block mb-1.5">
-                            {typeof a === 'string' ? a : a?.agent || a?.agent_type || a?.role || a?.name || "Agent"}
-                          </span>
-                          {(a?.argument || a?.output) && (
-                            <p className="text-slate-300 text-xs bg-black/40 p-2 rounded line-clamp-3" title={typeof (a.argument || a.output) === 'string' ? (a.argument || a.output) : JSON.stringify(a.argument || a.output)}>
-                              {typeof (a.argument || a.output) === 'string' ? (a.argument || a.output) : JSON.stringify(a.argument || a.output)}
-                            </p>
-                          )}
-                        </div>
-                      )) : <span className="text-slate-500 text-xs">No agents assigned or debate log missing.</span>}
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+                        <section className="space-y-6 mt-8">
+              <MissionReportDashboard mission={missions[0] || null} />
+            </section>
         </>
         )}
       </div>

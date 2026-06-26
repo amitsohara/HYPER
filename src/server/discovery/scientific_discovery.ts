@@ -36,7 +36,7 @@ Generate a scientific discovery package. Return EXACTLY a JSON object with:
     
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 3);
@@ -52,7 +52,7 @@ Generate a scientific discovery package. Return EXACTLY a JSON object with:
       memState.discoveries.unshift(discovery);
       return discovery;
     } catch (e) {
-      console.error("ScientificDiscoveryPlatform error:", e);
+      console.warn("ScientificDiscoveryPlatform error:", e);
       return null;
     }
   }

@@ -45,7 +45,7 @@ Return JSON:
   "recommended_interventions": ["Intervention 1", "Intervention 2"]
 }`;
         const res = await generateWithRetry(ai, {
-            model: 'gemini-3.1-flash-lite',
+            model: 'gemini-1.5-flash',
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
@@ -64,7 +64,7 @@ Return JSON:
   "simulated_systems": ["City", "Economy", "Climate", "Infrastructure", "Policy"]
 }`;
             const resScope = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             });
@@ -99,7 +99,7 @@ Return JSON:
                 recommended_interventions: comparisonData.recommended_interventions || []
             };
         } catch (e) {
-            console.error("Digital Twin Engine Error:", e);
+            console.warn("Digital Twin Engine Error:", e);
             return {
                 twin_scope: "Error",
                 assumptions: [],

@@ -65,7 +65,7 @@ Return JSON:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -105,7 +105,7 @@ Return JSON:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -149,7 +149,7 @@ Return JSON:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -177,7 +177,7 @@ Return JSON:
             }
             memState.reasoning_summary = "Mission reflection complete. Core beliefs updated.";
         } catch(e) {
-            console.error(e);
+            console.warn(e);
         }
     }
 
@@ -210,7 +210,7 @@ Return JSON:
         
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: metaPrompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -269,7 +269,7 @@ Return JSON:
 
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: agiPrompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -327,31 +327,31 @@ Return JSON:
 
         // 1. Observe (Simulate fetching incoming data/context)
         const observationPrompt = `You are the Observation Engine. Generate a random observation about the current simulated environment. Return JSON: {"observation": "..."}`;
-        const obsRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: observationPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const obsRes = await generateWithRetry(ai, { model: 'gemini-1.5-flash', contents: observationPrompt, config: { responseMimeType: "application/json" } }, 3);
         const obsData = await cleanJSON(obsRes?.text || "{}", ai);
         const observation = obsData.observation || "Detected anomalous data pattern.";
 
         // 2. Build internal representation
         const repPrompt = `Build an internal representation based on this observation: "${observation}". Return JSON: {"representation": "..."}`;
-        const repRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: repPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const repRes = await generateWithRetry(ai, { model: 'gemini-1.5-flash', contents: repPrompt, config: { responseMimeType: "application/json" } }, 3);
         const repData = await cleanJSON(repRes?.text || "{}", ai);
         const representation = repData.representation || "Internal representation built.";
 
         // 3. Reason
         const reasonPrompt = `Reason about this representation: "${representation}". Generate a reasoning chain. Return JSON: {"reasoning_chain": ["Step 1", "Step 2"]}`;
-        const reasonRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: reasonPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const reasonRes = await generateWithRetry(ai, { model: 'gemini-1.5-flash', contents: reasonPrompt, config: { responseMimeType: "application/json" } }, 3);
         const reasonData = await cleanJSON(reasonRes?.text || "{}", ai);
         const reasoningChain = reasonData.reasoning_chain || ["Reasoned about data."];
 
         // 4. Generate hypotheses
         const hypPrompt = `Generate a testable hypothesis based on this reasoning: ${JSON.stringify(reasoningChain)}. Return JSON: {"hypothesis": "..."}`;
-        const hypRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: hypPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const hypRes = await generateWithRetry(ai, { model: 'gemini-1.5-flash', contents: hypPrompt, config: { responseMimeType: "application/json" } }, 3);
         const hypData = await cleanJSON(hypRes?.text || "{}", ai);
         const hypothesis = hypData.hypothesis || "Hypothesized relationship.";
 
         // 5. Run experiments
         const expPrompt = `Simulate running an experiment to test this hypothesis: "${hypothesis}". Return JSON: {"experiment_outcome": "...", "success": true}`;
-        const expRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: expPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const expRes = await generateWithRetry(ai, { model: 'gemini-1.5-flash', contents: expPrompt, config: { responseMimeType: "application/json" } }, 3);
         const expData = await cleanJSON(expRes?.text || "{}", ai);
         const outcome = expData.experiment_outcome || "Experiment completed.";
 
@@ -363,7 +363,7 @@ Return JSON:
         let newWorldRule = evolutionResult.evolution_summary || "World model updated.";
         
         const beliefPrompt = `Formulate a new belief based on this world rule: "${newWorldRule}". Return JSON: {"belief": "...", "confidence": 0.9}`;
-        const beliefRes = await generateWithRetry(ai, { model: 'gemini-3.1-flash-lite', contents: beliefPrompt, config: { responseMimeType: "application/json" } }, 3);
+        const beliefRes = await generateWithRetry(ai, { model: 'gemini-1.5-flash', contents: beliefPrompt, config: { responseMimeType: "application/json" } }, 3);
         const beliefData = await cleanJSON(beliefRes?.text || "{}", ai);
         
         const newBelief = {

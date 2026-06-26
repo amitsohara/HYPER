@@ -45,7 +45,7 @@ Return JSON:
   "environmental_state": "Summary of environment"
 }`;
         const res = await generateWithRetry(ai, {
-            model: 'gemini-3.1-flash-lite',
+            model: 'gemini-1.5-flash',
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
@@ -65,7 +65,7 @@ Return JSON:
   ]
 }`;
         const res = await generateWithRetry(ai, {
-            model: 'gemini-3.1-flash-lite',
+            model: 'gemini-1.5-flash',
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
@@ -85,7 +85,7 @@ Return JSON:
   "safety_risks": ["Risk 1"]
 }`;
         const res = await generateWithRetry(ai, {
-            model: 'gemini-3.1-flash-lite',
+            model: 'gemini-1.5-flash',
             contents: prompt,
             config: { responseMimeType: "application/json" }
         });
@@ -137,7 +137,7 @@ export class EmbodiedIntelligence {
                 rejected_actions
             };
         } catch (e) {
-            console.error("Embodied Intelligence Error:", e);
+            console.warn("Embodied Intelligence Error:", e);
             return {
                 observations: ["Error processing perception"],
                 perceived_entities: [],

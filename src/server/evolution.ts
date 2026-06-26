@@ -17,14 +17,14 @@ Return exactly a JSON array of objects (one per agent). Each object MUST have:
 }`;
         try {
             const response = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
             const resText = response?.text || "[]";
             return await cleanJSON(resText, ai) || [];
         } catch (e) {
-            console.error("EvolutionEngine evaluate error:", e);
+            console.warn("EvolutionEngine evaluate error:", e);
             return [];
         }
     }
@@ -41,7 +41,7 @@ Return exactly a JSON array of objects detailing the rewritten prompts for each 
 }`;
         try {
             const response = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);

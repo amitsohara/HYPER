@@ -37,7 +37,7 @@ Return JSON:
 }`;
 
             const res = await generateWithRetry(ai, {
-                model: 'gemini-3.1-flash-lite',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             });
@@ -62,7 +62,7 @@ Return JSON:
             return result;
 
         } catch (e) {
-            console.error("Society Manager Error:", e);
+            console.warn("Society Manager Error:", e);
             return {
                 teams_created: [],
                 debate_highlights: [],

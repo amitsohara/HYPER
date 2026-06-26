@@ -20,13 +20,13 @@ Return EXACTLY a JSON object with:
 }`;
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 3);
       return await cleanJSON(response?.text || "{}", ai);
     } catch (e) {
-      console.error("ResearchEngine planResearch error:", e);
+      console.warn("ResearchEngine planResearch error:", e);
       return { research_questions: [], hypotheses: [] };
     }
   }
@@ -48,7 +48,7 @@ Synthesize this data and return EXACTLY a JSON object with:
 }`;
     try {
       const response = await generateWithRetry(ai, {
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: { responseMimeType: "application/json" }
       }, 3);

@@ -111,13 +111,13 @@ Return a JSON object: { "nodes": [{ "id": "Node1", "labels": ["Person"] }], "edg
   private static async generateJSON(ai: GoogleGenAI, prompt: string, defaultVal: any): Promise<any> {
       try {
           const resp = await generateWithRetry(ai, {
-              model: 'gemini-3.1-flash-lite',
+              model: 'gemini-1.5-flash',
               contents: prompt,
               config: { responseMimeType: "application/json" }
           }, 3);
           return await cleanJSON(resp?.text || "{}", ai) || defaultVal;
       } catch (e) {
-          console.error("SCIL generation failed:", e);
+          console.warn("SCIL generation failed:", e);
           return defaultVal;
       }
   }

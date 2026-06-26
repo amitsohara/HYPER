@@ -211,7 +211,7 @@ async function startServer() {
     autonomousStatus.currentDepth = 0;
     res.json(autonomousStatus);
     // Kick off background loop if needed
-    runAutonomousLoop().catch(console.error);
+    runAutonomousLoop().catch(console.warn);
   });
 
   app.post("/research/autonomous/stop", (req, res) => {
@@ -935,6 +935,13 @@ async function startServer() {
         kgInstance,
       );
 
+      const { MissionCompiler } = await import("./src/server/core/mission_compiler.js").catch(
+        (e) => import("./src/server/core/mission_compiler.ts")
+      );
+      
+      const compiledReport = await MissionCompiler.compile(ai, result, { viewMode: "user" });
+      const devReport = await MissionCompiler.compile(ai, result, { viewMode: "developer" });
+
       if (Array.isArray(result.recursive_improvement)) {
         result.recursive_improvement.forEach((p: any) => {
           agentPerformances.unshift({
@@ -945,10 +952,12 @@ async function startServer() {
         });
       }
 
-      missions.unshift(result);
-      // For backward compatibility while tabs adapt
-      result.mission_text = result.mission;
-      res.json(result);
+      missions.unshift({
+        ...result,
+        compiled_user: compiledReport,
+        compiled_dev: devReport,
+      });
+      res.json(compiledReport);
     } catch (e: any) {
       console.error("MasterOrchestrator error:", e);
       res.status(500).json({ error: e.message || "Failed" });
@@ -967,10 +976,133 @@ async function startServer() {
     }
   });
 
+  app.get("/api/core/state", async (req, res) => {
+    try {
+      const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+      if (MasterOrchestrator.activeCore) {
+        res.json(MasterOrchestrator.activeCore.getState());
+      } else {
+        res.status(404).json({ error: "No active core" });
+      }
+    } catch(e) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/core/events", async (req, res) => {
+    try {
+        const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+        if (MasterOrchestrator.activeCore) {
+        res.json(MasterOrchestrator.activeCore.getState().events);
+        } else {
+        res.status(404).json({ error: "No active core" });
+        }
+    } catch(e) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/core/working-memory", async (req, res) => {
+    try {
+        const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+        if (MasterOrchestrator.activeCore) {
+        res.json(MasterOrchestrator.activeCore.getState().working_memory);
+        } else {
+        res.status(404).json({ error: "No active core" });
+        }
+    } catch(e) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/core/attention", async (req, res) => {
+    try {
+        const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+        if (MasterOrchestrator.activeCore) {
+        res.json(MasterOrchestrator.activeCore.getState().attention);
+        } else {
+        res.status(404).json({ error: "No active core" });
+        }
+    } catch(e) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/core/goals", async (req, res) => {
+    try {
+        const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+        if (MasterOrchestrator.activeCore) {
+        res.json(MasterOrchestrator.activeCore.getState().goal_stack);
+        } else {
+        res.status(404).json({ error: "No active core" });
+        }
+    } catch(e) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/core/confidence", async (req, res) => {
+    try {
+        const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(e => import("./src/server/core/master_orchestrator.ts"));
+        if (MasterOrchestrator.activeCore) {
+        res.json(MasterOrchestrator.activeCore.getState().confidence);
+        } else {
+        res.status(404).json({ error: "No active core" });
+        }
+    } catch(e) {
+      res.status(500).json({ error: "Server error" });
+    }
+  });
+
   app.get("/api/mission/:mission_id/full", (req, res) => {
     const m = missions.find((x) => x.mission_id === req.params.mission_id);
     if (m) res.json(m);
     else res.status(404).json({ error: "Not found" });
+  });
+
+  app.get("/api/mission/:mission_id/report", (req, res) => {
+    const m = missions.find((x) => x.mission_id === req.params.mission_id);
+    if (m && m.compiled_user) res.json(m.compiled_user);
+    else res.status(404).json({ error: "Not found" });
+  });
+
+  app.get("/api/mission/:mission_id/debug", (req, res) => {
+    const m = missions.find((x) => x.mission_id === req.params.mission_id);
+    if (m && m.compiled_dev) res.json(m.compiled_dev);
+    else res.status(404).json({ error: "Not found" });
+  });
+
+  const decisionHistory: any[] = [];
+
+  app.post("/api/decision/evaluate", async (req, res) => {
+    try {
+      const { missionText, missionData } = req.body;
+      const { StrategicDecisionEngine } = await import("./src/server/core/strategic_decision_engine.js").catch((e) => import("./src/server/core/strategic_decision_engine.ts"));
+      const recommendation = await StrategicDecisionEngine.evaluate(ai, missionText, missionData || {});
+      decisionHistory.push({
+        id: Math.random().toString(36).substring(7),
+        mission: missionText,
+        recommendation,
+        timestamp: new Date().toISOString()
+      });
+      res.json(recommendation);
+    } catch (e: any) {
+      console.error(e);
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/decision/history", (req, res) => {
+    res.json(decisionHistory);
+  });
+
+  app.get("/api/decision/explain", (req, res) => {
+    const { id } = req.query;
+    if (id) {
+       const dec = decisionHistory.find((d) => d.id === id);
+       if (dec) return res.json(dec.recommendation.decision_trace);
+    }
+    res.json(decisionHistory.map((d) => ({ id: d.id, trace: d.recommendation.decision_trace })));
   });
 
   app.get("/benchmark/history", async (req, res) => {

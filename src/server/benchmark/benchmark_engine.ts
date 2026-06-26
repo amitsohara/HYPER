@@ -22,7 +22,7 @@ export class HXBSDatabase {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc: any) => doc.data());
     } catch (e) {
-      console.error("Firestore getResults error", e);
+      console.warn("Firestore getResults error", e);
       return [];
     }
   }
@@ -144,7 +144,7 @@ Return JSON:
 }`;
     try {
       const res = await generateWithRetry(ai, {
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
@@ -226,7 +226,7 @@ Return JSON:
     let scores: any = {};
     try {
       const res = await generateWithRetry(ai, {
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: { responseMimeType: "application/json" },
       });
