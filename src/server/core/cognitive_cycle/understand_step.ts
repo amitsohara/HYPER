@@ -36,10 +36,20 @@ export class UnderstandStep implements ICycleStep {
     let retrieved_strategies = [];
     let cross_domain_transfers = [];
     let retrieved_abstractions = [];
+    let relevant_heuristics: any[] = [];
+    let heuristic_conflicts: any[] = [];
+    let relevant_causal_models: any[] = [];
+    let causal_conflicts: any[] = [];
     try {
         const { StrategySelector } = await import("../hecs/strategy_selector.js");
         const { ExperienceTransferEngine } = await import("../hecs/experience_transfer_engine.js");
         const { AbstractionRetriever } = await import("../hkes/abstraction_retriever.js");
+        const { HeuristicApplicabilityScorer } = await import("../hkes/heuristic_applicability_scorer.js");
+        const { HeuristicConflictDetector } = await import("../hkes/heuristic_conflict_detector.js");
+        const { CausalConflictDetector } = await import("../hkes/causal_conflict_detector.js");
+        const { AbstractionStore } = await import("../hkes/abstraction_store.js");
+        const { AbstractionType } = await import("../hkes/abstraction_types.js");
+        
         const domain = mceOutput.understanding?.domain || mceOutput.understanding?.mission_type || "general";
         
         const selected = StrategySelector.select(state.mission, domain);
@@ -50,6 +60,34 @@ export class UnderstandStep implements ICycleStep {
         cross_domain_transfers = transfers;
 
         retrieved_abstractions = AbstractionRetriever.retrieve(state.mission, domain);
+        
+        // HKES Part 3: Heuristics
+        const allHeuristics = AbstractionStore.searchByType(AbstractionType.HEURISTIC) as any[];
+        relevant_heuristics = HeuristicApplicabilityScorer.score(state.mission, domain, allHeuristics);
+        
+        const recommendedHeuristics = relevant_heuristics.filter(h => h.use_recommendation !== 'do_not_use').map(h => h.heuristic);
+        heuristic_conflicts = HeuristicConflictDetector.detect(recommendedHeuristics);
+        
+        // HKES Part 4: Causal Models
+        const allCausalModels = AbstractionStore.searchByType(AbstractionType.CAUSAL_MODEL) as any[];
+        relevant_causal_models = allCausalModels.filter(m => m.applicable_domains.includes(domain));
+        causal_conflicts = CausalConflictDetector.detect(relevant_causal_models);
+        
+        // Write to Workspace
+        if (state.current_workspace_id) {
+            const { CognitiveWorkspace } = await import("../hcw/cognitive_workspace.js");
+            const { NodeType, EdgeType } = await import("../hcw/workspace_types.js");
+            
+            CognitiveWorkspace.updateWorkspace(state.current_workspace_id, {
+                module_name: "UnderstandStep",
+                step_name: "Understand",
+                reason: "Mission parsed, domain identified, and constraints extracted.",
+                nodes_added: [
+                    { id: `domain_${Date.now()}`, type: NodeType.CONCEPT, label: domain, properties: {}, confidence: 90, provenance: ["UnderstandStep"], created_at: Date.now(), updated_at: Date.now() }
+                ]
+            });
+        }
+        
     } catch (e) {
         console.error("[UnderstandStep] Failed to retrieve HECS/HKES data", e);
     }
@@ -79,7 +117,11 @@ export class UnderstandStep implements ICycleStep {
       retrieved_skills,
       retrieved_strategies,
       cross_domain_transfers,
-      retrieved_abstractions
+      retrieved_abstractions,
+      relevant_heuristics,
+      heuristic_conflicts,
+      relevant_causal_models,
+      causal_conflicts
     };
     
     core.updateState({ 
@@ -89,7 +131,11 @@ export class UnderstandStep implements ICycleStep {
         retrieved_skills,
         retrieved_strategies,
         cross_domain_transfers,
-        retrieved_abstractions
+        retrieved_abstractions,
+        relevant_heuristics,
+        heuristic_conflicts,
+        relevant_causal_models,
+        causal_conflicts
     } as any, "UnderstandStep");
   }
 }

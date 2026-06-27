@@ -1395,6 +1395,285 @@ async function startServer() {
     }
   });
 
+  // --- HKES API ROUTES ---
+  app.get("/api/hkes/patterns", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        res.json(AbstractionStore.searchByType(AbstractionType.PATTERN));
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/patterns/:id", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const pattern = AbstractionStore.getAbstraction(req.params.id);
+        if (pattern) res.json(pattern);
+        else res.status(404).json({ error: "Pattern not found" });
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/patterns/domain/:domain", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        const patterns = AbstractionStore.searchByDomain(req.params.domain)
+            .filter(a => a.abstraction_type === AbstractionType.PATTERN);
+        res.json(patterns);
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/patterns/category/:category", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        const patterns = AbstractionStore.searchByType(AbstractionType.PATTERN)
+            .filter((a: any) => a.pattern_category === req.params.category);
+        res.json(patterns);
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/heuristics", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        res.json(AbstractionStore.searchByType(AbstractionType.HEURISTIC));
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/heuristics/:id", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const heuristic = AbstractionStore.getAbstraction(req.params.id);
+        if (heuristic) res.json(heuristic);
+        else res.status(404).json({ error: "Heuristic not found" });
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/heuristics/domain/:domain", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        const heuristics = AbstractionStore.searchByDomain(req.params.domain)
+            .filter(a => a.abstraction_type === AbstractionType.HEURISTIC);
+        res.json(heuristics);
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/heuristics/applicable", async (req, res) => {
+    try {
+        const mission = req.query.mission as string || "";
+        const domain = req.query.domain as string || "";
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        const { HeuristicApplicabilityScorer } = await import("./src/server/core/hkes/heuristic_applicability_scorer.js");
+        
+        const allHeuristics = AbstractionStore.searchByType(AbstractionType.HEURISTIC) as any[];
+        const scored = HeuristicApplicabilityScorer.score(mission, domain, allHeuristics);
+        res.json(scored);
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/causal-models", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        res.json(AbstractionStore.searchByType(AbstractionType.CAUSAL_MODEL));
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/causal-models/:id", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const model = AbstractionStore.getAbstraction(req.params.id);
+        if (model) res.json(model);
+        else res.status(404).json({ error: "Causal model not found" });
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/causal-models/domain/:domain", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        const models = AbstractionStore.searchByDomain(req.params.domain)
+            .filter(a => a.abstraction_type === AbstractionType.CAUSAL_MODEL);
+        res.json(models);
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/causal-models/applicable", async (req, res) => {
+    try {
+        const domain = req.query.domain as string || "";
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const { AbstractionType } = await import("./src/server/core/hkes/abstraction_types.js");
+        
+        const allCausalModels = AbstractionStore.searchByType(AbstractionType.CAUSAL_MODEL) as any[];
+        const applicable = allCausalModels.filter(m => m.applicable_domains.includes(domain));
+        res.json(applicable);
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  app.get("/api/hkes/causal-models/:id/graph", async (req, res) => {
+    try {
+        const { AbstractionStore } = await import("./src/server/core/hkes/abstraction_store.js");
+        const model: any = AbstractionStore.getAbstraction(req.params.id);
+        if (model) {
+            res.json({
+                nodes: model.causal_nodes,
+                edges: model.causal_edges
+            });
+        } else {
+            res.status(404).json({ error: "Causal model not found" });
+        }
+    } catch (e) {
+        res.status(500).json({ error: "HKES not initialized" });
+    }
+  });
+
+  // --- HCW API ROUTES ---
+  app.post("/api/hcw/workspace", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const { mission } = req.body;
+          const id = CognitiveWorkspace.createWorkspace(mission || "Unknown Mission");
+          res.json({ workspace_id: id });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+  
+  app.get("/api/hcw/workspace/:id", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json(ws);
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+  
+  app.get("/api/hcw/workspace/:id/summary", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json({ id: ws.workspace_id, mission: ws.mission, status: ws.status });
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+
+  app.get("/api/hcw/workspace/:id/graph", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json({ nodes: Array.from(ws.graph.nodes.values()), edges: Array.from(ws.graph.edges.values()) });
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+
+  app.get("/api/hcw/workspace/:id/nodes", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json(Array.from(ws.graph.nodes.values()));
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+  
+  app.get("/api/hcw/workspace/:id/edges", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json(Array.from(ws.graph.edges.values()));
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+  
+  app.get("/api/hcw/workspace/:id/patches", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json(ws.patches);
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+  
+  app.get("/api/hcw/workspace/:id/snapshots", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const ws = CognitiveWorkspace.getWorkspace(req.params.id);
+          if (ws) res.json(ws.snapshots);
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+
+  app.get("/api/hcw/workspace/:id/metrics", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const metrics = CognitiveWorkspace.getWorkspaceMetrics(req.params.id);
+          if (metrics) res.json(metrics);
+          else res.status(404).json({ error: "Workspace not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+
+  app.post("/api/hcw/workspace/:id/query", async (req, res) => {
+      try {
+          const { CognitiveWorkspace } = await import("./src/server/core/hcw/cognitive_workspace.js");
+          const { type, module } = req.body;
+          if (type && module) {
+             const nodes1 = CognitiveWorkspace.queryNodes(req.params.id, { type });
+             const nodes2 = CognitiveWorkspace.queryNodes(req.params.id, { module });
+             res.json(nodes1.filter((n: any) => nodes2.find((n2: any) => n.id === n2.id)));
+          } else if (type) {
+             res.json(CognitiveWorkspace.queryNodes(req.params.id, { type }));
+          } else if (module) {
+             res.json(CognitiveWorkspace.queryNodes(req.params.id, { module }));
+          } else {
+             res.status(400).json({ error: "Must provide type or module filter" });
+          }
+      } catch (e) {
+          res.status(500).json({ error: "HCW not initialized" });
+      }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

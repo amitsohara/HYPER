@@ -27,5 +27,10 @@ export interface CognitiveState {
     evidence: any[];
     events: any[];
     version: number;
+    // HCW References
+    current_workspace_id?: string;
+    workspace_summary?: string;
+    workspace_metrics?: any;
+    latest_snapshot_id?: string;
     [key: string]: any; // Allow dynamic states from steps
 }

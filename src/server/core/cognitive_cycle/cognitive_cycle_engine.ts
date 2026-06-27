@@ -134,7 +134,8 @@ export class CognitiveCycleEngine {
                 completed_modules: state.modules_used,
                 report: (state as any).report || state.action?.plan || state.decision,
                 learning_summary: (state as any).learning_summary,
-                evidence: finalHccState.evidence || []
+                evidence: finalHccState.evidence || [],
+                workspace_id: finalHccState.current_workspace_id
            });
            
            if (exp) {
@@ -154,9 +155,23 @@ export class CognitiveCycleEngine {
             
             if (newAbstractions.length > 0) {
                 const { AbstractionMetrics } = await import("../hkes/abstraction_metrics.js");
+                const { AbstractionType } = await import("../hkes/abstraction_types.js");
+                const patterns = newAbstractions.filter(a => a.abstraction_type === AbstractionType.PATTERN);
+                const heuristics = newAbstractions.filter(a => a.abstraction_type === AbstractionType.HEURISTIC);
+                const causalModels = newAbstractions.filter(a => a.abstraction_type === AbstractionType.CAUSAL_MODEL);
+                
                 core.updateState({
                     recent_abstractions: newAbstractions,
-                    abstraction_count: AbstractionMetrics.metrics.total_abstractions
+                    abstraction_count: AbstractionMetrics.metrics.total_abstractions,
+                    hkes_patterns_created: patterns.length > 0,
+                    recent_patterns: patterns,
+                    pattern_count: AbstractionMetrics.metrics.by_type[AbstractionType.PATTERN] || 0,
+                    new_heuristics_created: heuristics.length > 0,
+                    recent_heuristics: heuristics,
+                    heuristic_summary: `Created ${heuristics.length} new heuristics.`,
+                    new_causal_models_created: causalModels.length > 0,
+                    recent_causal_models: causalModels,
+                    causal_graph_summary: `Created ${causalModels.length} new causal models.`
                 } as any, "HKES");
             }
         } catch (e) {

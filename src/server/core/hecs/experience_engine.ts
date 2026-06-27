@@ -121,7 +121,8 @@ Return a valid JSON object matching this structure:
                 weaknesses: reflection.what_failed || [],
                 reusable_patterns: patterns.reusable_patterns || [],
                 transferable_skills: parsed.transferable_skills || [],
-                related_experiences: []
+                related_experiences: [],
+                workspace_id: finalState.workspace_id
             };
 
             const validation = ExperienceValidator.validate(exp, finalState.status, finalState.report);

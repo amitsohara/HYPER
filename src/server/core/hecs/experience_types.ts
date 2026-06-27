@@ -31,6 +31,10 @@ export interface Experience {
     reusable_patterns: string[];
     transferable_skills: string[];
     related_experiences: string[];
+    // HCW provenance
+    workspace_id?: string;
+    snapshot_id?: string;
+    relevant_subgraph_ids?: string[];
 }
 
 export interface HECSSkill {

@@ -66,8 +66,38 @@ export class ReportGenerator {
               Cross_Domain_Transfers_For_Mission: normalizedData.raw.hcc_state_after?.cross_domain_transfers || [],
               Retrieved_Abstractions_For_Mission: normalizedData.raw.hcc_state_after?.retrieved_abstractions || [],
               New_Abstractions_Created: normalizedData.raw.hcc_state_after?.recent_abstractions || [],
-              Total_Abstractions: normalizedData.raw.hcc_state_after?.abstraction_count || 0
+              Total_Abstractions: normalizedData.raw.hcc_state_after?.abstraction_count || 0,
+              HKES_Patterns_Created: normalizedData.raw.hcc_state_after?.hkes_patterns_created || false,
+              Recent_Patterns: normalizedData.raw.hcc_state_after?.recent_patterns || [],
+              Total_Patterns: normalizedData.raw.hcc_state_after?.pattern_count || 0,
+              HKES_Heuristics_Created: normalizedData.raw.hcc_state_after?.new_heuristics_created || false,
+              Recent_Heuristics: normalizedData.raw.hcc_state_after?.recent_heuristics || [],
+              Relevant_Heuristics_Used: normalizedData.raw.hcc_state_after?.relevant_heuristics || [],
+              Heuristic_Conflicts: normalizedData.raw.hcc_state_after?.heuristic_conflicts || [],
+              HKES_Causal_Models_Created: normalizedData.raw.hcc_state_after?.new_causal_models_created || false,
+              Recent_Causal_Models: normalizedData.raw.hcc_state_after?.recent_causal_models || [],
+              Relevant_Causal_Models_Used: normalizedData.raw.hcc_state_after?.relevant_causal_models || [],
+              Causal_Conflicts: normalizedData.raw.hcc_state_after?.causal_conflicts || []
           };
+          
+          let hcwData = undefined;
+          if (normalizedData.raw.hcc_state_after?.current_workspace_id) {
+              try {
+                  const { CognitiveWorkspace } = require('./hcw/cognitive_workspace.js');
+                  const metrics = CognitiveWorkspace.getWorkspaceMetrics(normalizedData.raw.hcc_state_after.current_workspace_id);
+                  const ws = CognitiveWorkspace.getWorkspace(normalizedData.raw.hcc_state_after.current_workspace_id);
+                  if (ws) {
+                      hcwData = {
+                          workspace_id: ws.workspace_id,
+                          metrics,
+                          modules_contributed: ws.modules_contributed,
+                          patches: ws.patches
+                      };
+                  }
+              } catch(e) {
+                  // ignore
+              }
+          }
           
           try {
               const { CompetenceProfileManager } = require('./hecs/competence_profile.js');
@@ -86,6 +116,7 @@ export class ReportGenerator {
         ...baseReport,
         evidence_summary: strategicRecommendation.evidence_summary || [],
         hecs_data: hecsData,
+        hcw_data: hcwData,
         technical_appendix: "See developer debug data for all outputs.",
         developer_debug_data: normalizedData.raw
       };
