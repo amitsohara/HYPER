@@ -10,7 +10,7 @@ export class ModuleResultNormalizer {
       imagination: rawMissionResult.imagination || {},
       simulation_summary: rawMissionResult.digital_twin || rawMissionResult.prediction || {},
       scientific_discovery: rawMissionResult.scientific_discovery || {},
-      final_report: rawMissionResult.final_report || "",
+      final_report: rawMissionResult.final_report || rawMissionResult.report || "",
       recommendation: rawMissionResult.recommendation || rawMissionResult.decision || {},
       executive_planning: rawMissionResult.executive_planning || {},
 

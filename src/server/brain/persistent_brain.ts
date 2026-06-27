@@ -77,7 +77,7 @@ export class PersistentBrain {
     let concepts: string[] = [];
     try {
         const res = await generateWithRetry(ai, {
-           model: 'gemini-1.5-flash',
+           model: 'gemini-2.5-flash',
            contents: prompt,
            config: { responseMimeType: "application/json" }
         }, 3);
@@ -133,7 +133,7 @@ Return a JSON object:
   ]
 }`;
       const res = await generateWithRetry(ai, {
-         model: 'gemini-1.5-flash',
+         model: 'gemini-2.5-flash',
          contents: prompt,
          config: { responseMimeType: "application/json" }
       }, 3);
@@ -179,7 +179,7 @@ Return JSON:
   "concepts": [{ "name": "Topic", "related": ["Other", "Topics"] }]
 }`;
           const res = await generateWithRetry(ai, {
-             model: 'gemini-1.5-flash',
+             model: 'gemini-2.5-flash',
              contents: prompt,
              config: { responseMimeType: "application/json" }
           }, 3);

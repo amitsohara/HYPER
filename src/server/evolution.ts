@@ -17,7 +17,7 @@ Return exactly a JSON array of objects (one per agent). Each object MUST have:
 }`;
         try {
             const response = await generateWithRetry(ai, {
-                model: 'gemini-1.5-flash',
+                model: 'gemini-2.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -41,7 +41,7 @@ Return exactly a JSON array of objects detailing the rewritten prompts for each 
 }`;
         try {
             const response = await generateWithRetry(ai, {
-                model: 'gemini-1.5-flash',
+                model: 'gemini-2.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);

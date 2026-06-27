@@ -9,7 +9,8 @@ HyperMind-X is an advanced research platform transitioning from a standard agent
 2. **Cognitive Intelligence Layer:** Dynamic belief generation, goal derivation from knowledge gaps, and continuous learning.
 3. **Social Cognitive Intelligence Layer (SCIL):** Emotion detection, empathy, trust modeling, and motivation analysis.
 4. **Reasoning & Planning Layer:** Multi-step long-term planning, executive task queues, and dynamic resource allocation.
-5. **Mission Compiler:** The final aggregation layer. Converts outputs from all internal modules into one clean, useful, executive-style mission result.
+5. **HyperMind Experience & Competence System (HECS):** Transforms completed missions into a permanent cognitive experience. Tracks transferable skills and builds a reusable Experience Graph.
+6. **Mission Compiler:** The final aggregation layer. Converts outputs from all internal modules into one clean, useful, executive-style mission result.
 
 ## Setup and Running
 

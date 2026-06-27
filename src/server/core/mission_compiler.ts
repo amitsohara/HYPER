@@ -11,8 +11,17 @@ export class MissionCompiler {
     try {
       const normalizedData = ModuleResultNormalizer.normalize(rawMissionResult);
       
-      // Get mission type from Meta-Cognition Engine
-      const metaMissionType = rawMissionResult?.meta_cognition?.understanding?.mission_type || "general";
+      // Get mission type from Meta-Cognition Engine or Cognitive Cycle
+      let metaMissionType = "general";
+      if (rawMissionResult?.meta_cognition?.understanding?.mission_type) {
+          metaMissionType = rawMissionResult.meta_cognition.understanding.mission_type;
+      } else if (rawMissionResult?.hcc_state_after?.mission_understanding?.mission_type) {
+          metaMissionType = rawMissionResult.hcc_state_after.mission_understanding.mission_type;
+      } else if (rawMissionResult?.hcc_state_after?.mission_type && rawMissionResult.hcc_state_after.mission_type !== "UNKNOWN") {
+          metaMissionType = rawMissionResult.hcc_state_after.mission_type;
+      } else if (rawMissionResult?.understanding?.mission_type) {
+          metaMissionType = rawMissionResult.understanding.mission_type;
+      }
       
       // Dynamically select report template classification based on Meta-Cognition type
       let templateType = "general";

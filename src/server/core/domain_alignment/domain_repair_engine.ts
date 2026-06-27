@@ -25,7 +25,7 @@ Return the repaired JSON for this section.`;
 
     try {
         const res = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: { responseMimeType: "application/json", temperature: 0.2 }
         });
@@ -49,7 +49,7 @@ Return the corrected Draft Report JSON.`;
 
      try {
         const res = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: { responseMimeType: "application/json", temperature: 0.2 }
         });

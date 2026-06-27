@@ -23,11 +23,19 @@ Return a JSON array of the option IDs, ordered from best to worst, along with an
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         contents: prompt,
         bypassBudget: true
       });
-      return await cleanJSON(response?.text || "[]", ai);
+      let parsed = await cleanJSON(response?.text || "[]", ai);
+      if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
+        if (options && options.length > 0) {
+            parsed = options.map(o => ({ id: o.id, score: 50, reason: "Fallback ranking" }));
+        } else {
+            parsed = [];
+        }
+      }
+      return parsed;
     } catch (e) {
       console.warn("Decision ranking failed", e);
       return [];

@@ -32,12 +32,12 @@ Return as a JSON array of these options:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         contents: prompt,
         bypassBudget: true
       });
       let parsed = await cleanJSON(response?.text || "[]", ai);
-      if (!parsed || parsed.length === 0) {
+      if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
          parsed = [{
            id: "fallback_opt",
            description: "Default fallback strategy based on available information.",

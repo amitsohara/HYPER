@@ -22,10 +22,10 @@ export class DomainProfileBuilder {
 
 Mission: "${mission}"
 Context:
-- Understanding: ${JSON.stringify(rawMissionResult?.meta_cognition?.understanding || {})}
-- Mission Graph: ${JSON.stringify(rawMissionResult?.meta_cognition?.mission_graph || {})}
-- Knowledge Acquisition: ${JSON.stringify(rawMissionResult?.meta_cognition?.knowledge_acquisition || {})}
-- Selected Modules: ${JSON.stringify(rawMissionResult?.meta_cognition?.selected_modules || [])}
+- Understanding: ${JSON.stringify(rawMissionResult?.meta_cognition?.understanding || rawMissionResult?.understanding || {})}
+- Mission Graph: ${JSON.stringify(rawMissionResult?.meta_cognition?.mission_graph || rawMissionResult?.understanding?.mission_graph || {})}
+- Knowledge Acquisition: ${JSON.stringify(rawMissionResult?.meta_cognition?.knowledge_acquisition || rawMissionResult?.understanding?.acquired_evidence || {})}
+- Selected Modules: ${JSON.stringify(rawMissionResult?.meta_cognition?.selected_modules || rawMissionResult?.hcc_state_after?.completed_modules || [])}
 
 Your job is to identify the EXACT domain and the vocabulary appropriate for it, and strictly identify vocabulary from OTHER domains that would be "leakage".
 For example, if the mission is "Build a city on Mars", the domain is Aerospace/Systems Engineering. Expected vocabulary: ISRU, regolith, radiation shielding. Suspicious vocabulary: MVP, ICP, GTM, CAC/LTV, seed investors.
@@ -48,7 +48,7 @@ Return a JSON object conforming exactly to this structure:
 `;
     try {
       const res = await generateWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         contents: prompt,
         config: { responseMimeType: "application/json", temperature: 0.2 }
       });

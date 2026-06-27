@@ -26,8 +26,8 @@ export class LearnStep implements ICycleStep {
         mission: state.mission,
         reflection: state.reflection,
         experience: state.experience,
-        report: state.report || state.action?.plan || state.decision,
-        mission_text: typeof state.report === 'string' ? state.report : JSON.stringify(state.report || state.action?.plan || state.decision || "No output generated")
+        report: (state as any).report || state.action?.plan || state.decision,
+        mission_text: typeof (state as any).report === 'string' ? (state as any).report : JSON.stringify((state as any).report || state.action?.plan || state.decision || "No output generated")
     };
     
     const learning = await AutonomousLearningEngine.evaluateMission(ai, missionData);

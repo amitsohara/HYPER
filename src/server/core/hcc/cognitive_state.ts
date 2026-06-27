@@ -27,4 +27,5 @@ export interface CognitiveState {
     evidence: any[];
     events: any[];
     version: number;
+    [key: string]: any; // Allow dynamic states from steps
 }

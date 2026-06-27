@@ -22,7 +22,7 @@ Return a JSON object mapping option IDs to an array of analyzed assumptions:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         contents: prompt,
         bypassBudget: true
       });

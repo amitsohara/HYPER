@@ -16,7 +16,20 @@ export class StrategicDecisionEngine {
 
     // Step 1: Collect Evidence
     const evidence = EvidenceCollector.collect(missionData);
-    traceSteps.push({ name: "Evidence Collection", details: { sources: evidence.map(e => e.source) } });
+    let realSources: string[] = [];
+    evidence.forEach(e => {
+       if (e.source === "Knowledge Acquisition" && Array.isArray(e.data)) {
+           e.data.forEach((item: any) => {
+               if (item.source || item.title) {
+                   realSources.push(item.source || item.title);
+               }
+           });
+       } else {
+           realSources.push(e.source);
+       }
+    });
+    
+    traceSteps.push({ name: "Evidence Collection", details: { sources: realSources.length > 0 ? realSources : ["No specific sources found"] } });
 
     // Step 2: Generate Options
     let options = await OptionGenerator.generate(ai, missionText, evidence);

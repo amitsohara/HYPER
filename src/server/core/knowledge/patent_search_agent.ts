@@ -22,7 +22,7 @@ Use this format:
 
     try {
         const res = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt,
         bypassBudget: true,
             tools: [{ googleSearch: {} }]

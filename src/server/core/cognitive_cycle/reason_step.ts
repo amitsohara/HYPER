@@ -26,28 +26,34 @@ export class ReasonStep implements ICycleStep {
        return;
     }
     
-    // Placeholder for Reasoning Layer. Using Strategic Decision Engine logic or simple reasoning prompt for now.
+    const acquiredEvidence = state.understanding?.acquired_evidence || [];
+    const evidenceSummary = acquiredEvidence.length > 0 
+        ? JSON.stringify(acquiredEvidence) 
+        : "WARNING: No evidence was acquired. Reasoning will be based solely on internal assumptions.";
+
     const prompt = `Perform reasoning on the following mission and context.
 Mission: "${state.mission}"
 Understanding: ${JSON.stringify(state.understanding)}
 Imagination: ${JSON.stringify(state.imagination)}
+Acquired Evidence: ${evidenceSummary}
 
-Perform deductive, inductive, abductive, and causal reasoning. Check for consistency and constraints.
+Perform deductive, inductive, abductive, and causal reasoning based on the Acquired Evidence. Check for consistency and constraints.
 
 Return a JSON object:
 {
-  "deductive": "Deductive reasoning summary",
-  "inductive": "Inductive reasoning summary",
-  "abductive": "Abductive reasoning summary",
-  "causal": "Causal reasoning summary",
+  "deductive": "Deductive reasoning summary (cite evidence)",
+  "inductive": "Inductive reasoning summary (cite evidence)",
+  "abductive": "Abductive reasoning summary (cite evidence)",
+  "causal": "Causal reasoning summary (cite evidence)",
   "consistency_checks": ["List of consistency checks"],
   "constraint_checks": ["List of constraint checks"],
-  "synthesis": "Overall reasoning synthesis"
+  "synthesis": "Overall reasoning synthesis",
+  "evidence_utilization_warning": "${acquiredEvidence.length === 0 ? 'No evidence available' : 'None'}"
 }`;
     
     try {
         const res = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 responseMimeType: "application/json",

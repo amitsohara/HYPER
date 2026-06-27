@@ -33,7 +33,7 @@ Reply with just the domain word.`;
     let domain = "General";
     try {
         const domainRes = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: domainPrompt,
             config: { temperature: 0.1 }
         });
@@ -80,7 +80,7 @@ Generate a rich, simulated imagination trace. Return a JSON object with the foll
 
     try {
         const res = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: imaginationPrompt,
             config: {
                 responseMimeType: "application/json",

@@ -1,0 +1,716 @@
+{
+  "compiled": {
+    "mission_id": "cycle_1782557940727",
+    "mission": "Explore Mars and build a base",
+    "mission_type": "dev_stub_test",
+    "mission_stage": "execution",
+    "status": "Mission Completed",
+    "recommended_strategy": "Default fallback strategy based on available information.",
+    "why_this_strategy": "Fallback ranking",
+    "top_alternatives": [],
+    "assumptions": [],
+    "tradeoffs": {},
+    "executive_summary": "Our recommended strategy is... Default fallback strategy based on available information.",
+    "budget_and_resources": "Minimal",
+    "estimated_timeline": "Immediate",
+    "risks_and_mitigations": "Lack of data",
+    "imagined_world_summary": null,
+    "counterfactual_insights": [
+      "Stub counterfactual"
+    ],
+    "decision_trace": [
+      {
+        "step_number": 1,
+        "name": "Mission Input",
+        "details": {
+          "missionText": "Explore Mars and build a base"
+        },
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 2,
+        "name": "Evidence Collection",
+        "details": {
+          "sources": [
+            "No specific sources found"
+          ]
+        },
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 3,
+        "name": "Option Generation",
+        "details": {
+          "num_options": 1
+        },
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 4,
+        "name": "Tradeoff Analysis",
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 5,
+        "name": "Assumption Analysis",
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 6,
+        "name": "Decision Ranking",
+        "details": {
+          "top_choice": "fallback_opt"
+        },
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 7,
+        "name": "Confidence Calculation",
+        "details": {},
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      },
+      {
+        "step_number": 8,
+        "name": "Alternatives Generated",
+        "timestamp": "2026-06-27T10:59:01.341Z"
+      }
+    ],
+    "estimated_cost": 0,
+    "modules_used": [
+      "Observe",
+      "Understand",
+      "Imagine",
+      "Reason",
+      "Predict",
+      "Decide",
+      "Act",
+      "ObserveOutcome",
+      "Experience",
+      "Reflect",
+      "Learn",
+      "UpdateBeliefs",
+      "Improve"
+    ],
+    "modules_skipped": [],
+    "modules_failed": []
+  },
+  "result": {
+    "cycle_id": "cycle_1782557940728",
+    "mission_id": "cycle_1782557940727",
+    "mission": "Explore Mars and build a base",
+    "user_context": {
+      "simulation_mode": "realistic"
+    },
+    "mode": "balanced",
+    "status": "completed",
+    "current_step": "Done",
+    "started_at": 1782557940728,
+    "modules_used": [
+      "Observe",
+      "Understand",
+      "Imagine",
+      "Reason",
+      "Predict",
+      "Decide",
+      "Act",
+      "ObserveOutcome",
+      "Experience",
+      "Reflect",
+      "Learn",
+      "UpdateBeliefs",
+      "Improve"
+    ],
+    "modules_skipped": [],
+    "modules_failed": [],
+    "token_usage": 0,
+    "estimated_cost": 0,
+    "errors": [],
+    "warnings": [],
+    "trace": [
+      {
+        "step_name": "Observe",
+        "status": "completed",
+        "timestamp": 1782557940728
+      },
+      {
+        "step_name": "Understand",
+        "status": "completed",
+        "timestamp": 1782557940729
+      },
+      {
+        "step_name": "Imagine",
+        "status": "completed",
+        "timestamp": 1782557940729
+      },
+      {
+        "step_name": "Reason",
+        "status": "completed",
+        "timestamp": 1782557940730
+      },
+      {
+        "step_name": "Predict",
+        "status": "completed",
+        "timestamp": 1782557940730
+      },
+      {
+        "step_name": "Decide",
+        "status": "completed",
+        "timestamp": 1782557940730
+      },
+      {
+        "step_name": "Act",
+        "status": "completed",
+        "timestamp": 1782557940730
+      },
+      {
+        "step_name": "ObserveOutcome",
+        "status": "completed",
+        "timestamp": 1782557940731
+      },
+      {
+        "step_name": "Experience",
+        "status": "completed",
+        "timestamp": 1782557940731
+      },
+      {
+        "step_name": "Reflect",
+        "status": "completed",
+        "timestamp": 1782557940731
+      },
+      {
+        "step_name": "Learn",
+        "status": "completed",
+        "timestamp": 1782557940731
+      },
+      {
+        "step_name": "UpdateBeliefs",
+        "status": "completed",
+        "timestamp": 1782557940732
+      },
+      {
+        "step_name": "Improve",
+        "status": "completed",
+        "timestamp": 1782557940732
+      }
+    ],
+    "observation": {
+      "mission": "Explore Mars and build a base",
+      "user_context": {
+        "simulation_mode": "realistic"
+      },
+      "hcc_state": {
+        "mission": "cycle_1782557940727",
+        "mission_id": "jhkfk",
+        "mission_type": "UNKNOWN",
+        "mission_stage": "INITIALIZING",
+        "current_goal": "cycle_1782557940727",
+        "goal_stack": [
+          {
+            "id": "root_goal",
+            "description": "cycle_1782557940727",
+            "status": "ACTIVE"
+          }
+        ],
+        "working_memory": [],
+        "long_term_memory_refs": [],
+        "beliefs": [],
+        "assumptions": [],
+        "constraints": [],
+        "budget": null,
+        "timeline": null,
+        "risks": [],
+        "stakeholders": [],
+        "social_context": null,
+        "active_research": [],
+        "world_state": null,
+        "decision_candidates": [],
+        "current_recommendation": null,
+        "confidence": {
+          "score": 0,
+          "uncertainty": 100,
+          "limitations": [
+            "No evidence gathered yet."
+          ]
+        },
+        "attention": {
+          "focus": "Initialize Mission",
+          "ignore": []
+        },
+        "active_modules": [],
+        "completed_modules": [],
+        "pending_modules": [],
+        "evidence": [],
+        "events": [],
+        "version": 3,
+        "current_cycle": "cycle_1782557940728",
+        "current_step": "Observe"
+      },
+      "timestamp": 1782557940729
+    },
+    "hcc_state_before": {
+      "mission": "cycle_1782557940727",
+      "mission_id": "jhkfk",
+      "mission_type": "UNKNOWN",
+      "mission_stage": "INITIALIZING",
+      "current_goal": "cycle_1782557940727",
+      "goal_stack": [
+        {
+          "id": "root_goal",
+          "description": "cycle_1782557940727",
+          "status": "ACTIVE"
+        }
+      ],
+      "working_memory": [],
+      "long_term_memory_refs": [],
+      "beliefs": [],
+      "assumptions": [],
+      "constraints": [],
+      "budget": null,
+      "timeline": null,
+      "risks": [],
+      "stakeholders": [],
+      "social_context": null,
+      "active_research": [],
+      "world_state": null,
+      "decision_candidates": [],
+      "current_recommendation": null,
+      "confidence": {
+        "score": 0,
+        "uncertainty": 100,
+        "limitations": [
+          "No evidence gathered yet."
+        ]
+      },
+      "attention": {
+        "focus": "Initialize Mission",
+        "ignore": []
+      },
+      "active_modules": [],
+      "completed_modules": [],
+      "pending_modules": [],
+      "evidence": [],
+      "events": [],
+      "version": 3,
+      "current_cycle": "cycle_1782557940728",
+      "current_step": "Observe"
+    },
+    "understanding": {
+      "mission_type": "dev_stub_test",
+      "intent": "Stub intent",
+      "domain": "Stub domain",
+      "constraints": [
+        "Stub constraint"
+      ],
+      "stakeholders": [
+        "Stub stakeholder"
+      ],
+      "unknowns": [
+        "Stub unknown"
+      ],
+      "mission_graph": {
+        "nodes": [],
+        "edges": []
+      },
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "imagination": {
+      "imagined_world": {
+        "description": "Stub imagined world"
+      },
+      "scene_graph": {
+        "nodes": [],
+        "edges": []
+      },
+      "perspectives": [
+        "Stub perspective"
+      ],
+      "possible_futures": [
+        "Stub future"
+      ],
+      "counterfactuals": [
+        "Stub counterfactual"
+      ],
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "reasoning": {
+      "deductive": "Stub deductive reasoning",
+      "inductive": "Stub inductive reasoning",
+      "abductive": "Stub abductive reasoning",
+      "causal": "Stub causal reasoning",
+      "consistency_checks": [
+        "Stub consistency check"
+      ],
+      "constraint_checks": [
+        "Stub constraint check"
+      ],
+      "synthesis": "Stub synthesis",
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "prediction": {
+      "best_case": "Stub best case",
+      "worst_case": "Stub worst case",
+      "most_likely": "Stub most likely",
+      "risks": [
+        "Stub risk 1"
+      ],
+      "uncertainty": "Stub uncertainty",
+      "success_probability": 85,
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "decision": {
+      "options": [
+        "Stub option"
+      ],
+      "recommendation": {
+        "strategy": "Stub strategy",
+        "rationale": "Stub rationale"
+      },
+      "trace": [],
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "action": {
+      "plan": [
+        "Stub step 1",
+        "Stub step 2"
+      ]
+    },
+    "outcome": "pending",
+    "experience": {
+      "experience_id": "exp_1782557940731_zegr7",
+      "mission_id": "cycle_1782557940727",
+      "mission": "Explore Mars and build a base",
+      "context": {
+        "simulation_mode": "realistic"
+      },
+      "action_taken": {
+        "plan": [
+          "Stub step 1",
+          "Stub step 2"
+        ]
+      },
+      "predicted_outcome": {
+        "best_case": "Stub best case",
+        "worst_case": "Stub worst case",
+        "most_likely": "Stub most likely",
+        "risks": [
+          "Stub risk 1"
+        ],
+        "uncertainty": "Stub uncertainty",
+        "success_probability": 85,
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "actual_outcome": "pending",
+      "prediction_error": null,
+      "success_score": 0,
+      "novelty_score": 0,
+      "importance_score": 0,
+      "emotional_or_social_context": null,
+      "lessons_learned": [
+        "Stub takeaway"
+      ],
+      "beliefs_changed": [
+        "Beliefs updated based on reflection"
+      ],
+      "skills_reinforced": [
+        "Stub skill"
+      ],
+      "timestamp": 1782557940731
+    },
+    "reflection": {
+      "mission_answered": true,
+      "weak_assumptions": [
+        "Stub weak assumption"
+      ],
+      "missed_items": [
+        "Stub missed item"
+      ],
+      "failures": [
+        "Stub failure"
+      ],
+      "improvements_needed": [
+        "Stub improvement"
+      ],
+      "reflection_summary": "Stub reflection summary",
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "learning": {
+      "skills_discovered": [
+        "Stub skill"
+      ],
+      "key_takeaways": [
+        "Stub takeaway"
+      ],
+      "provider_used": "dev_stub",
+      "is_real_ai_output": false
+    },
+    "belief_updates": {
+      "timestamp": 1782557940732,
+      "reason": "Cycle reflection",
+      "changes": [
+        "Stub improvement"
+      ]
+    },
+    "improvements": {
+      "timestamp": 1782557940732,
+      "actions_taken": [
+        "Updated competence tracker (simulated)",
+        "Updated strategy library (simulated)"
+      ]
+    },
+    "completed_at": 1782557940732,
+    "hcc_state_after": {
+      "mission": "cycle_1782557940727",
+      "mission_id": "jhkfk",
+      "mission_type": "general",
+      "mission_stage": "INITIALIZING",
+      "current_goal": "cycle_1782557940727",
+      "goal_stack": [
+        {
+          "id": "root_goal",
+          "description": "cycle_1782557940727",
+          "status": "ACTIVE"
+        }
+      ],
+      "working_memory": [],
+      "long_term_memory_refs": [],
+      "beliefs": [],
+      "assumptions": [],
+      "constraints": [],
+      "budget": null,
+      "timeline": null,
+      "risks": [],
+      "stakeholders": [],
+      "social_context": null,
+      "active_research": [],
+      "world_state": null,
+      "decision_candidates": [],
+      "current_recommendation": null,
+      "confidence": {
+        "score": 0,
+        "uncertainty": 100,
+        "limitations": [
+          "No evidence gathered yet."
+        ]
+      },
+      "attention": {
+        "focus": "Initialize Mission",
+        "ignore": []
+      },
+      "active_modules": [],
+      "completed_modules": [],
+      "pending_modules": [],
+      "evidence": [],
+      "events": [],
+      "version": 26,
+      "current_cycle": "cycle_1782557940728",
+      "current_step": "Improve",
+      "mission_understanding": {
+        "mission_type": "dev_stub_test",
+        "intent": "Stub intent",
+        "domain": "Stub domain",
+        "constraints": [
+          "Stub constraint"
+        ],
+        "stakeholders": [
+          "Stub stakeholder"
+        ],
+        "unknowns": [
+          "Stub unknown"
+        ],
+        "mission_graph": {
+          "nodes": [],
+          "edges": []
+        },
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "imagined_world": {
+        "description": "Stub imagined world"
+      },
+      "imagination_trace": {
+        "imagined_world": {
+          "description": "Stub imagined world"
+        },
+        "scene_graph": {
+          "nodes": [],
+          "edges": []
+        },
+        "perspectives": [
+          "Stub perspective"
+        ],
+        "possible_futures": [
+          "Stub future"
+        ],
+        "counterfactuals": [
+          "Stub counterfactual"
+        ],
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "reasoning_state": {
+        "deductive": "Stub deductive reasoning",
+        "inductive": "Stub inductive reasoning",
+        "abductive": "Stub abductive reasoning",
+        "causal": "Stub causal reasoning",
+        "consistency_checks": [
+          "Stub consistency check"
+        ],
+        "constraint_checks": [
+          "Stub constraint check"
+        ],
+        "synthesis": "Stub synthesis",
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "prediction_state": {
+        "best_case": "Stub best case",
+        "worst_case": "Stub worst case",
+        "most_likely": "Stub most likely",
+        "risks": [
+          "Stub risk 1"
+        ],
+        "uncertainty": "Stub uncertainty",
+        "success_probability": 85,
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "decision_state": {
+        "options": [
+          "Stub option"
+        ],
+        "recommendation": {
+          "strategy": "Stub strategy",
+          "rationale": "Stub rationale"
+        },
+        "trace": [],
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "action_plan": [
+        "Stub step 1",
+        "Stub step 2"
+      ],
+      "experience_object": {
+        "experience_id": "exp_1782557940731_zegr7",
+        "mission_id": "cycle_1782557940727",
+        "mission": "Explore Mars and build a base",
+        "context": {
+          "simulation_mode": "realistic"
+        },
+        "action_taken": {
+          "plan": [
+            "Stub step 1",
+            "Stub step 2"
+          ]
+        },
+        "predicted_outcome": {
+          "best_case": "Stub best case",
+          "worst_case": "Stub worst case",
+          "most_likely": "Stub most likely",
+          "risks": [
+            "Stub risk 1"
+          ],
+          "uncertainty": "Stub uncertainty",
+          "success_probability": 85,
+          "provider_used": "dev_stub",
+          "is_real_ai_output": false
+        },
+        "actual_outcome": "pending",
+        "prediction_error": null,
+        "success_score": 0,
+        "novelty_score": 0,
+        "importance_score": 0,
+        "emotional_or_social_context": null,
+        "lessons_learned": [
+          "Stub takeaway"
+        ],
+        "beliefs_changed": [
+          "Beliefs updated based on reflection"
+        ],
+        "skills_reinforced": [
+          "Stub skill"
+        ],
+        "timestamp": 1782557940731
+      },
+      "reflection_summary": {
+        "mission_answered": true,
+        "weak_assumptions": [
+          "Stub weak assumption"
+        ],
+        "missed_items": [
+          "Stub missed item"
+        ],
+        "failures": [
+          "Stub failure"
+        ],
+        "improvements_needed": [
+          "Stub improvement"
+        ],
+        "reflection_summary": "Stub reflection summary",
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "learning_summary": {
+        "skills_discovered": [
+          "Stub skill"
+        ],
+        "key_takeaways": [
+          "Stub takeaway"
+        ],
+        "provider_used": "dev_stub",
+        "is_real_ai_output": false
+      },
+      "belief_updates": {
+        "timestamp": 1782557940732,
+        "reason": "Cycle reflection",
+        "changes": [
+          "Stub improvement"
+        ]
+      },
+      "improvement_summary": {
+        "timestamp": 1782557940732,
+        "actions_taken": [
+          "Updated competence tracker (simulated)",
+          "Updated strategy library (simulated)"
+        ]
+      }
+    },
+    "domain_guard_metrics": {
+      "profile": {
+        "understanding": {
+          "mission_type": "general",
+          "complexity": 5,
+          "primary_objective": "Dev stub test mission",
+          "key_constraints": [],
+          "domain_knowledge_required": []
+        },
+        "suggested_modules": [
+          "social_cognition",
+          "action_plan"
+        ]
+      },
+      "final_alignment_score": 100,
+      "section_results": [
+        {
+          "section_name": "evidence",
+          "domain_alignment_score": 100,
+          "wrong_domain_terms": [],
+          "mismatched_actions": [],
+          "missing_domain_requirements": [],
+          "repair_required": false
+        }
+      ],
+      "wrong_domain_terms_detected": [],
+      "contradictions_detected": [],
+      "repaired_sections": [],
+      "passed": true
+    }
+  }
+}

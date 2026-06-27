@@ -118,6 +118,54 @@ export class CognitiveCycleEngine {
 
     state.status = state.errors.length > 0 ? "failed" : "completed";
     state.completed_at = Date.now();
+    
+    try {
+        const { ExperienceEngine } = await import("../hecs/experience_engine.js");
+        const { ExperienceGraph } = await import("../hecs/experience_graph.js");
+        const { ExperienceMetricsTracker } = await import("../hecs/experience_metrics.js");
+        
+        // ensure we pass ai properly, ai might be null if dev_stub is used, but ExperienceEngine handles it via generateWithRetry which handles null ai in stub mode
+        if (ai || process.env.MODEL_MODE === 'dev_stub') {
+           const finalHccState = core.getState();
+           const exp = await ExperienceEngine.generateExperience(ai as any, {
+                mission: state.mission,
+                mission_type: finalHccState.mission_type,
+                understanding: finalHccState.mission_understanding,
+                completed_modules: state.modules_used,
+                report: (state as any).report || state.action?.plan || state.decision,
+                learning_summary: (state as any).learning_summary,
+                evidence: finalHccState.evidence || []
+           });
+           
+           if (exp) {
+               core.updateState({
+                   experience_summary: exp,
+                   experience_graph: ExperienceGraph.getGraph(),
+                   experience_count: ExperienceMetricsTracker.getMetrics().total_experiences,
+                   recent_experience_ids: [exp.experience_id]
+               } as any, "HECS");
+           }
+        }
+
+        // HKES Part: Run Knowledge Evolution
+        try {
+            const { KnowledgeEvolutionEngine } = await import("../hkes/knowledge_evolution_engine.js");
+            const newAbstractions = await KnowledgeEvolutionEngine.evolve(ai);
+            
+            if (newAbstractions.length > 0) {
+                const { AbstractionMetrics } = await import("../hkes/abstraction_metrics.js");
+                core.updateState({
+                    recent_abstractions: newAbstractions,
+                    abstraction_count: AbstractionMetrics.metrics.total_abstractions
+                } as any, "HKES");
+            }
+        } catch (e) {
+            console.error("[CognitiveCycleEngine] HKES generation failed", e);
+        }
+    } catch (e: any) {
+        console.error("[CognitiveCycleEngine] HECS generation failed", e);
+    }
+    
     state.hcc_state_after = core.getState();
     state.current_step = "Done";
 

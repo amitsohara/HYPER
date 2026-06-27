@@ -48,11 +48,56 @@ export class ReportGenerator {
     };
 
     if (viewMode === "developer") {
+      let hecsData = undefined;
+      const exp = normalizedData.raw.hcc_state_after?.experience_summary;
+      if (exp) {
+          hecsData = {
+              Experience_Created: true,
+              Experience_ID: exp.experience_id,
+              Quality_Score: exp.quality_score,
+              Extracted_Lessons: exp.lessons || [],
+              Detected_Mistakes: exp.mistakes || [],
+              Reusable_Patterns: exp.reusable_patterns || [],
+              Related_Experiences: exp.related_experiences || [],
+              Transferable_Skills: exp.transferable_skills || [],
+              Reflection_Result: exp.reflection_result,
+              Retrieved_Skills_For_Mission: normalizedData.raw.hcc_state_after?.retrieved_skills || [],
+              Retrieved_Strategies_For_Mission: normalizedData.raw.hcc_state_after?.retrieved_strategies || [],
+              Cross_Domain_Transfers_For_Mission: normalizedData.raw.hcc_state_after?.cross_domain_transfers || [],
+              Retrieved_Abstractions_For_Mission: normalizedData.raw.hcc_state_after?.retrieved_abstractions || [],
+              New_Abstractions_Created: normalizedData.raw.hcc_state_after?.recent_abstractions || [],
+              Total_Abstractions: normalizedData.raw.hcc_state_after?.abstraction_count || 0
+          };
+          
+          try {
+              const { CompetenceProfileManager } = require('./hecs/competence_profile.js');
+              const profile = CompetenceProfileManager.getProfile();
+              (hecsData as any).Competence_Profile = {
+                  domain_strengths: profile.strengths.filter((s: string) => s.startsWith("domain:")),
+                  domain_weaknesses: profile.weaknesses.filter((s: string) => s.startsWith("domain:")),
+                  capability_scores: profile.cognitive_capability_competence,
+                  recent_changes: profile.change_log.slice(-5)
+              };
+          } catch (e) {
+              // Ignore if not initialized
+          }
+      }
       return {
         ...baseReport,
+        evidence_summary: strategicRecommendation.evidence_summary || [],
+        hecs_data: hecsData,
         technical_appendix: "See developer debug data for all outputs.",
         developer_debug_data: normalizedData.raw
       };
+    }
+
+    // In user mode, only include top evidence if useful
+    if (strategicRecommendation.evidence_summary && strategicRecommendation.evidence_summary.length > 0) {
+        // filter out system-generated items if possible, or just take the top 3
+        const usefulEvidence = strategicRecommendation.evidence_summary.filter((e: any) => e.relevance > 70 || e.relevance_score > 70 || e.title).slice(0, 3);
+        if (usefulEvidence.length > 0) {
+             (baseReport as any).top_evidence = usefulEvidence;
+        }
     }
 
     return baseReport;

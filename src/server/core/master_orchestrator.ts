@@ -502,7 +502,7 @@ Return JSON:
   "next_actions": ["Action 1", "Action 2"]
 }`;
           const reportRes = await generateWithRetry(ai, {
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: { responseMimeType: "application/json" },
             bypassBudget: true

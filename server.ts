@@ -1351,6 +1351,50 @@ async function startServer() {
     res.json(result);
   });
 
+  // --- HECS API ROUTES ---
+  app.get("/api/hecs/competence", async (req, res) => {
+    try {
+        const { CompetenceProfileManager } = await import("./src/server/core/hecs/competence_profile.js");
+        res.json(CompetenceProfileManager.getProfile());
+    } catch (e) {
+        res.status(500).json({ error: "HECS not initialized" });
+    }
+  });
+
+  app.get("/api/hecs/competence/domain/:domain", async (req, res) => {
+    try {
+        const { CompetenceProfileManager } = await import("./src/server/core/hecs/competence_profile.js");
+        const profile = CompetenceProfileManager.getProfile();
+        const domain = req.params.domain.toLowerCase();
+        res.json({
+            domain,
+            competence: profile.domain_competence[domain] || 0,
+            confidence: profile.confidence_by_domain[domain] || 0,
+            experience_count: profile.experience_counts.domains[domain] || 0
+        });
+    } catch (e) {
+        res.status(500).json({ error: "HECS not initialized" });
+    }
+  });
+
+  app.get("/api/hecs/competence/skills", async (req, res) => {
+    try {
+        const { SkillRegistry } = await import("./src/server/core/hecs/skill_registry.js");
+        res.json(SkillRegistry.getSkills());
+    } catch (e) {
+        res.status(500).json({ error: "HECS not initialized" });
+    }
+  });
+
+  app.get("/api/hecs/competence/trends", async (req, res) => {
+    try {
+        const { CompetenceProfileManager } = await import("./src/server/core/hecs/competence_profile.js");
+        res.json(CompetenceProfileManager.getProfile().improvement_trends);
+    } catch (e) {
+        res.status(500).json({ error: "HECS not initialized" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
