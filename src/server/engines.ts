@@ -4,6 +4,106 @@ import { globalPromptCache } from "./core/tokens/prompt_cache.js";
 import { CostEstimator } from "./core/tokens/cost_estimator.js";
 
 export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: number = 6): Promise<any> {
+    if (process.env.MODEL_MODE === "dev_stub") {
+        await new Promise(r => setTimeout(r, 100)); // Simulate latency
+        const promptStr = typeof config.contents === 'string' ? config.contents : JSON.stringify(config.contents);
+        const isJSON = config.config?.responseMimeType === "application/json" || promptStr.includes("JSON") || promptStr.includes("{");
+        
+        let stubResponse = "{}";
+        
+        if (isJSON) {
+            if (promptStr.includes("mission_type")) {
+                stubResponse = JSON.stringify({
+                    understanding: { mission_type: "general", complexity: 5, primary_objective: "Dev stub test mission", key_constraints: [], domain_knowledge_required: [] },
+                    suggested_modules: ["social_cognition", "action_plan"]
+                });
+            } else if (promptStr.includes("social_risks")) {
+                stubResponse = JSON.stringify({
+                    intent_analysis: "Simulated social intent",
+                    stakeholder_map: [{ name: "User", role: "Primary", interest: "High" }],
+                    social_risks: ["Miscommunication", "Bias"],
+                    interaction_strategy: "Clear communication"
+                });
+            } else if (promptStr.includes("evidence") && promptStr.includes("relevance_score")) {
+                stubResponse = JSON.stringify([
+                    { topic: "DevStub", fact: "Simulated fact 1", relevance_score: 95, confidence_score: 90, credibility_score: 85, source: "mock" }
+                ]);
+            } else if (promptStr.includes("evidence")) {
+                stubResponse = JSON.stringify({
+                    evidence: [{ topic: "test", fact: "simulated fact", confidence: 90, source: "stub" }]
+                });
+            } else if (promptStr.includes("reflection_summary")) {
+                stubResponse = JSON.stringify({
+                    reflection_summary: "Simulated reflection (dev_stub), keeping all modules.",
+                    missing_capabilities: [],
+                    overused_modules: [],
+                    efficiency_suggestions: "None",
+                    final_additions: [],
+                    final_removals: []
+                });
+            } else if (promptStr.includes("executive_summary")) {
+                 stubResponse = JSON.stringify({
+                     executive_summary: "Dev stub summary",
+                     key_takeaways: ["Simulated takeaway 1"],
+                     strategic_alignment: "High alignment"
+                 });
+            } else if (promptStr.includes("premise_type")) {
+                stubResponse = JSON.stringify({
+                    premise_type: "hypothetical", clarity_score: 90, contradictions: [], missing_assumptions: [], required_reframing: "None", possible_interpretations: [], confidence: 95
+                });
+            } else if (promptStr.includes("world_name")) {
+                stubResponse = JSON.stringify({
+                    world_name: "Stub World", environment: "Simulated", entities: [], rules: [], constraints: [], resources: [], actors: [], systems: [], timeline: "Now", unknowns: []
+                });
+            } else if (promptStr.includes("perspective_role")) {
+                stubResponse = JSON.stringify([{
+                    perspective_role: "Stub Role", observations: [], needs: [], risks: [], opportunities: [], actions: [], conflicts: []
+                }]);
+            } else if (promptStr.includes("what_if")) {
+                stubResponse = JSON.stringify([{
+                    what_if: "What if stub?", changed_variable: "stub", immediate_effect: "none", downstream_impact: "none", mitigation: "none"
+                }]);
+            } else if (promptStr.includes("nodes") && promptStr.includes("edges")) {
+                stubResponse = JSON.stringify({
+                    nodes: [{ id: "n1", type: "object", label: "stub node" }],
+                    edges: []
+                });
+            } else if (promptStr.includes("feasible_paths")) {
+                stubResponse = JSON.stringify({
+                    feasible_paths: ["stub path"], impossible_paths: [], unknown_paths: [], high_risk_high_reward_paths: [], safest_paths: []
+                });
+            } else if (promptStr.includes("best_explanation")) {
+                stubResponse = JSON.stringify({
+                    best_explanation: "Stub explanation", alternative_explanations: [], assumptions: [], reasoning_summary: "stub", confidence: 90, uncertainty: "low", evidence_needed: [], next_experiments: []
+                });
+            } else {
+                 stubResponse = JSON.stringify({ 
+                    provider_used: "dev_stub", 
+                    is_real_ai_output: false,
+                    simulated: true,
+                    status: "success",
+                    dummy_data: "This is a generic stub response"
+                 });
+            }
+        } else {
+            if (promptStr.includes("HTML") || promptStr.includes("Compiler") || promptStr.includes("Report")) {
+                stubResponse = `<div class="p-4 bg-yellow-100 text-yellow-900 border border-yellow-400 rounded-md mb-4"><strong>Development Stub Mode:</strong> results are simulated, not real AI output.</div>
+                <h1>Simulated Mission Report</h1>
+                <p>Provider Used: dev_stub</p>
+                <p>Is Real AI Output: false</p>
+                <p>This is a generated stub report for development purposes.</p>
+                <h2>Results</h2>
+                <p>All pipeline stages executed successfully in offline mode.</p>`;
+            } else {
+                stubResponse = "Development Stub Mode: results are simulated, not real AI output.\nprovider_used: dev_stub\nis_real_ai_output: false";
+            }
+        }
+        
+        return { text: stubResponse };
+    }
+
+    if (!ai) throw new Error("GoogleGenAI instance is null but MODEL_MODE is not dev_stub");
+
     const budgetManager = tokenBudgetStorage.getStore();
     
     // Estimate tokens

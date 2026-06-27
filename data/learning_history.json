@@ -2318,5 +2318,62 @@
     "improvements_rejected": [],
     "competence_changes": {},
     "next_learning_focus": "Consolidate skills"
+  },
+  {
+    "mission_id": "test_mission_001",
+    "timestamp": 1782535219387,
+    "mission_score": 7,
+    "weaknesses_detected": [
+      {
+        "weakness_type": "generic answer",
+        "severity": "high",
+        "evidence": "The report states the startup uses 'AI to do cool things' without specifying any industry, problem, or solution.",
+        "likely_cause": "Lack of research or foundational ideation.",
+        "recommended_fix": "Define a specific niche, the problem being solved, and the core value proposition of the AI technology."
+      },
+      {
+        "weakness_type": "missing budget",
+        "severity": "high",
+        "evidence": "There is no mention of financial planning or resource allocation.",
+        "likely_cause": "The mission report was drafted without consideration for operational scalability.",
+        "recommended_fix": "Include an estimated burn rate, initial capital requirements, and allocation plan."
+      },
+      {
+        "weakness_type": "weak roadmap",
+        "severity": "high",
+        "evidence": "The report lacks any timeline, milestones, or development phases.",
+        "likely_cause": "Insufficient project planning.",
+        "recommended_fix": "Outline a phased roadmap with clear deliverables for product-market fit, MVP development, and scaling."
+      },
+      {
+        "weakness_type": "unclear next actions",
+        "severity": "high",
+        "evidence": "There are no actionable steps provided for moving the project from concept to execution.",
+        "likely_cause": "Lack of prioritization.",
+        "recommended_fix": "Identify and list three immediate tasks (e.g., customer discovery, technical architecture design, legal incorporation)."
+      },
+      {
+        "weakness_type": "missing risks",
+        "severity": "medium",
+        "evidence": "No potential challenges, market threats, or technical risks were identified.",
+        "likely_cause": "Optimism bias.",
+        "recommended_fix": "Conduct a SWOT analysis to identify market entry barriers and regulatory/technical risks."
+      },
+      {
+        "weakness_type": "no strategic decision",
+        "severity": "medium",
+        "evidence": "The report describes a vague intent rather than a strategic business direction.",
+        "likely_cause": "Lack of business strategy.",
+        "recommended_fix": "Define the target audience, revenue model, and competitive advantage (moat)."
+      }
+    ],
+    "skills_extracted": [],
+    "improvements_generated": [],
+    "improvements_accepted": [],
+    "improvements_rejected": [],
+    "competence_changes": {
+      "benchmark_score": -1
+    },
+    "next_learning_focus": "generic answer"
   }
 ]

@@ -221,6 +221,20 @@ export class MasterOrchestrator {
       ) || {};
       result.social_cognition = scilData || {};
 
+      // 2.7 Imagination Engine
+      const imaginationData = await safeExecute(
+        "Imagination Engine", "imagination_engine",
+        async () => {
+          const { ImaginationEngine } = await import(
+            "./imagination/imagination_engine.js"
+          ).catch((e) => import("./imagination/imagination_engine.ts"));
+          const trace = await ImaginationEngine.runImagination(ai, mission_id, mission_text);
+          core.updateState({ imagination_trace: trace }, "ImaginationEngine");
+          return trace;
+        }
+      ) || {};
+      result.imagination = imaginationData || {};
+
       // 4. Reasoning & Planning Layer (Executive Function / Task Manager)
       const execData = await safeExecute("Reasoning & Planning Layer", "executive", async () => {
         const tasks = [];

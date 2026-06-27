@@ -45,7 +45,11 @@ Respond with JSON:
             return ev;
         }).sort((a, b) => (b.relevance_score + b.confidence_score + b.credibility_score) - (a.relevance_score + a.confidence_score + a.credibility_score));
     } catch(e) {
-        evidenceList.forEach(ev => delete ev._temp_id);
+        evidenceList.forEach(ev => {
+            delete ev._temp_id;
+            ev.relevance_score = ev.relevance_score || 50;
+            ev.confidence_score = ev.confidence_score || 50;
+        });
         return evidenceList;
     }
 }

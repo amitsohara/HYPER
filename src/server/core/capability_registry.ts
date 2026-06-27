@@ -8,6 +8,12 @@ export interface CapabilityDef {
 export class CapabilityRegistry {
     private static registry: CapabilityDef[] = [
         {
+            module: "imagination_engine",
+            capabilities: ["novel problem", "hypothetical problem", "counterfactual problem", "unknown scenario", "future world", "complex system design", "impossible or ambiguous premise", "world-building requirement"],
+            cost: "high",
+            token_usage: "high"
+        },
+        {
             module: "social_cognition",
             capabilities: ["emotion", "stakeholder", "trust", "cooperation", "ethics", "leadership", "human behavior", "psychology", "culture"],
             cost: "medium",

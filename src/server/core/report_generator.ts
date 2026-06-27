@@ -28,6 +28,11 @@ export class ReportGenerator {
       
       risks_and_mitigations: strategicRecommendation.key_risks?.join("\\n") || sections.risks_and_mitigations,
       
+      // Imagination & Unknowns
+      imagined_world_summary: normalizedData.raw.imagination?.imagined_world?.world_name ? `${normalizedData.raw.imagination.imagined_world.world_name} - ${normalizedData.raw.imagination.imagined_world.environment}` : null,
+      counterfactual_insights: normalizedData.raw.imagination?.counterfactuals,
+      unknown_solutions: normalizedData.raw.imagination?.unknown_solution,
+
       weekly_action_plan: sections.weekly_action_plan,
       investor_or_stakeholder_strategy: sections.investor_or_stakeholder_strategy,
       key_decisions: sections.key_decisions,

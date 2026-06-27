@@ -7,6 +7,7 @@ export class ModuleResultNormalizer {
       plan: rawMissionResult.plan || [],
       social_cognition: rawMissionResult.social_cognition || {},
       world_model: rawMissionResult.world_model || {},
+      imagination: rawMissionResult.imagination || {},
       simulation_summary: rawMissionResult.digital_twin || {},
       scientific_discovery: rawMissionResult.scientific_discovery || {},
       final_report: rawMissionResult.final_report || "",

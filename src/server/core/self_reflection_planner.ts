@@ -23,13 +23,13 @@ ${JSON.stringify(skippedModules.map(m => ({ module: m.module, relevance_score: m
 
 Return a JSON object:
 {
-  "reflection_summary": "Summary of thoughts",
+  "reflection_summary": "Summary of thoughts (must strongly justify any removals of high-scoring modules)",
   "missing_capabilities": ["list of capabilities missed"],
   "overused_modules": ["modules to drop (ONLY if they are low relevance)"],
   "efficiency_suggestions": "How to do this faster",
   "assumptions": ["list of assumptions"],
   "final_additions": ["modules to add from skipped"],
-  "final_removals": ["modules to remove from selected"]
+  "final_removals": ["modules to remove from selected (if removing a high-scoring module, you MUST explain why in reflection_summary)"]
 }`;
 
         const res = await generateWithRetry(ai, {

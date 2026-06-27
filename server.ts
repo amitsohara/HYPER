@@ -62,7 +62,7 @@ async function startServer() {
 
   const ai = process.env.GEMINI_API_KEY
     ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
-    : null;
+    : (process.env.MODEL_MODE === "dev_stub" ? new GoogleGenAI({ apiKey: "dummy_dev_stub_key" }) : null);
   const { kgInstance } = await import("./src/server/knowledge_graph.js").catch(
     (e) => import("./src/server/knowledge_graph.ts"),
   );
@@ -545,6 +545,69 @@ async function startServer() {
       const { collection, getDocs } = await import("firebase/firestore");
       const conceptsSnap = await getDocs(collection(db, 'concepts'));
       res.json(conceptsSnap.docs.map(d => ({id: d.id, ...d.data()})));
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  // --- IMAGINATION ENGINE API ROUTES ---
+  app.post("/api/imagination/analyze", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI" });
+    const { mission_id, mission_text } = req.body;
+    const { ImaginationEngine } = await import("./src/server/core/imagination/imagination_engine.js").catch(
+      (e) => import("./src/server/core/imagination/imagination_engine.ts")
+    );
+    try {
+      const data = await ImaginationEngine.runImagination(ai, mission_id, mission_text);
+      res.json(data);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/imagination/:mission_id", async (req, res) => {
+    try {
+      const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(
+        (e) => import("./src/server/core/master_orchestrator.ts")
+      );
+      const data = MasterOrchestrator.activeCore?.getState()?.imagination_trace || {};
+      res.json(data);
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/imagination/:mission_id/scene-graph", async (req, res) => {
+    try {
+      const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(
+        (e) => import("./src/server/core/master_orchestrator.ts")
+      );
+      const data = MasterOrchestrator.activeCore?.getState()?.imagination_trace;
+      res.json(data?.scene_graph || { nodes: [], edges: [] });
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/imagination/:mission_id/scenarios", async (req, res) => {
+    try {
+      const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(
+        (e) => import("./src/server/core/master_orchestrator.ts")
+      );
+      const data = MasterOrchestrator.activeCore?.getState()?.imagination_trace;
+      res.json(data?.scenarios || []);
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/imagination/:mission_id/counterfactuals", async (req, res) => {
+    try {
+      const { MasterOrchestrator } = await import("./src/server/core/master_orchestrator.js").catch(
+        (e) => import("./src/server/core/master_orchestrator.ts")
+      );
+      const data = MasterOrchestrator.activeCore?.getState()?.imagination_trace;
+      res.json(data?.counterfactuals || []);
     } catch(e: any) {
       res.status(500).json({error: e.message});
     }

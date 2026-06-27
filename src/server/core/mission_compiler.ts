@@ -11,10 +11,10 @@ export class MissionCompiler {
       const normalizedData = ModuleResultNormalizer.normalize(rawMissionResult);
       
       // Get mission type from Meta-Cognition Engine
-      const metaMissionType = rawMissionResult?.meta_cognition?.understanding?.mission_type || "business";
+      const metaMissionType = rawMissionResult?.meta_cognition?.understanding?.mission_type || "general";
       
       // Dynamically select report template classification based on Meta-Cognition type
-      let templateType = "business";
+      let templateType = "general";
       const lowerType = metaMissionType.toLowerCase();
       if (lowerType.includes("science") || lowerType.includes("research")) {
         templateType = "research";
@@ -24,8 +24,8 @@ export class MissionCompiler {
         templateType = "manufacturing";
       } else if (lowerType.includes("software") || lowerType.includes("technical") || lowerType.includes("engineering")) {
         templateType = "software";
-      } else if (!lowerType.includes("business") && !lowerType.includes("startup") && !lowerType.includes("commercial")) {
-        templateType = "government"; // Safe fallback for non-commercial
+      } else if (lowerType.includes("business") || lowerType.includes("startup") || lowerType.includes("commercial")) {
+        templateType = "business";
       }
 
       normalizedData.classification = { type: templateType, stage: "execution", original_type: metaMissionType };
