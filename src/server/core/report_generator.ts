@@ -43,7 +43,8 @@ export class ReportGenerator {
       token_savings: normalizedData.raw.token_savings,
       estimated_cost: normalizedData.raw.estimated_cost,
       modules_used: normalizedData.raw.modules_used,
-      modules_skipped: normalizedData.raw.modules_skipped
+      modules_skipped: normalizedData.raw.modules_skipped,
+      modules_failed: normalizedData.raw.modules_failed || []
     };
 
     if (viewMode === "developer") {

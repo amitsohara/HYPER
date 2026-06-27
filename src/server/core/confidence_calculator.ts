@@ -23,7 +23,7 @@ Return a JSON object:
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-lite-latest",
+        model: "gemini-1.5-flash",
         contents: prompt,
         bypassBudget: true
       });

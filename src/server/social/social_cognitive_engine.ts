@@ -111,7 +111,7 @@ Return a JSON object: { "nodes": [{ "id": "Node1", "labels": ["Person"] }], "edg
   private static async generateJSON(ai: GoogleGenAI, prompt: string, defaultVal: any): Promise<any> {
       try {
           const resp = await generateWithRetry(ai, {
-              model: 'gemini-flash-lite-latest',
+              model: 'gemini-1.5-flash',
               contents: prompt,
               config: { responseMimeType: "application/json" }
           }, 3);

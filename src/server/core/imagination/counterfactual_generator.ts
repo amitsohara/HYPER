@@ -23,7 +23,7 @@ Return a JSON array of counterfactual objects:
     
     try {
       const res = await generateWithRetry(ai, {
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",

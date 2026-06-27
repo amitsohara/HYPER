@@ -550,6 +550,95 @@ async function startServer() {
     }
   });
 
+  // --- COGNITIVE CYCLE API ROUTES ---
+  app.post("/api/cycle/run", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI" });
+    const { mission_text, mode = "balanced" } = req.body;
+    try {
+      const { CognitiveCycleEngine } = await import("./src/server/core/cognitive_cycle/cognitive_cycle_engine.js").catch(
+        (e) => import("./src/server/core/cognitive_cycle/cognitive_cycle_engine.ts")
+      );
+      const cycleState = await CognitiveCycleEngine.runMissionCycle(ai, `cycle_${Date.now()}`, mission_text, mode);
+      res.json(cycleState);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/cycle/:cycle_id", async (req, res) => {
+    try {
+      const { hccStorage } = await import("./src/server/core/hcc/hcc_storage.js").catch(
+        (e) => import("./src/server/core/hcc/hcc_storage.ts")
+      );
+      // Because cycle_id is unique per cycle, we might need to lookup by mission_id or store by cycle_id.
+      // MasterOrchestrator uses cycle_id as mission_id if useLegacy is false.
+      const state = await hccStorage.getCognitiveState(req.params.cycle_id, "cycle_state");
+      res.json(state || {});
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/cycle/:cycle_id/trace", async (req, res) => {
+    try {
+      const { hccStorage } = await import("./src/server/core/hcc/hcc_storage.js").catch(
+        (e) => import("./src/server/core/hcc/hcc_storage.ts")
+      );
+      const state = await hccStorage.getCognitiveState(req.params.cycle_id, "cycle_state");
+      res.json(state?.trace || []);
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/cycle/:cycle_id/state", async (req, res) => {
+    try {
+      const { hccStorage } = await import("./src/server/core/hcc/hcc_storage.js").catch(
+        (e) => import("./src/server/core/hcc/hcc_storage.ts")
+      );
+      const state = await hccStorage.getCognitiveState(req.params.cycle_id, "cycle_state");
+      res.json(state || {});
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/cycle/:cycle_id/experience", async (req, res) => {
+    try {
+      const { hccStorage } = await import("./src/server/core/hcc/hcc_storage.js").catch(
+        (e) => import("./src/server/core/hcc/hcc_storage.ts")
+      );
+      const state = await hccStorage.getCognitiveState(req.params.cycle_id, "cycle_state");
+      res.json(state?.experience || {});
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/cycle/:cycle_id/reflection", async (req, res) => {
+    try {
+      const { hccStorage } = await import("./src/server/core/hcc/hcc_storage.js").catch(
+        (e) => import("./src/server/core/hcc/hcc_storage.ts")
+      );
+      const state = await hccStorage.getCognitiveState(req.params.cycle_id, "cycle_state");
+      res.json(state?.reflection || {});
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
+  app.get("/api/cycle/:cycle_id/learning", async (req, res) => {
+    try {
+      const { hccStorage } = await import("./src/server/core/hcc/hcc_storage.js").catch(
+        (e) => import("./src/server/core/hcc/hcc_storage.ts")
+      );
+      const state = await hccStorage.getCognitiveState(req.params.cycle_id, "cycle_state");
+      res.json(state?.learning || {});
+    } catch(e: any) {
+      res.status(500).json({error: e.message});
+    }
+  });
+
   // --- IMAGINATION ENGINE API ROUTES ---
   app.post("/api/imagination/analyze", async (req, res) => {
     if (!ai) return res.status(500).json({ error: "No AI" });

@@ -73,6 +73,28 @@ export class GovernmentDomainCompiler implements DomainCompiler {
   }
 }
 
+export class EngineeringDomainCompiler implements DomainCompiler {
+  async compile(ai: GoogleGenAI, normalizedData: any): Promise<any> {
+    const [execSummary, riskBudget, actionPlan] = await Promise.all([
+      ExecutiveSummaryGenerator.generate(ai, normalizedData, "Focus on engineering design, system architecture, safety margins, and structural integrity. DO NOT use startup or business jargon (no MVP, no GTM)."),
+      RiskBudgetExtractor.extract(ai, normalizedData, "Focus on material costs, physics/engineering risks, environmental hazards, and construction timelines. DO NOT use VC or startup financial terms."),
+      ActionPlanGenerator.generate(ai, normalizedData, "Focus on design phases, prototyping, testing, and deployment/construction. Replace business terms with engineering terms.")
+    ]);
+    return { ...execSummary, ...riskBudget, ...actionPlan };
+  }
+}
+
+export class SoftwareDomainCompiler implements DomainCompiler {
+  async compile(ai: GoogleGenAI, normalizedData: any): Promise<any> {
+    const [execSummary, riskBudget, actionPlan] = await Promise.all([
+      ExecutiveSummaryGenerator.generate(ai, normalizedData, "Focus on software architecture, user experience, scalability, and technical debt. DO NOT use startup jargon unless explicitly requested."),
+      RiskBudgetExtractor.extract(ai, normalizedData, "Focus on cloud costs, technical risks, security vulnerabilities, and development time."),
+      ActionPlanGenerator.generate(ai, normalizedData, "Focus on sprints, architecture design, coding, testing, and deployment.")
+    ]);
+    return { ...execSummary, ...riskBudget, ...actionPlan };
+  }
+}
+
 export class DomainCompilerFactory {
   static getCompiler(type: string): DomainCompiler {
     switch (type.toLowerCase()) {
@@ -88,6 +110,10 @@ export class DomainCompilerFactory {
       case "social":
       case "geopolitical":
         return new GovernmentDomainCompiler();
+      case "engineering":
+        return new EngineeringDomainCompiler();
+      case "software":
+        return new SoftwareDomainCompiler();
       default:
         return new DefaultDomainCompiler();
     }

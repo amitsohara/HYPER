@@ -55,7 +55,7 @@ Return EXACTLY a JSON object with:
 }`;
         try {
             const resp = await generateWithRetry(ai, {
-                model: 'gemini-flash-lite-latest',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -98,7 +98,7 @@ Return a JSON object:
 }`;
         try {
             const resp = await generateWithRetry(ai, {
-                model: 'gemini-flash-lite-latest',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             }, 3);
@@ -123,7 +123,7 @@ Return EXACTLY a JSON object with:
   "insights": "Detailed graph synthesis insight linking these elements to the query."
 }`;
             const resp2 = await generateWithRetry(ai, {
-                model: 'gemini-flash-lite-latest',
+                model: 'gemini-1.5-flash',
                 contents: prompt2,
                 config: { responseMimeType: "application/json" }
             }, 3);

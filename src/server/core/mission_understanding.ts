@@ -10,7 +10,7 @@ Mission: "${mission}"
 
 Return a JSON object with:
 {
-  "mission_type": "The type of mission (e.g. strategic planning, technical design, scientific research)",
+  "mission_type": "The highly specific industry/domain classification (e.g. Aerospace Engineering, Planetary Settlement, Biotechnology, Quantum Computing). DO NOT use generic terms like 'strategic planning' or 'general'.",
   "mission_intent": "The underlying intent or true goal of the user",
   "primary_objective": "The main goal",
   "knowns": ["What do I already know based on the prompt?"],
@@ -29,7 +29,7 @@ Return a JSON object with:
 }`;
 
         const res = await generateWithRetry(ai, {
-            model: "gemini-flash-lite-latest",
+            model: "gemini-1.5-flash",
             contents: prompt,
             bypassBudget: true,
             config: { responseMimeType: "application/json" }

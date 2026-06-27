@@ -7,19 +7,24 @@ import { newsSearch } from "./news_search_agent.js";
 import { governmentSearch } from "./government_data_agent.js";
 
 export async function routeAndAcquire(ai: GoogleGenAI, need: any) {
-    const promises = [];
+    const results = [];
     const sources = need.preferred_sources || ["web"];
     for (const source of sources) {
-        switch (source) {
-            case "web": promises.push(webSearch(ai, need.query)); break;
-            case "research_paper": promises.push(researchSearch(ai, need.query)); break;
-            case "patent": promises.push(patentSearch(ai, need.query)); break;
-            case "github": promises.push(githubSearch(ai, need.query)); break;
-            case "news": promises.push(newsSearch(ai, need.query)); break;
-            case "government": promises.push(governmentSearch(ai, need.query)); break;
-            default: promises.push(webSearch(ai, need.query)); break;
+        try {
+            let res;
+            switch (source) {
+                case "web": res = await webSearch(ai, need.query); break;
+                case "research_paper": res = await researchSearch(ai, need.query); break;
+                case "patent": res = await patentSearch(ai, need.query); break;
+                case "github": res = await githubSearch(ai, need.query); break;
+                case "news": res = await newsSearch(ai, need.query); break;
+                case "government": res = await governmentSearch(ai, need.query); break;
+                default: res = await webSearch(ai, need.query); break;
+            }
+            if (res) results.push(...res);
+        } catch (e) {
+            console.warn("Failed to acquire from source", source, e);
         }
     }
-    const results = await Promise.allSettled(promises);
-    return results.filter(r => r.status === "fulfilled").flatMap((r: any) => r.value);
+    return results;
 }

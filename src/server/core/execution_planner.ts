@@ -10,6 +10,31 @@ export class ExecutionPlanner {
            // Keep if average is above threshold, OR if it's highly relevant (> 70)
            return avg > threshold || (c.relevance_score || 0) > 70;
         });
+        
+        // Force core cycle modules to be selected
+        const coreModules = ["imagination_engine", "strategic_decision", "world_model"];
+        
+        // Add them if they don't exist in capabilities
+        for (const coreMod of coreModules) {
+            if (!capabilities.find(c => c.module === coreMod)) {
+                capabilities.push({
+                    module: coreMod,
+                    relevance_score: 100,
+                    contribution_score: 100,
+                    reasoning: "Core module required by Cognitive Cycle Engine",
+                    expected_benefit: "Essential",
+                    expected_cost: "High",
+                    confidence: 100
+                });
+            }
+        }
+
+        for (const c of capabilities) {
+            if (coreModules.includes(c.module) && !selected.includes(c)) {
+                selected.push(c);
+            }
+        }
+        
         let skipped = capabilities.filter(c => !selected.includes(c));
 
         const reflection = await SelfReflectionPlanner.reflect(ai, understanding, capabilities, selected, skipped);

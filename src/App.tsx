@@ -22,6 +22,7 @@ import { SocialIntelligenceDashboard } from "./components/SocialIntelligenceDash
 import { CognitiveCoreView } from "./components/CognitiveCoreView";
 import { KnowledgeDashboard } from "./components/KnowledgeDashboard";
 import MetaCognitionDashboard from "./components/MetaCognitionDashboard";
+import { CognitiveCycleDashboard } from "./components/CognitiveCycleDashboard";
 
 import { safeFetchJSON } from "./fetchUtils";
 
@@ -32,7 +33,7 @@ export default function App() {
   const [missionMode, setMissionMode] = useState("balanced");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social" | "core">("missions");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social" | "core" | "meta" | "cycle">("missions");
 
   const [showDeveloper, setShowDeveloper] = useState(false);
 
@@ -249,6 +250,13 @@ export default function App() {
                 Discovery
               </button>
               <button 
+                onClick={() => setActiveTab("cycle")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "cycle" ? "bg-orange-900/50 text-orange-200" : "text-slate-400 hover:text-orange-300"}`}
+              >
+                <Activity className="w-4 h-4" />
+                Cognitive Cycle
+              </button>
+              <button 
                 onClick={() => setActiveTab("embodied")} 
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "embodied" ? "bg-emerald-900/50 text-emerald-200" : "text-slate-400 hover:text-emerald-300"}`}
               >
@@ -370,6 +378,8 @@ export default function App() {
           <CognitiveCoreView />
         ) : activeTab === "knowledge" ? (
           <KnowledgeDashboard mission={missions[0] || null} />
+        ) : activeTab === "cycle" ? (
+          <CognitiveCycleDashboard missionId={missions[0]?.mission_id || ""} />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">

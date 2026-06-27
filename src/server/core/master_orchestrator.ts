@@ -37,10 +37,26 @@ export class MasterOrchestrator {
   ) {
     const { mission_text, simulation_mode = "realistic", mission_mode = "balanced" } = missionInput;
     const budgetManager = new TokenBudgetManager(mission_mode as any);
+    
+    // Support legacy pipeline
+    const useLegacy = process.env.LEGACY_PIPELINE === "true";
 
     return await tokenBudgetStorage.run(budgetManager, async () => {
+      if (!useLegacy) {
+          const { CognitiveCycleEngine } = await import("./cognitive_cycle/cognitive_cycle_engine.js").catch(e => import("./cognitive_cycle/cognitive_cycle_engine.ts"));
+          const cycleState = await CognitiveCycleEngine.runMissionCycle(ai, `cycle_${Date.now()}`, mission_text, mission_mode, { simulation_mode });
+          
+          MasterOrchestrator.currentStatus = {
+             mission_id: cycleState.mission_id,
+             stage: cycleState.status
+          };
+          
+          return cycleState;
+      }
+      
       const core = new HyperMindCognitiveCore(mission_text);
       MasterOrchestrator.activeCore = core;
+
       
       const mission_id = core.getState().mission_id;
       const timestamp = new Date().toISOString();
@@ -52,7 +68,7 @@ export class MasterOrchestrator {
         stage: "Running Meta-Cognition Engine...",
       };
 
-      const mceOutput = await MetaCognitionEngine.run(ai, mission_text, mission_mode as any);
+      const mceOutput = await MetaCognitionEngine.analyze(ai, mission_text, mission_mode as any);
       MasterOrchestrator.currentMetaCognition = mceOutput;
 
       const activeModules = mceOutput.execution_plan.selected_modules.map((m: any) => m.module);
@@ -72,8 +88,9 @@ export class MasterOrchestrator {
         mission_mode,
         timestamp,
         meta_cognition: mceOutput,
-        modules_used: activeModules,
-        modules_skipped: skippedModules
+        modules_used: [],
+        modules_skipped: skippedModules,
+        modules_failed: []
       };
 
       const safeExecute = async (moduleName: string, id: string, fn: () => Promise<any>) => {
@@ -90,6 +107,7 @@ export class MasterOrchestrator {
         core.setAttention(moduleName);
         try {
           const res = await fn();
+          result.modules_used.push(id);
           core.updateState({
               completed_modules: [...core.getState().completed_modules, id],
               pending_modules: core.getState().pending_modules.filter(m => m !== id)
@@ -97,6 +115,7 @@ export class MasterOrchestrator {
           return res;
         } catch (e: any) {
           console.warn(`[Orchestrator] ${moduleName} failed:`, e);
+          result.modules_failed.push(id);
           core.publishEvent("RISK_IDENTIFIED", { module: moduleName, error: e.message }, "MasterOrchestrator");
           return {
             module_name: moduleName,
@@ -483,7 +502,7 @@ Return JSON:
   "next_actions": ["Action 1", "Action 2"]
 }`;
           const reportRes = await generateWithRetry(ai, {
-            model: "gemini-flash-lite-latest",
+            model: "gemini-1.5-flash",
             contents: prompt,
             config: { responseMimeType: "application/json" },
             bypassBudget: true

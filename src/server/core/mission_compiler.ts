@@ -4,6 +4,7 @@ import { MissionSectionsBuilder } from "./mission_sections_builder.js";
 import { ReportGenerator } from "./report_generator.js";
 import { StrategicDecisionEngine } from "./strategic_decision_engine.js";
 import { DomainCompilerFactory } from "./domain_compilers.js";
+import { DomainAlignmentGuard } from "./domain_alignment/domain_alignment_guard.js";
 
 export class MissionCompiler {
   static async compile(ai: GoogleGenAI, rawMissionResult: any, options: { viewMode: string } = { viewMode: "user" }): Promise<any> {
@@ -32,7 +33,7 @@ export class MissionCompiler {
       
       // Use the dynamically selected Domain Compiler (Report Template)
       const domainCompiler = DomainCompilerFactory.getCompiler(templateType);
-      const compiledSections = await domainCompiler.compile(ai, normalizedData);
+      let compiledSections = await domainCompiler.compile(ai, normalizedData);
       
       const sections = {
         ...compiledSections,
@@ -41,11 +42,23 @@ export class MissionCompiler {
       };
       
       // Pass data through Strategic Decision Engine
-      const strategicRecommendation = await StrategicDecisionEngine.evaluate(ai, normalizedData.mission, rawMissionResult);
-
+      let strategicRecommendation = await StrategicDecisionEngine.evaluate(ai, normalizedData.mission, rawMissionResult);
       
-      // Generate Executive Report using SDE results instead of raw sections
-      return ReportGenerator.generateReport(normalizedData, sections, strategicRecommendation, options.viewMode);
+      // Run Domain Alignment Guard (Replaces inline validation and contradiction check)
+      console.log("[MissionCompiler] Running Domain Alignment Guard...");
+      const guardResult = await DomainAlignmentGuard.validateAndRepair(
+          ai, 
+          normalizedData.mission, 
+          rawMissionResult, 
+          sections, 
+          strategicRecommendation
+      );
+      
+      const guardedSections = guardResult.finalReport;
+      normalizedData.raw.domain_guard_metrics = guardResult.guardMetrics;
+      
+      // Generate Executive Report using guarded sections
+      return ReportGenerator.generateReport(normalizedData, guardedSections, strategicRecommendation, options.viewMode);
     } catch (e) {
       console.warn("MissionCompiler failed:", e);
       return {

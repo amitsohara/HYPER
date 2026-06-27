@@ -2375,5 +2375,215 @@
       "benchmark_score": -1
     },
     "next_learning_focus": "generic answer"
+  },
+  {
+    "mission_id": "zdl9o6",
+    "timestamp": 1782547810733,
+    "mission_score": 50,
+    "weaknesses_detected": [],
+    "skills_extracted": [],
+    "improvements_generated": [],
+    "improvements_accepted": [],
+    "improvements_rejected": [],
+    "competence_changes": {},
+    "next_learning_focus": "Consolidate skills"
+  },
+  {
+    "mission_id": "test_mission_001",
+    "timestamp": 1782548069961,
+    "mission_score": 12,
+    "weaknesses_detected": [
+      {
+        "weakness_type": "generic answer",
+        "severity": "high",
+        "evidence": "The startup uses AI to do cool things.",
+        "likely_cause": "Lack of specific business model or problem identification.",
+        "recommended_fix": "Define a specific niche, target audience, and the unique value proposition of the AI implementation."
+      },
+      {
+        "weakness_type": "missing budget",
+        "severity": "high",
+        "evidence": "No mention of financial planning or funding requirements.",
+        "likely_cause": "The mission report is too high-level to include operational planning.",
+        "recommended_fix": "Outline the estimated capital requirements, burn rate, and allocation of funds for development and marketing."
+      },
+      {
+        "weakness_type": "weak roadmap",
+        "severity": "high",
+        "evidence": "Report contains no timeline or milestones.",
+        "likely_cause": "Absence of a structured project development plan.",
+        "recommended_fix": "Create a phase-based roadmap including MVP development, beta testing, and go-to-market strategies with specific dates."
+      },
+      {
+        "weakness_type": "unclear next actions",
+        "severity": "high",
+        "evidence": "The report ends after the objective statement without identifying immediate tasks.",
+        "likely_cause": "Missing execution strategy.",
+        "recommended_fix": "List the three immediate next steps the team needs to take to begin development."
+      },
+      {
+        "weakness_type": "missing risks",
+        "severity": "medium",
+        "evidence": "No identification of potential legal, technical, or market risks.",
+        "likely_cause": "Overly optimistic scope.",
+        "recommended_fix": "Include a risk assessment covering data privacy, technical scalability, and competition."
+      },
+      {
+        "weakness_type": "no strategic decision",
+        "severity": "medium",
+        "evidence": "The report defines an objective but provides no strategy to achieve it.",
+        "likely_cause": "Conceptual lack of depth.",
+        "recommended_fix": "Articulate a core strategic decision, such as a differentiation strategy or a specific market entry tactic."
+      }
+    ],
+    "skills_extracted": [
+      {
+        "skill_id": "4fd75ebc-b464-477f-b481-1bfdcdc0f837",
+        "skill_name": "ai_startup_ideation",
+        "domain": "entrepreneurship",
+        "description": "The process of identifying innovative use cases for AI technology and structuring them into a viable business concept.",
+        "trigger_conditions": [
+          "market gap identification",
+          "access to AI model capabilities",
+          "business model brainstorming"
+        ],
+        "steps": [
+          "identify target problem space",
+          "evaluate AI technical feasibility",
+          "define unique value proposition",
+          "outline product-market fit"
+        ],
+        "success_evidence": "a defined startup concept with validated AI-driven solution potential",
+        "source_mission_ids": [
+          "test_mission_001"
+        ],
+        "version": 1,
+        "success_rate": 100
+      }
+    ],
+    "improvements_generated": [
+      {
+        "improvement_id": "8e31cc1b-417b-4959-ae0c-5999d79f6985",
+        "target_component": "Prompt improvement",
+        "before": "Draft a business report for the AI startup.",
+        "after": "Draft a business report including a specific niche, unique value proposition, 6-month milestone-based roadmap, capital requirements, and three immediate execution steps.",
+        "expected_benefit": "Eliminates generic outputs and ensures structural completeness across critical operational domains.",
+        "risk": "Increased token usage and potential for hallucinated financial data if not constrained.",
+        "test_plan": "Run five test cases against the new prompt and verify presence of all five required sections."
+      },
+      {
+        "improvement_id": "67dc8014-cee8-4db6-870b-1d0cd5052eb8",
+        "target_component": "Report template improvement",
+        "before": "Open-ended section headers.",
+        "after": "Mandatory sections: [Executive Summary, Niche & Value Proposition, Operational Roadmap, Financial Forecast, Risk Matrix, Immediate Execution Tasks].",
+        "expected_benefit": "Standardized output structure ensures no critical category (like risk or budget) is omitted.",
+        "risk": "Can lead to repetitive or 'boilerplate' responses if not carefully managed.",
+        "test_plan": "Review 20 historical reports and compare against the template to ensure compliance."
+      },
+      {
+        "improvement_id": "41440749-653d-4ef5-85fc-7eb33ffe35bc",
+        "target_component": "Evaluation rubric improvement",
+        "before": "Subjective scoring based on 'overall quality'.",
+        "after": "Binary scoring for presence of: (1) Niche definition, (2) Budget breakdown, (3) Roadmap milestones, (4) Risk assessment, (5) Action items.",
+        "expected_benefit": "Objective measurement of mission completeness and clearer identification of failure points.",
+        "risk": "May penalize creative responses that deviate from the standard template structure.",
+        "test_plan": "Backtest the rubric against 10 failed reports to verify if they correctly trigger a 'revision required' flag."
+      },
+      {
+        "improvement_id": "51325e86-ec16-48a7-9664-9c77faadd4f0",
+        "target_component": "Decision criteria improvement",
+        "before": "Focus solely on goal identification.",
+        "after": "Requirement for a 'Core Strategic Anchor' (differentiation tactic or market entry strategy) before approving a mission as 'complete'.",
+        "expected_benefit": "Forces the cognitive architecture to reconcile objectives with competitive reality.",
+        "risk": "Potential for over-engineering simple tasks that do not require complex strategic anchors.",
+        "test_plan": "Test with a subset of low-complexity prompts to ensure the threshold is appropriate."
+      },
+      {
+        "improvement_id": "7097f202-5310-4dc1-ac87-fe69a2f8ad9f",
+        "target_component": "Compiler improvement",
+        "before": "Accepts text completion without validation.",
+        "after": "Validation layer that checks for keywords related to budget, timeline, and risk before generating the final report.",
+        "expected_benefit": "Ensures high-level operational requirements are captured before output is finalized.",
+        "risk": "May increase latency due to secondary validation step.",
+        "test_plan": "Measure completion rate improvements on reports previously marked as 'missing budget' or 'weak roadmap'."
+      }
+    ],
+    "improvements_accepted": [
+      {
+        "improvement": {
+          "improvement_id": "8e31cc1b-417b-4959-ae0c-5999d79f6985",
+          "target_component": "Prompt improvement",
+          "before": "Draft a business report for the AI startup.",
+          "after": "Draft a business report including a specific niche, unique value proposition, 6-month milestone-based roadmap, capital requirements, and three immediate execution steps.",
+          "expected_benefit": "Eliminates generic outputs and ensures structural completeness across critical operational domains.",
+          "risk": "Increased token usage and potential for hallucinated financial data if not constrained.",
+          "test_plan": "Run five test cases against the new prompt and verify presence of all five required sections."
+        },
+        "validation": {
+          "accepted": true,
+          "reason": "The improvement provides specific structural requirements that objectively increase the depth and utility of the output compared to the previous generic prompt. The enhancement meets the criteria by significantly improving content granularity while keeping potential token regressions within the acceptable threshold.",
+          "benchmark_results": {
+            "old_strategy_score": 62,
+            "new_strategy_score": 88
+          },
+          "regression_detected": false
+        }
+      }
+    ],
+    "improvements_rejected": [
+      {
+        "improvement": {
+          "improvement_id": "67dc8014-cee8-4db6-870b-1d0cd5052eb8",
+          "target_component": "Report template improvement",
+          "before": "Open-ended section headers.",
+          "after": "Mandatory sections: [Executive Summary, Niche & Value Proposition, Operational Roadmap, Financial Forecast, Risk Matrix, Immediate Execution Tasks].",
+          "expected_benefit": "Standardized output structure ensures no critical category (like risk or budget) is omitted.",
+          "risk": "Can lead to repetitive or 'boilerplate' responses if not carefully managed.",
+          "test_plan": "Review 20 historical reports and compare against the template to ensure compliance."
+        },
+        "reason": "The proposal lacks quantifiable performance metrics or baseline benchmark scores. Without baseline data for categories such as 'Information Completeness' or 'User Satisfaction', it is impossible to verify a +5% improvement or ensure regressions are within the 3% limit."
+      },
+      {
+        "improvement": {
+          "improvement_id": "41440749-653d-4ef5-85fc-7eb33ffe35bc",
+          "target_component": "Evaluation rubric improvement",
+          "before": "Subjective scoring based on 'overall quality'.",
+          "after": "Binary scoring for presence of: (1) Niche definition, (2) Budget breakdown, (3) Roadmap milestones, (4) Risk assessment, (5) Action items.",
+          "expected_benefit": "Objective measurement of mission completeness and clearer identification of failure points.",
+          "risk": "May penalize creative responses that deviate from the standard template structure.",
+          "test_plan": "Backtest the rubric against 10 failed reports to verify if they correctly trigger a 'revision required' flag."
+        },
+        "reason": "The proposed improvement lacks quantifiable performance metrics (numerical benchmarks) to verify the +5% improvement requirement or to assess potential regression against the established baseline."
+      },
+      {
+        "improvement": {
+          "improvement_id": "51325e86-ec16-48a7-9664-9c77faadd4f0",
+          "target_component": "Decision criteria improvement",
+          "before": "Focus solely on goal identification.",
+          "after": "Requirement for a 'Core Strategic Anchor' (differentiation tactic or market entry strategy) before approving a mission as 'complete'.",
+          "expected_benefit": "Forces the cognitive architecture to reconcile objectives with competitive reality.",
+          "risk": "Potential for over-engineering simple tasks that do not require complex strategic anchors.",
+          "test_plan": "Test with a subset of low-complexity prompts to ensure the threshold is appropriate."
+        },
+        "reason": "The improvement fails the 'minimum +5% improvement' criteria because it introduces a high risk of operational friction (over-engineering) for low-complexity tasks without providing empirical performance data to demonstrate a net positive gain across the board."
+      },
+      {
+        "improvement": {
+          "improvement_id": "7097f202-5310-4dc1-ac87-fe69a2f8ad9f",
+          "target_component": "Compiler improvement",
+          "before": "Accepts text completion without validation.",
+          "after": "Validation layer that checks for keywords related to budget, timeline, and risk before generating the final report.",
+          "expected_benefit": "Ensures high-level operational requirements are captured before output is finalized.",
+          "risk": "May increase latency due to secondary validation step.",
+          "test_plan": "Measure completion rate improvements on reports previously marked as 'missing budget' or 'weak roadmap'."
+        },
+        "reason": "The proposal lacks quantifiable performance data required to verify the +5% improvement threshold and ensure regression is within the 3% limit."
+      }
+    ],
+    "competence_changes": {
+      "benchmark_score": 2,
+      "mission_compilation": 1
+    },
+    "next_learning_focus": "generic answer"
   }
 ]

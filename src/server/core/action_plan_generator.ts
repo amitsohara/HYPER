@@ -29,7 +29,7 @@ Return JSON:
 }`;
     try {
       const res = await generateWithRetry(ai, {
-        model: "gemini-flash-lite-latest",
+        model: "gemini-1.5-flash",
         contents: prompt,
         bypassBudget: true,
         config: { responseMimeType: "application/json" }
@@ -51,6 +51,39 @@ Return JSON:
         recommended_next_actions: [], 
         next_recommended_mission: "Unknown" 
       };
+    }
+  }
+
+  static async generateFromState(ai: GoogleGenAI, state: any): Promise<any> {
+    const prompt = `You are the Executive Execution Engine.
+Mission: ${state.mission}
+Understanding: ${JSON.stringify(state.understanding || {}).substring(0, 1000)}
+Decision / Strategy: ${JSON.stringify(state.decision?.recommendation?.strategy || state.decision || {})}
+Imagined Constraints/Rules: ${JSON.stringify(state.imagination?.imagined_world?.rules || [])}
+Predictions: ${JSON.stringify(state.prediction?.outcomes || [])}
+
+Generate a highly specific, domain-appropriate execution plan based on the chosen strategy.
+DO NOT output generic boilerplate. Use concrete details from the imagination and decision steps (e.g., if the mission is Mars City, list specific aerospace actions like ISRU deployment, habitat shielding, etc).
+
+Return JSON:
+{
+  "roadmap": "A clear, phased approach to achieving the mission",
+  "immediate_actions": ["Action 1", "Action 2"],
+  "key_milestones": ["Milestone 1", "Milestone 2"],
+  "risk_mitigation_steps": ["Step 1", "Step 2"]
+}`;
+
+    try {
+      const res = await generateWithRetry(ai, {
+        model: "gemini-1.5-flash",
+        contents: prompt,
+        bypassBudget: true,
+        config: { responseMimeType: "application/json" }
+      });
+      return await cleanJSON(res?.text || "{}", ai) || {};
+    } catch (e) {
+      console.warn("Failed to generate from state", e);
+      return { plan: [] };
     }
   }
 }

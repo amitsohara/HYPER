@@ -59,7 +59,7 @@ Return JSON:
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-flash-lite-latest',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 bypassBudget: true,
                 config: { responseMimeType: "application/json" }
@@ -86,8 +86,11 @@ Return JSON:
     }
     
     static async evaluateMission(ai: GoogleGenAI, missionData: any) {
-        const prompt = `You are the Self Evaluator Engine. Evaluate this mission outcome: ${JSON.stringify(missionData.mission_text)}
-Provide scores from 0-100 for various metrics.
+        const prompt = `You are the Self Evaluator Engine. Evaluate the outcome of this mission.
+Original Mission: ${JSON.stringify(missionData.mission)}
+Mission Outcome / Report: ${JSON.stringify(missionData.mission_text)}
+
+Provide scores from 0-100 for various metrics based on how well the outcome achieved the mission and its quality.
 Return JSON:
 {
   "reasoning_quality": 85,
@@ -97,11 +100,12 @@ Return JSON:
   "planning_quality": 80,
   "risk_awareness": 70,
   "learning_value": 75,
+  "key_takeaways": ["Identify specific actionable lesson learned 1", "Lesson 2"],
   "justification": "Overall solid execution."
 }`;
         try {
             const res = await generateWithRetry(ai, {
-                model: 'gemini-flash-lite-latest',
+                model: 'gemini-1.5-flash',
                 contents: prompt,
                 bypassBudget: true,
                 config: { responseMimeType: "application/json" }
@@ -110,13 +114,33 @@ Return JSON:
             
             const evalResult = {
                 mission_id: missionData.id,
+                reasoning_quality: data.reasoning_quality || 0,
+                novelty: data.novelty || 0,
+                usefulness: data.usefulness || 0,
+                factual_confidence: data.factual_confidence || 0,
+                planning_quality: data.planning_quality || 0,
+                risk_awareness: data.risk_awareness || 0,
+                learning_value: data.learning_value || 0,
+                justification: data.justification || "Evaluated.",
                 ...data,
                 timestamp: new Date().toISOString()
             };
             memState.evaluations.unshift(evalResult);
             return evalResult;
         } catch(e) {
-            return null;
+            console.error("evaluateMission error:", e);
+            return {
+                mission_id: missionData.id,
+                reasoning_quality: 0,
+                novelty: 0,
+                usefulness: 0,
+                factual_confidence: 0,
+                planning_quality: 0,
+                risk_awareness: 0,
+                learning_value: 0,
+                justification: "Error in evaluation.",
+                timestamp: new Date().toISOString()
+            };
         }
     }
 

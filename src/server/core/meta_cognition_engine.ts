@@ -6,7 +6,7 @@ import { ResourceAllocator } from "./resource_allocator.js";
 import { ExecutionPlanner } from "./execution_planner.js";
 
 export class MetaCognitionEngine {
-    static async run(ai: GoogleGenAI, mission: string, mode: string) {
+    static async analyze(ai: GoogleGenAI, mission: string, mode: string) {
         console.log("[MCE] Starting Meta-Cognition Engine...");
         
         const understanding = await MissionUnderstanding.understand(ai, mission);

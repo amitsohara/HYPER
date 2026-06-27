@@ -10,6 +10,10 @@ export class EvidenceCollector {
     if (data.agent_debate) evidence.push({ source: "Agent Debate", data: data.agent_debate });
     if (data.benchmark_results) evidence.push({ source: "Benchmark", data: data.benchmark_results });
     if (data.beliefs) evidence.push({ source: "Memory", data: data.beliefs });
+    
+    if (data.understanding?.acquired_evidence) {
+        evidence.push({ source: "Knowledge Acquisition", data: data.understanding.acquired_evidence });
+    }
 
     return evidence;
   }

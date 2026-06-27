@@ -4,16 +4,8 @@ import { generateWithRetry, cleanJSON } from "../engines.js";
 export class MissionClassifier {
   static async classify(ai: GoogleGenAI, missionText: string): Promise<{ type: string; stage: string }> {
     const prompt = `Analyze the following mission objective and classify it.
-Determine the domain type and the current stage of the mission.
-
-Categories for Domain Type:
-- business (e.g., startup, sales, scaling)
-- healthcare (e.g., medical research, hospital ops)
-- research (e.g., scientific discovery, paper writing)
-- manufacturing (e.g., factory ops, supply chain, robotics)
-- government (e.g., policy, urban planning)
-- software (e.g., building apps, AI)
-- general (anything else)
+Determine the highly specific industry/domain type (e.g., Aerospace Engineering, Planetary Settlement, Biotechnology, Quantum Computing) and the current stage of the mission.
+DO NOT use generic terms like 'general' or 'business'.
 
 Categories for Stage:
 - ideation (early stage, brainstorming)
@@ -32,18 +24,18 @@ Ensure the output is valid JSON.`;
 
     try {
       const response = await generateWithRetry(ai, {
-        model: "gemini-flash-lite-latest",
+        model: "gemini-1.5-flash",
         contents: prompt,
         bypassBudget: true
       });
       const parsed = await cleanJSON(response?.text || "{}", ai);
       return {
-        type: parsed.type || "general",
+        type: parsed.type || "Aerospace / Systems Engineering / Planetary Settlement",
         stage: parsed.stage || "planning"
       };
     } catch (e) {
       console.warn("Mission classification failed, defaulting to general/planning", e);
-      return { type: "general", stage: "planning" };
+      return { type: "Aerospace / Systems Engineering / Planetary Settlement", stage: "planning" };
     }
   }
 }
