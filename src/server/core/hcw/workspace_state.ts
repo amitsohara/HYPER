@@ -65,6 +65,15 @@ export class WorkspaceStore {
                 best_solutions: [],
                 virtual_worlds: []
             },
+            hcos_orchestrator: {
+                active_sessions: [],
+                completed_sessions: []
+            },
+            hsee_evolution: {
+                active_policies: [],
+                improvement_history: [],
+                benchmarks: []
+            },
             imagined_world: {},
             simulation_state: {},
             discovery_state: {},

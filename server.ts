@@ -2204,6 +2204,144 @@ async function startServer() {
       }
   });
 
+  // --- HCOS API ROUTES ---
+  app.post("/api/hcos/session", async (req, res) => {
+      try {
+          const { ThinkingOrchestrator } = await import("./src/server/core/hcos/thinking_orchestrator.js");
+          // Assume global orchestrator instance for testing
+          if (!(global as any).orchestrator) (global as any).orchestrator = new ThinkingOrchestrator();
+          const orchestrator = (global as any).orchestrator as any;
+          const session = orchestrator.createSession(req.body.mission || "");
+          res.json({ session_id: session.session_id });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.get("/api/hcos/session/:id", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          const session = orchestrator.getSession(req.params.id);
+          if (session) res.json({ session_id: session.session_id, status: session.status, confidence: session.confidence });
+          else res.status(404).json({ error: "Session not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.post("/api/hcos/session/:id/start", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          orchestrator.startSession(req.params.id);
+          res.json({ success: true });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.post("/api/hcos/session/:id/pause", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          orchestrator.pauseSession(req.params.id);
+          res.json({ success: true });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.post("/api/hcos/session/:id/resume", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          orchestrator.resumeSession(req.params.id);
+          res.json({ success: true });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.post("/api/hcos/session/:id/cancel", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          orchestrator.cancelSession(req.params.id);
+          res.json({ success: true });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.get("/api/hcos/session/:id/thoughts", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          const session = orchestrator.getSession(req.params.id);
+          if (session) res.json(session.stack.getAll());
+          else res.status(404).json({ error: "Session not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  app.get("/api/hcos/session/:id/history", async (req, res) => {
+      try {
+          const orchestrator = (global as any).orchestrator;
+          if (!orchestrator) return res.status(404).json({ error: "Orchestrator not found" });
+          const session = orchestrator.getSession(req.params.id);
+          if (session) res.json({ modules: session.module_history, checkpoints: session.checkpoints });
+          else res.status(404).json({ error: "Session not found" });
+      } catch (e) {
+          res.status(500).json({ error: "HCOS not initialized" });
+      }
+  });
+
+  // --- HSEE API ROUTES ---
+  app.post("/api/hsee/evaluate", async (req, res) => {
+      try {
+          const { SelfEvolutionEngine } = await import("./src/server/core/hsee/self_evolution_engine.js");
+          if (!(global as any).evolutionEngine) (global as any).evolutionEngine = new SelfEvolutionEngine();
+          const engine = (global as any).evolutionEngine;
+          const policies = engine.evaluateMissions(req.body.missions || []);
+          res.json({ policies });
+      } catch (e) {
+          res.status(500).json({ error: "HSEE not initialized" });
+      }
+  });
+
+  app.get("/api/hsee/policies", async (req, res) => {
+      try {
+          const engine = (global as any).evolutionEngine;
+          if (!engine) return res.status(404).json({ error: "Engine not found" });
+          res.json(engine.getDeployedPolicies());
+      } catch (e) {
+          res.status(500).json({ error: "HSEE not initialized" });
+      }
+  });
+
+  app.get("/api/hsee/history", async (req, res) => {
+      try {
+          const engine = (global as any).evolutionEngine;
+          if (!engine) return res.status(404).json({ error: "Engine not found" });
+          res.json(engine.getHistory());
+      } catch (e) {
+          res.status(500).json({ error: "HSEE not initialized" });
+      }
+  });
+
+  app.post("/api/hsee/rollback", async (req, res) => {
+      try {
+          const engine = (global as any).evolutionEngine;
+          if (!engine) return res.status(404).json({ error: "Engine not found" });
+          engine.rollback(req.body.policy_id);
+          res.json({ success: true });
+      } catch (e) {
+          res.status(500).json({ error: "HSEE not initialized" });
+      }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

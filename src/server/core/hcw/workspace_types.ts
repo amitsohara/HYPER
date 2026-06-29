@@ -169,6 +169,15 @@ export interface WorkspaceState {
         best_solutions: any[];
         virtual_worlds: any[];
     };
+    hcos_orchestrator?: {
+        active_sessions: any[];
+        completed_sessions: any[];
+    };
+    hsee_evolution?: {
+        active_policies: any[];
+        improvement_history: any[];
+        benchmarks: any[];
+    };
     imagined_world: any;
     simulation_state: any;
     discovery_state: any;
