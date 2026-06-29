@@ -125,6 +125,50 @@ export interface WorkspaceState {
     // For a unified graph, all nodes/edges are in `graph`, and we query by node type or sub-graph logic.
 
     world_state: any;
+    world_model?: { real_world?: any; imagined_world?: any; }; // To hold the HWME world model
+    dynamic_world?: any; // DWSE WorldStateManager
+    processes?: {
+        models: any[];
+        active_instances: any[];
+        completed_instances: any[];
+        failed_instances: any[];
+        process_graph?: any;
+    };
+    mechanisms?: {
+        models: any[];
+        mechanism_graph: any;
+        active_mechanisms: any[];
+        discovered_mechanisms: any[];
+    };
+    principles?: {
+        models: any[];
+        principle_graph: any;
+        principle_candidates: any[];
+        validated_principles: any[];
+    };
+    hypotheses?: {
+        models: any[];
+        active_hypotheses: any[];
+        rejected_hypotheses: any[];
+        validated_hypotheses: any[];
+        experiments: any[];
+        evidence: any[];
+    };
+    research?: {
+        knowledge_gaps: any[];
+        research_questions: any[];
+        research_plan: any[];
+        active_research: any[];
+        completed_research: any[];
+        discovery_queue: any[];
+    };
+    simulations?: {
+        simulations: any[];
+        simulation_branches: any[];
+        discovery_candidates: any[];
+        best_solutions: any[];
+        virtual_worlds: any[];
+    };
     imagined_world: any;
     simulation_state: any;
     discovery_state: any;

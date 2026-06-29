@@ -21,6 +21,50 @@ export class WorkspaceStore {
             status: 'active',
             graph: GraphOperations.createEmptyGraph(),
             world_state: {},
+            world_model: { real_world: undefined, imagined_world: undefined },
+            dynamic_world: undefined,
+            processes: {
+                models: [],
+                active_instances: [],
+                completed_instances: [],
+                failed_instances: [],
+                process_graph: {}
+            },
+            mechanisms: {
+                models: [],
+                mechanism_graph: {},
+                active_mechanisms: [],
+                discovered_mechanisms: []
+            },
+            principles: {
+                models: [],
+                principle_graph: {},
+                principle_candidates: [],
+                validated_principles: []
+            },
+            hypotheses: {
+                models: [],
+                active_hypotheses: [],
+                rejected_hypotheses: [],
+                validated_hypotheses: [],
+                experiments: [],
+                evidence: []
+            },
+            research: {
+                knowledge_gaps: [],
+                research_questions: [],
+                research_plan: [],
+                active_research: [],
+                completed_research: [],
+                discovery_queue: []
+            },
+            simulations: {
+                simulations: [],
+                simulation_branches: [],
+                discovery_candidates: [],
+                best_solutions: [],
+                virtual_worlds: []
+            },
             imagined_world: {},
             simulation_state: {},
             discovery_state: {},

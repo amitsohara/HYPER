@@ -41,6 +41,7 @@ export interface CycleState {
   learning?: any;
   belief_updates?: any;
   improvements?: any;
+  current_workspace_id?: string;
 
   hcc_state_before?: any;
   hcc_state_after?: any;

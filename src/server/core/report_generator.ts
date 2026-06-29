@@ -47,8 +47,9 @@ export class ReportGenerator {
       modules_failed: normalizedData.raw.modules_failed || []
     };
 
+    let hecsData = undefined;
+    let hcwData = undefined;
     if (viewMode === "developer") {
-      let hecsData = undefined;
       const exp = normalizedData.raw.hcc_state_after?.experience_summary;
       if (exp) {
           hecsData = {
@@ -80,7 +81,6 @@ export class ReportGenerator {
               Causal_Conflicts: normalizedData.raw.hcc_state_after?.causal_conflicts || []
           };
           
-          let hcwData = undefined;
           if (normalizedData.raw.hcc_state_after?.current_workspace_id) {
               try {
                   const { CognitiveWorkspace } = require('./hcw/cognitive_workspace.js');
@@ -91,7 +91,14 @@ export class ReportGenerator {
                           workspace_id: ws.workspace_id,
                           metrics,
                           modules_contributed: ws.modules_contributed,
-                          patches: ws.patches
+                          patches: ws.patches,
+                          world_model: ws.world_model && ws.world_model.real_world ? {
+                              entity_count: ws.world_model.real_world.entities.size,
+                              relationship_count: ws.world_model.real_world.relationships.size,
+                              system_count: ws.world_model.real_world.systems.size,
+                              constraint_count: ws.world_model.real_world.constraints.size,
+                              resource_count: ws.world_model.real_world.resources.size
+                          } : null
                       };
                   }
               } catch(e) {

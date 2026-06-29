@@ -1,0 +1,51 @@
+export enum ProcessStatus {
+    IDLE = "IDLE",
+    RUNNING = "RUNNING",
+    PAUSED = "PAUSED",
+    COMPLETED = "COMPLETED",
+    FAILED = "FAILED",
+    CANCELLED = "CANCELLED"
+}
+
+export enum StepType {
+    SEQUENTIAL = "SEQUENTIAL",
+    PARALLEL = "PARALLEL",
+    CONDITIONAL = "CONDITIONAL",
+    ITERATIVE = "ITERATIVE",
+    RECURSIVE = "RECURSIVE",
+    NESTED = "NESTED"
+}
+
+export enum DependencyType {
+    REQUIRES = "REQUIRES",
+    BLOCKS = "BLOCKS",
+    ENABLES = "ENABLES",
+    CONSUMES = "CONSUMES",
+    PRODUCES = "PRODUCES",
+    TRANSFORMS = "TRANSFORMS",
+    ACTIVATES = "ACTIVATES",
+    DEACTIVATES = "DEACTIVATES"
+}
+
+export enum ProcessResourceType {
+    PEOPLE = "PEOPLE",
+    ENERGY = "ENERGY",
+    WATER = "WATER",
+    MATERIALS = "MATERIALS",
+    MONEY = "MONEY",
+    MACHINES = "MACHINES",
+    INFORMATION = "INFORMATION",
+    TIME = "TIME",
+    COMPUTE = "COMPUTE",
+    BANDWIDTH = "BANDWIDTH"
+}
+
+export enum ProcessTriggerType {
+    MANUAL = "MANUAL",
+    SCHEDULED = "SCHEDULED",
+    EVENT = "EVENT",
+    CONDITION = "CONDITION",
+    THRESHOLD = "THRESHOLD",
+    EXTERNAL_INPUT = "EXTERNAL_INPUT",
+    MISSION_ACTION = "MISSION_ACTION"
+}
