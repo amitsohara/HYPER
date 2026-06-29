@@ -2342,6 +2342,63 @@ async function startServer() {
       }
   });
 
+  // --- HACES EEC API ROUTES ---
+  app.post("/api/haces/eec/mission-completed", async (req, res) => {
+      try {
+          const { EvolutionExecutiveController } = await import("./src/server/core/haces/eec/index.js");
+          if (!(global as any).eec) (global as any).eec = new EvolutionExecutiveController();
+          const eec = (global as any).eec;
+          const report = eec.handleMissionCompleted(req.body.missionData || {});
+          res.json({ report });
+      } catch (e) {
+          res.status(500).json({ error: "EEC not initialized" });
+      }
+  });
+
+  app.get("/api/haces/eec/metrics", async (req, res) => {
+      try {
+          const eec = (global as any).eec;
+          if (!eec) return res.status(404).json({ error: "EEC not initialized" });
+          res.json(eec.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "EEC not initialized" });
+      }
+  });
+
+  // --- HACES HERA API ROUTES ---
+  app.post("/api/haces/hera/cycle", async (req, res) => {
+      try {
+          const { AgendaManager } = await import("./src/server/core/haces/hera/index.js");
+          if (!(global as any).hera) (global as any).hera = new AgendaManager();
+          const hera = (global as any).hera;
+          hera.runCycle();
+          res.json({ success: true, metrics: hera.getMetrics() });
+      } catch (e) {
+          res.status(500).json({ error: "HERA not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hera/annual-report", async (req, res) => {
+      try {
+          const { AgendaManager } = await import("./src/server/core/haces/hera/index.js");
+          if (!(global as any).hera) (global as any).hera = new AgendaManager();
+          const hera = (global as any).hera;
+          res.json(hera.generateAnnualReport());
+      } catch (e) {
+          res.status(500).json({ error: "HERA not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hera/metrics", async (req, res) => {
+      try {
+          const hera = (global as any).hera;
+          if (!hera) return res.status(404).json({ error: "HERA not initialized" });
+          res.json(hera.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "HERA not initialized" });
+      }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
