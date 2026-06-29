@@ -2399,6 +2399,142 @@ async function startServer() {
       }
   });
 
+  // --- HACES HCO API ROUTES ---
+  app.post("/api/haces/hco/cycle", async (req, res) => {
+      try {
+          const { CognitiveObservatory } = await import("./src/server/core/haces/hco/index.js");
+          if (!(global as any).hco) (global as any).hco = new CognitiveObservatory();
+          const hco = (global as any).hco;
+          hco.runObservationCycle();
+          res.json({ success: true, metrics: hco.getMetrics() });
+      } catch (e) {
+          res.status(500).json({ error: "HCO not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hco/twin", async (req, res) => {
+      try {
+          const { CognitiveObservatory } = await import("./src/server/core/haces/hco/index.js");
+          if (!(global as any).hco) (global as any).hco = new CognitiveObservatory();
+          const hco = (global as any).hco;
+          res.json(hco.queryEngine.executeQuery("FULL_STATE"));
+      } catch (e) {
+          res.status(500).json({ error: "HCO not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hco/dashboard/:audience", async (req, res) => {
+      try {
+          const { CognitiveObservatory } = await import("./src/server/core/haces/hco/index.js");
+          if (!(global as any).hco) (global as any).hco = new CognitiveObservatory();
+          const hco = (global as any).hco;
+          res.json(hco.dashboards.generateDashboard(req.params.audience));
+      } catch (e) {
+          res.status(500).json({ error: "HCO not initialized" });
+      }
+  });
+
+  // --- HACES HCDE API ROUTES ---
+  app.post("/api/haces/hcde/diagnose", async (req, res) => {
+      try {
+          const { CognitiveDiagnosisEngine } = await import("./src/server/core/haces/hcde/index.js");
+          if (!(global as any).hcde) (global as any).hcde = new CognitiveDiagnosisEngine();
+          const hcde = (global as any).hcde;
+          const report = hcde.diagnoseMission(req.body.missionData || {}, req.body.evidence || []);
+          res.json({ success: true, report });
+      } catch (e) {
+          res.status(500).json({ error: "HCDE not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hcde/metrics", async (req, res) => {
+      try {
+          const { CognitiveDiagnosisEngine } = await import("./src/server/core/haces/hcde/index.js");
+          if (!(global as any).hcde) (global as any).hcde = new CognitiveDiagnosisEngine();
+          const hcde = (global as any).hcde;
+          res.json(hcde.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "HCDE not initialized" });
+      }
+  });
+
+  // --- HACES CCGDE API ROUTES ---
+  app.post("/api/haces/ccgde/analyze", async (req, res) => {
+      try {
+          const { CognitiveCapabilityGapDiscovery } = await import("./src/server/core/haces/ccgde/index.js");
+          if (!(global as any).ccgde) (global as any).ccgde = new CognitiveCapabilityGapDiscovery();
+          const ccgde = (global as any).ccgde;
+          const recommendations = ccgde.analyzeDiagnostics(req.body.diagnosticReports || []);
+          res.json({ success: true, recommendations });
+      } catch (e) {
+          res.status(500).json({ error: "CCGDE not initialized" });
+      }
+  });
+
+  app.get("/api/haces/ccgde/metrics", async (req, res) => {
+      try {
+          const { CognitiveCapabilityGapDiscovery } = await import("./src/server/core/haces/ccgde/index.js");
+          if (!(global as any).ccgde) (global as any).ccgde = new CognitiveCapabilityGapDiscovery();
+          const ccgde = (global as any).ccgde;
+          res.json(ccgde.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "CCGDE not initialized" });
+      }
+  });
+
+  // --- HACES HCRI API ROUTES ---
+  app.post("/api/haces/hcri/pipeline", async (req, res) => {
+      try {
+          const { ResearchInstitute } = await import("./src/server/core/haces/hcri/index.ts");
+          if (!(global as any).hcri) (global as any).hcri = new ResearchInstitute();
+          const hcri = (global as any).hcri;
+          const session = hcri.runScientificDiscoveryPipeline(req.body.objective || "General improvement");
+          res.json({ success: true, session });
+      } catch (e) {
+          res.status(500).json({ error: "HCRI not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hcri/metrics", async (req, res) => {
+      try {
+          const { ResearchInstitute } = await import("./src/server/core/haces/hcri/index.ts");
+          if (!(global as any).hcri) (global as any).hcri = new ResearchInstitute();
+          const hcri = (global as any).hcri;
+          res.json(hcri.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "HCRI not initialized" });
+      }
+  });
+
+  // --- HACES HCAI API ROUTES ---
+  app.post("/api/haces/hcai/compile", async (req, res) => {
+      try {
+          const { ArchitectureInstitute } = await import("./src/server/core/haces/hcai/index.js");
+          if (!(global as any).hcai) (global as any).hcai = new ArchitectureInstitute();
+          const hcai = (global as any).hcai;
+          const pkg = hcai.compileCognitiveArchitecture(
+              req.body.mission || "Default Mission",
+              req.body.objective || "Default Objective",
+              req.body.capabilityId || "CAP-DEFAULT",
+              req.body.evidenceId || "EVID-DEFAULT"
+          );
+          res.json({ success: true, package: pkg });
+      } catch (e) {
+          res.status(500).json({ error: "HCAI not initialized" });
+      }
+  });
+
+  app.get("/api/haces/hcai/metrics", async (req, res) => {
+      try {
+          const { ArchitectureInstitute } = await import("./src/server/core/haces/hcai/index.js");
+          if (!(global as any).hcai) (global as any).hcai = new ArchitectureInstitute();
+          const hcai = (global as any).hcai;
+          res.json(hcai.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "HCAI not initialized" });
+      }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
