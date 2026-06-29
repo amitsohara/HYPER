@@ -123,6 +123,44 @@ export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: n
         return cached.response;
     }
 
+    if (process.env.MODEL_MODE === "ollama") {
+        const ollamaUrl = process.env.OLLAMA_URL || "http://127.0.0.1:11434";
+        const ollamaModel = process.env.OLLAMA_MODEL || "llama3";
+        const isJSON = config.config?.responseMimeType === "application/json";
+        
+        try {
+            console.log(`Querying Ollama: ${ollamaUrl} (model: ${ollamaModel})`);
+            const response = await fetch(`${ollamaUrl}/api/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: ollamaModel,
+                    prompt: promptStr,
+                    stream: false,
+                    format: isJSON ? "json" : undefined
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Ollama API error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            const ollamaRes = { text: data.response };
+            
+            const completionTokens = CostEstimator.estimateTokens(ollamaRes.text);
+            if (budgetManager) {
+                budgetManager.consumeTokens(estTokens + completionTokens);
+            }
+            globalPromptCache.set(promptStr, ollamaRes, estTokens + completionTokens);
+            
+            return ollamaRes;
+        } catch (e: any) {
+            console.error(`Ollama generation failed: ${e.message}`);
+            throw e;
+        }
+    }
+
     const fallbackChain = [
         'gemini-2.5-flash',
         'gemini-2.0-flash',
@@ -188,7 +226,7 @@ export async function generateWithRetry(ai: GoogleGenAI, config: any, retries: n
                 }
 
                 // Fallback models to bypass quota issues
-                if (isRateLimit && fallbackIndex < fallbackChain.length - 1) {
+                if ((isRateLimit || isUnavailable) && fallbackIndex < fallbackChain.length - 1) {
                     fallbackIndex++;
                     config.model = fallbackChain[fallbackIndex];
                     if (delay > 20000) delay = 2000; // Small delay before switching model

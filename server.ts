@@ -68,6 +68,54 @@ async function startServer() {
   );
 
   // API routes FIRST
+  app.post("/api/loop/create", async (req, res) => {
+    const { GoalLoopEngine } = await import("./src/server/loop/goal_loop.js").catch(e => import("./src/server/loop/goal_loop.ts"));
+    res.json(GoalLoopEngine.createLoop(req.body.purpose));
+  });
+
+  app.get("/api/genome", async (req, res) => {
+    const { CognitiveGenomeService } = await import("./src/server/core/cognitive_genome.js").catch(e => import("./src/server/core/cognitive_genome.ts"));
+    res.json(CognitiveGenomeService.getGenome());
+  });
+
+  app.get("/api/genome/history", async (req, res) => {
+    const { CognitiveGenomeService } = await import("./src/server/core/cognitive_genome.js").catch(e => import("./src/server/core/cognitive_genome.ts"));
+    res.json(CognitiveGenomeService.getHistory());
+  });
+
+  app.post("/api/genome/snapshot", express.json(), async (req, res) => {
+    const { CognitiveGenomeService } = await import("./src/server/core/cognitive_genome.js").catch(e => import("./src/server/core/cognitive_genome.ts"));
+    const { version, modules, relationships, capabilities } = req.body;
+    if (!version || !modules || !relationships || !capabilities) {
+        return res.status(400).json({ error: "Missing required snapshot data" });
+    }
+    const newSnapshot = CognitiveGenomeService.createSnapshot(version, modules, relationships, capabilities);
+    res.json(newSnapshot);
+  });
+
+  app.get("/api/loop/all", async (req, res) => {
+    const { GoalLoopEngine } = await import("./src/server/loop/goal_loop.js").catch(e => import("./src/server/loop/goal_loop.ts"));
+    res.json(GoalLoopEngine.getAllLoops());
+  });
+
+  app.get("/api/loop/:id", async (req, res) => {
+    const { GoalLoopEngine } = await import("./src/server/loop/goal_loop.js").catch(e => import("./src/server/loop/goal_loop.ts"));
+    const loop = GoalLoopEngine.getLoop(req.params.id);
+    if (!loop) return res.status(404).json({ error: "Not found" });
+    res.json(loop);
+  });
+
+  app.post("/api/loop/:id/step", async (req, res) => {
+    if (!ai) return res.status(500).json({ error: "No AI configured" });
+    const { GoalLoopEngine } = await import("./src/server/loop/goal_loop.js").catch(e => import("./src/server/loop/goal_loop.ts"));
+    try {
+      const loop = await GoalLoopEngine.stepLoop(ai, req.params.id);
+      res.json(loop);
+    } catch(e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   app.get("/knowledge-graph", (req, res) => {
     res.json(kgInstance.exportGraph());
   });
@@ -2532,6 +2580,30 @@ async function startServer() {
           res.json(hcai.getMetrics());
       } catch (e) {
           res.status(500).json({ error: "HCAI not initialized" });
+      }
+  });
+
+  // --- HACES HAEI API ROUTES ---
+  app.post("/api/haces/haei/process", async (req, res) => {
+      try {
+          const { EngineeringInstitute } = await import("./src/server/core/haces/haei/index.js");
+          if (!(global as any).haei) (global as any).haei = new EngineeringInstitute();
+          const haei = (global as any).haei;
+          const rc = haei.processEngineeringPackage(req.body.package || { package_id: "DEFAULT-PKG", rollback_procedures: [] });
+          res.json({ success: !!rc, release_candidate: rc });
+      } catch (e) {
+          res.status(500).json({ error: "HAEI not initialized" });
+      }
+  });
+
+  app.get("/api/haces/haei/metrics", async (req, res) => {
+      try {
+          const { EngineeringInstitute } = await import("./src/server/core/haces/haei/index.js");
+          if (!(global as any).haei) (global as any).haei = new EngineeringInstitute();
+          const haei = (global as any).haei;
+          res.json(haei.getMetrics());
+      } catch (e) {
+          res.status(500).json({ error: "HAEI not initialized" });
       }
   });
 

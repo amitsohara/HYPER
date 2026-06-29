@@ -24,6 +24,10 @@ import { KnowledgeDashboard } from "./components/KnowledgeDashboard";
 import MetaCognitionDashboard from "./components/MetaCognitionDashboard";
 import { CognitiveCycleDashboard } from "./components/CognitiveCycleDashboard";
 
+import { CognitiveAutopsyView } from "./components/CognitiveAutopsyView";
+import { GoalLoopDashboard } from "./components/GoalLoopDashboard";
+import { CognitiveGenomeDashboard } from "./components/CognitiveGenomeDashboard";
+
 import { safeFetchJSON } from "./fetchUtils";
 
 export default function App() {
@@ -33,7 +37,7 @@ export default function App() {
   const [missionMode, setMissionMode] = useState("balanced");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social" | "core" | "meta" | "cycle">("missions");
+  const [activeTab, setActiveTab] = useState<"missions" | "evolution" | "knowledge_graph" | "research" | "autonomous" | "brain" | "world" | "cognitive" | "executive" | "learning" | "society" | "discovery" | "embodied" | "digital_twin" | "theory_of_mind" | "common_sense" | "intelligence" | "collective" | "social" | "core" | "meta" | "cycle" | "autopsy" | "loop" | "genome">("missions");
 
   const [showDeveloper, setShowDeveloper] = useState(false);
 
@@ -257,6 +261,20 @@ export default function App() {
                 Cognitive Cycle
               </button>
               <button 
+                onClick={() => setActiveTab("autopsy")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "autopsy" ? "bg-red-900/50 text-red-200" : "text-slate-400 hover:text-red-300"}`}
+              >
+                <Activity className="w-4 h-4" />
+                Cognitive Autopsy
+              </button>
+              <button 
+                onClick={() => setActiveTab("loop")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "loop" ? "bg-indigo-900/50 text-indigo-200" : "text-slate-400 hover:text-indigo-300"}`}
+              >
+                <Activity className="w-4 h-4" />
+                Goal Loop
+              </button>
+              <button 
                 onClick={() => setActiveTab("embodied")} 
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "embodied" ? "bg-emerald-900/50 text-emerald-200" : "text-slate-400 hover:text-emerald-300"}`}
               >
@@ -269,6 +287,13 @@ export default function App() {
               >
                 <Globe className="w-4 h-4" />
                 Digital Twin
+              </button>
+              <button 
+                onClick={() => setActiveTab("genome")} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "genome" ? "bg-fuchsia-900/50 text-fuchsia-200" : "text-slate-400 hover:text-fuchsia-300"}`}
+              >
+                <Network className="w-4 h-4" />
+                Cognitive Genome
               </button>
               <button 
                 onClick={() => setActiveTab("theory_of_mind")} 
@@ -380,6 +405,52 @@ export default function App() {
           <KnowledgeDashboard mission={missions[0] || null} />
         ) : activeTab === "cycle" ? (
           <CognitiveCycleDashboard missionId={missions[0]?.mission_id || ""} />
+        ) : activeTab === "autopsy" ? (
+          <CognitiveAutopsyView 
+            autopsy={{
+              mission_id: missions[0]?.mission_id || "M-101",
+              mission_name: missions[0]?.mission || "Example Failed Mission",
+              status: "FAILURE",
+              timestamp: Date.now(),
+              goals: {
+                primary: "Analyze market trends",
+                secondary: ["Identify key players", "Forecast next 5 years"],
+                alignment: 45
+              },
+              reasoning: {
+                assumptions: ["Data is publicly available", "Competitors haven't launched yet"],
+                logic_chain: [
+                  "If data is public, we can scrape it",
+                  "If we scrape it, we can analyze it",
+                  "If we analyze it, we can forecast"
+                ],
+                flaws_identified: ["Failed to account for IP blocking", "Competitors already launched shadow products"]
+              },
+              planning: {
+                selected_strategy: "Web scraping and NLP analysis",
+                alternatives_considered: ["Purchase dataset", "Manual analysis"],
+                execution_steps: [
+                  { step: "Initialize scrapers", status: "COMPLETED" },
+                  { step: "Bypass captchas", status: "FAILED", error: "Captcha solving service timeout" },
+                  { step: "Analyze data", status: "SKIPPED" }
+                ]
+              },
+              outcome: {
+                actual_result: "Mission aborted due to captcha block.",
+                metrics: { pages_scraped: 50, captchas_failed: 120, time_elapsed: "12m" },
+                unintended_consequences: ["IP address temporarily banned from target domain"]
+              },
+              root_cause: {
+                primary_cause: "Over-reliance on brittle web scraping without proxy rotation.",
+                contributing_factors: ["Captcha service downtime", "Aggressive rate limits"],
+                recommended_system_update: "Implement robust proxy rotation pool and fallback to alternative data sources when blocked."
+              }
+            }} 
+          />
+        ) : activeTab === "loop" ? (
+          <GoalLoopDashboard />
+        ) : activeTab === "genome" ? (
+          <CognitiveGenomeDashboard />
         ) : (
           <>
             <form onSubmit={handleLaunch} className="flex flex-col md:flex-row gap-4">

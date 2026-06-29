@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { generateWithRetry, cleanJSON } from '../engines.js';
 import { PersistentBrain } from '../brain/persistent_brain.js';
+import { CognitiveGenomeService } from '../core/cognitive_genome.js';
 
 class CitySimulator {
     static async simulate(ai: GoogleGenAI, context: string) {
@@ -96,7 +97,8 @@ Return JSON:
                 scenario_comparisons: comparisonData.scenario_comparisons || [],
                 predicted_outcomes: comparisonData.predicted_outcomes || [],
                 uncertainty_ranges: comparisonData.uncertainty_ranges || [],
-                recommended_interventions: comparisonData.recommended_interventions || []
+                recommended_interventions: comparisonData.recommended_interventions || [],
+                cognitive_genome: CognitiveGenomeService.getGenome()
             };
         } catch (e) {
             console.warn("Digital Twin Engine Error:", e);
@@ -107,7 +109,8 @@ Return JSON:
                 scenario_comparisons: [],
                 predicted_outcomes: [],
                 uncertainty_ranges: [],
-                recommended_interventions: []
+                recommended_interventions: [],
+                cognitive_genome: CognitiveGenomeService.getGenome()
             };
         }
     }
