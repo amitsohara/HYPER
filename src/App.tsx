@@ -437,7 +437,7 @@ export default function App() {
               },
               outcome: {
                 actual_result: "Mission aborted due to captcha block.",
-                metrics: { pages_scraped: 50, captchas_failed: 120, time_elapsed: "12m" },
+                metrics: { pages_scraped: 50, captchas_failed: 120, time_elapsed: 12 },
                 unintended_consequences: ["IP address temporarily banned from target domain"]
               },
               root_cause: {

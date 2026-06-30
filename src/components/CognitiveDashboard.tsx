@@ -5,13 +5,35 @@ import { safeFetchJSON } from "../fetchUtils";
 export function CognitiveDashboard({ mission }: any) {
   const state = mission?.cognitive_state || { beliefs: [], goals: [], plans: [], reasoning_chains: [], uncertainty_level: 0, confidence_level: 1, reasoning_summary: "", knowledge_gaps: [], current_mission: null };
   const loading = !mission;
-  const looping = false;
-  const metaLoading = false;
-  const agiLoading = false;
+  const [metaLoading, setMetaLoading] = useState(false);
+  const [agiLoading, setAgiLoading] = useState(false);
+  const [looping, setLooping] = useState(false);
 
-  const triggerMetaCognition = async () => {};
-  const triggerAgiSynthesis = async () => {};
-  const toggleLoop = async () => {};
+  const triggerMetaCognition = async () => {
+      setMetaLoading(true);
+      await safeFetchJSON("/cognitive/meta", { method: "POST" });
+      setMetaLoading(false);
+  };
+
+  const triggerAgiSynthesis = async () => {
+      setAgiLoading(true);
+      await safeFetchJSON("/cognitive/agi", { method: "POST" });
+      setAgiLoading(false);
+  };
+
+  const toggleLoop = async () => {
+      const newStatus = !looping;
+      setLooping(newStatus);
+      await safeFetchJSON(`/cognitive/loop/${newStatus ? 'start' : 'stop'}`, { method: "POST" });
+  };
+
+  useEffect(() => {
+    safeFetchJSON("/cognitive/loop/status").then(data => {
+      if (data && typeof data.active === 'boolean') {
+        setLooping(data.active);
+      }
+    });
+  }, []);
 
   if (loading) return <div className="text-white p-8 animate-pulse text-center"><Brain className="w-12 h-12 mx-auto text-purple-500 animate-pulse mb-4" /><p>Accessing Cognitive State...</p></div>;
 

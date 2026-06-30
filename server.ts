@@ -2488,7 +2488,7 @@ async function startServer() {
           const { CognitiveDiagnosisEngine } = await import("./src/server/core/haces/hcde/index.js");
           if (!(global as any).hcde) (global as any).hcde = new CognitiveDiagnosisEngine();
           const hcde = (global as any).hcde;
-          const report = hcde.diagnoseMission(req.body.missionData || {}, req.body.evidence || []);
+          const report = await hcde.diagnoseMission(ai, req.body.missionData || {}, req.body.evidence || []);
           res.json({ success: true, report });
       } catch (e) {
           res.status(500).json({ error: "HCDE not initialized" });
@@ -2604,6 +2604,106 @@ async function startServer() {
           res.json(haei.getMetrics());
       } catch (e) {
           res.status(500).json({ error: "HAEI not initialized" });
+      }
+  });
+
+  // --- HACES HVVI API ROUTES ---
+  app.post("/api/haces/hvvi/verify", async (req, res) => {
+      try {
+          const { HyperMindVerificationValidationInstitute } = await import("./src/server/core/haces/hvvi/index.js");
+          if (!(global as any).hvvi) (global as any).hvvi = new HyperMindVerificationValidationInstitute();
+          const hvvi = (global as any).hvvi;
+          const result = await hvvi.verifyAndValidate(ai, req.body.payload || { id: "unknown" });
+          res.json({ success: true, ...result });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/haces/hvvi/metrics", async (req, res) => {
+      try {
+          const { VerificationMetrics } = await import("./src/server/core/haces/hvvi/index.js");
+          res.json(VerificationMetrics.getSummary());
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  // --- HACES HBII API ROUTES ---
+  app.post("/api/haces/hbii/evaluate", async (req, res) => {
+      try {
+          const { HyperMindBenchmarkIntelligenceInstitute } = await import("./src/server/core/haces/hbii/index.js");
+          if (!(global as any).hbii) (global as any).hbii = new HyperMindBenchmarkIntelligenceInstitute();
+          const hbii = (global as any).hbii;
+          const result = await hbii.runFullEvaluation(ai, req.body.version || "latest", req.body.previousProfile, req.body.results || []);
+          res.json({ success: true, ...result });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/haces/hbii/metrics", async (req, res) => {
+      try {
+          const { BenchmarkMetrics } = await import("./src/server/core/haces/hbii/index.js");
+          res.json(BenchmarkMetrics.getSummary());
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  // --- HACES HEM API ROUTES ---
+  app.post("/api/haces/hem/record", async (req, res) => {
+      try {
+          const { HyperMindEvolutionMemory } = await import("./src/server/core/haces/hem/index.js");
+          if (!(global as any).hem) (global as any).hem = new HyperMindEvolutionMemory();
+          const hem = (global as any).hem;
+          hem.recordEvent(req.body.event);
+          res.json({ success: true });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/haces/hem/metrics", async (req, res) => {
+      try {
+          const { MemoryMetrics } = await import("./src/server/core/haces/hem/index.js");
+          res.json(MemoryMetrics.getSummary());
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.post("/api/haces/hem/reflection", async (req, res) => {
+      try {
+          const { HyperMindEvolutionMemory } = await import("./src/server/core/haces/hem/index.js");
+          if (!(global as any).hem) (global as any).hem = new HyperMindEvolutionMemory();
+          const hem = (global as any).hem;
+          const result = await hem.runReflectionCycle(ai, req.body.cycle_id, req.body.events || []);
+          res.json({ success: true, reflection: result });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  // --- HACES HESO API ROUTES ---
+  app.post("/api/haces/heso/plan", async (req, res) => {
+      try {
+          const { HyperMindEvolutionStrategyOffice } = await import("./src/server/core/haces/heso/index.js");
+          if (!(global as any).heso) (global as any).heso = new HyperMindEvolutionStrategyOffice();
+          const heso = (global as any).heso;
+          const strategy = await heso.performStrategicPlanning(ai, req.body.context || {});
+          res.json({ success: true, strategy });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/haces/heso/metrics", async (req, res) => {
+      try {
+          const { StrategyMetrics } = await import("./src/server/core/haces/heso/index.js");
+          res.json(StrategyMetrics.getSummary());
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
       }
   });
 

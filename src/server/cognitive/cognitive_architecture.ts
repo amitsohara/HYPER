@@ -251,16 +251,27 @@ Return JSON:
         const currentBeliefs = memState.beliefs.slice(0, 5).map(b => b.belief);
         const currentGoals = memState.goals.slice(0, 3).map(g => g.description);
         
+        // Dynamically import WorkspaceStore to get the actual world state
+        const { WorkspaceStore } = await import("../core/hcw/workspace_state.js");
+        const activeWorkspaces = WorkspaceStore.getAllWorkspaces();
+        const activeWorkspace = activeWorkspaces.length > 0 ? activeWorkspaces[0] : null;
+        const realWorld = activeWorkspace?.world_model?.real_world || {};
+        const imaginedWorld = activeWorkspace?.world_model?.imagined_world || {};
+
         const agiPrompt = `You are the Artificial General Intelligence (AGI) Synthesis Core. 
 Your purpose is to transcend narrow task execution and discover universal, cross-domain principles.
 Review the current cognitive state:
 Beliefs: ${JSON.stringify(currentBeliefs)}
 Goals: ${JSON.stringify(currentGoals)}
 
+CRITICAL AGI CONSTRAINT: You MUST distinguish between the Real World and Imagined Worlds.
+Real World State: ${JSON.stringify(realWorld).substring(0, 500)}
+Imagined World State: ${JSON.stringify(imaginedWorld).substring(0, 500)}
+
 Perform the following AGI functions:
-1. Cross-Domain Generalization: Identify a pattern from these specific beliefs that applies universally.
+1. Cross-Domain Generalization: Identify a pattern from these specific beliefs that applies universally, bridging the real world and imagined scenarios.
 2. Directive Refinement: Propose an updated foundational directive for the system.
-3. Novel Paradigm Discovery: Generate a completely new concept or paradigm that bridges gaps in current knowledge.
+3. Novel Paradigm Discovery: Generate a completely new concept or paradigm that bridges gaps in current knowledge and maintains strict separation of the imagined world from the real world.
 
 Return JSON:
 {

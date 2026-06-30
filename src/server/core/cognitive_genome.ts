@@ -2,7 +2,7 @@ export interface ModuleNode {
     id: string;
     name: string;
     description: string;
-    layer: 'Core' | 'Cognitive' | 'Agents' | 'Execution' | 'Observability';
+    layer: 'Core' | 'Cognitive' | 'Agents' | 'Learning' | 'Execution' | 'Observability';
     status: 'Active' | 'Inactive' | 'Degraded';
 }
 

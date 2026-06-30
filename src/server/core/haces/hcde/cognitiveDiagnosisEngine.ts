@@ -1,3 +1,4 @@
+import { GoogleGenAI } from "@google/genai";
 import { RootCauseAnalyzer } from "./rootCauseAnalyzer.js";
 import { SuccessAnalyzer } from "./successAnalyzer.js";
 import { FailureAnalyzer } from "./failureAnalyzer.js";
@@ -37,15 +38,15 @@ export class CognitiveDiagnosisEngine {
     public autopsySystem = new CognitiveAutopsySystem();
     private eventBus = DiagnosticEventBus.getInstance();
 
-    public diagnoseMission(missionData: any, evidence: DiagnosticEvidence[]): DiagnosisReport {
+    public async diagnoseMission(ai: GoogleGenAI, missionData: any, evidence: DiagnosticEvidence[]): Promise<DiagnosisReport> {
         this.eventBus.publish(DiagnosticEvents.DIAGNOSIS_STARTED, { mission_id: missionData.mission_id });
 
         const reportId = uuidv4();
         const type = missionData.success ? DiagnosisType.SUCCESS : DiagnosisType.FAILURE;
 
         // 1. Root Cause Analysis
-        const rootCause = this.rootCauseAnalyzer.analyze(evidence);
-        const contributingFactors = this.rootCauseAnalyzer.findContributingFactors(evidence);
+        const rootCause = await this.rootCauseAnalyzer.analyze(ai, evidence);
+        const contributingFactors = await this.rootCauseAnalyzer.findContributingFactors(ai, evidence);
 
         // 2. Confidence Assessment
         const confidence = this.confidenceEngine.computeConfidence(evidence, rootCause);
@@ -104,3 +105,4 @@ export class CognitiveDiagnosisEngine {
         );
     }
 }
+
