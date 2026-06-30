@@ -50,7 +50,7 @@ export class HyperMindEvolutionStrategyOffice {
         const opportunities = this.opportunityAnalyzer.analyzeOpportunities(intelligence);
         
         // Simulate scenarios
-        await this.scenarioSimulator.simulateScenarios(ai, systemContext);
+        await this.scenarioSimulator.simulateScenarios(ai, systemContext, systemContext.hem);
         
         // Generate dashboard
         this.dashboardSupport.generateDashboard(intelligence, risks, ["Enhance Reasoning", "Scale Simulation"]);

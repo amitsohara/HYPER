@@ -58,6 +58,10 @@ export interface FutureScenario {
     assumptions: string[];
     projected_outcomes: string[];
     probability: number;
+    projected_intelligence_gains: number;
+    risk_level: number;
+    resource_consumption: number;
+    rank: number;
     timestamp: number;
 }
 
