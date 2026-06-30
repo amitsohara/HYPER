@@ -2707,6 +2707,28 @@ async function startServer() {
       }
   });
 
+  // --- HMCR API ROUTES ---
+  app.post("/api/hmcr/process", async (req, res) => {
+      try {
+          const { ExecutiveCognitiveCore } = await import("./src/server/core/hmcr/index.js");
+          if (!(global as any).ecc) (global as any).ecc = new ExecutiveCognitiveCore();
+          const ecc = (global as any).ecc;
+          const result = await ecc.processTask(req.body.input_data, req.body.description || "Default Task");
+          res.json({ success: true, result });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/hmcr/metrics", async (req, res) => {
+      try {
+          const { CognitiveMetrics } = await import("./src/server/core/hmcr/index.js");
+          res.json(CognitiveMetrics.getSummary());
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
