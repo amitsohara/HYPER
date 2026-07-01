@@ -1,3 +1,5 @@
+import { HyperMindEventMesh, CognitiveDomain, EventPriority } from "../../hcns01/index.js";
+
 export enum VerificationEvents {
     VERIFICATION_STARTED = "HVVI_VERIFICATION_STARTED",
     VERIFICATION_COMPLETED = "HVVI_VERIFICATION_COMPLETED",
@@ -12,9 +14,24 @@ export enum VerificationEvents {
     RELEASE_REJECTED = "HVVI_RELEASE_REJECTED"
 }
 
+// Register these schemas so the Mesh allows them
+const mesh = HyperMindEventMesh.getInstance();
+Object.values(VerificationEvents).forEach(type => {
+    if (!mesh.registry.isRegistered(type)) {
+        mesh.registerEventType({
+            type,
+            domain: CognitiveDomain.VERIFICATION,
+            description: `Verification Event: ${type}`
+        });
+    }
+});
+
+/**
+ * Backward compatible facade pointing to HyperMindEventMesh (HCNS-01)
+ */
 export class VerificationEventBus {
     private static instance: VerificationEventBus;
-    private listeners: Record<string, ((data: any) => void)[]> = {};
+    private mesh = HyperMindEventMesh.getInstance();
 
     private constructor() {}
 
@@ -26,16 +43,20 @@ export class VerificationEventBus {
     }
 
     public subscribe(event: VerificationEvents, callback: (data: any) => void) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
-        }
-        this.listeners[event].push(callback);
+        this.mesh.subscribe(event, (meshEvent) => {
+            callback(meshEvent.payload);
+        });
     }
 
     public publish(event: VerificationEvents, data: any) {
-        console.log(`[HVVI Event] ${event}`, data);
-        if (this.listeners[event]) {
-            this.listeners[event].forEach(cb => cb(data));
-        }
+        console.log(`[HCNS-01] [HVVI] Publishing: ${event}`);
+        this.mesh.publish({
+            type: event,
+            domain: CognitiveDomain.VERIFICATION,
+            priority: EventPriority.NORMAL,
+            source: "HVVI",
+            payload: data
+        });
     }
 }
+

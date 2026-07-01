@@ -1,3 +1,5 @@
+import { HyperMindEventMesh, CognitiveDomain, EventPriority } from "../hcns01/index.js";
+
 export enum CognitiveEvents {
     COGNITIVE_CYCLE_STARTED = "HMCR_COGNITIVE_CYCLE_STARTED",
     SPECIALIST_ACTIVATED = "HMCR_SPECIALIST_ACTIVATED",
@@ -14,9 +16,24 @@ export enum CognitiveEvents {
     BLACKBOARD_UPDATED = "HMCR_BLACKBOARD_UPDATED"
 }
 
+// Register these schemas so the Mesh allows them
+const mesh = HyperMindEventMesh.getInstance();
+Object.values(CognitiveEvents).forEach(type => {
+    if (!mesh.registry.isRegistered(type)) {
+        mesh.registerEventType({
+            type,
+            domain: CognitiveDomain.REASONING,
+            description: `Cognitive Event: ${type}`
+        });
+    }
+});
+
+/**
+ * Backward compatible facade pointing to HyperMindEventMesh (HCNS-01)
+ */
 export class CognitiveEventBus {
     private static instance: CognitiveEventBus;
-    private listeners: Record<string, ((data: any) => void)[]> = {};
+    private mesh = HyperMindEventMesh.getInstance();
 
     private constructor() {}
 
@@ -28,16 +45,21 @@ export class CognitiveEventBus {
     }
 
     public subscribe(event: CognitiveEvents, callback: (data: any) => void) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
-        }
-        this.listeners[event].push(callback);
+        this.mesh.subscribe(event, (meshEvent) => {
+            callback(meshEvent.payload);
+        });
     }
 
     public publish(event: CognitiveEvents, data: any) {
-        console.log(`[HMCR Event] ${event}`, data?.session_id ? `Session: ${data.session_id}` : "");
-        if (this.listeners[event]) {
-            this.listeners[event].forEach(cb => cb(data));
-        }
+        console.log(`[HCNS-01] [HMCR] Publishing: ${event}`, data?.session_id ? `Session: ${data.session_id}` : "");
+        this.mesh.publish({
+            type: event,
+            domain: CognitiveDomain.REASONING,
+            priority: EventPriority.NORMAL,
+            source: "HMCR",
+            sessionId: data?.session_id,
+            payload: data
+        });
     }
 }
+

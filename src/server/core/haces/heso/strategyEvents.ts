@@ -1,3 +1,5 @@
+import { HyperMindEventMesh, CognitiveDomain, EventPriority } from "../../hcns01/index.js";
+
 export enum StrategyEvents {
     ROADMAP_CREATED = "HESO_ROADMAP_CREATED",
     STRATEGY_UPDATED = "HESO_STRATEGY_UPDATED",
@@ -12,9 +14,24 @@ export enum StrategyEvents {
     GRAND_STRATEGY_FORMULATED = "HESO_GRAND_STRATEGY_FORMULATED"
 }
 
+// Register these schemas so the Mesh allows them
+const mesh = HyperMindEventMesh.getInstance();
+Object.values(StrategyEvents).forEach(type => {
+    if (!mesh.registry.isRegistered(type)) {
+        mesh.registerEventType({
+            type,
+            domain: CognitiveDomain.PLANNING, // Strategy is Planning
+            description: `Strategy Event: ${type}`
+        });
+    }
+});
+
+/**
+ * Backward compatible facade pointing to HyperMindEventMesh (HCNS-01)
+ */
 export class StrategyEventBus {
     private static instance: StrategyEventBus;
-    private listeners: Record<string, ((data: any) => void)[]> = {};
+    private mesh = HyperMindEventMesh.getInstance();
 
     private constructor() {}
 
@@ -26,16 +43,20 @@ export class StrategyEventBus {
     }
 
     public subscribe(event: StrategyEvents, callback: (data: any) => void) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
-        }
-        this.listeners[event].push(callback);
+        this.mesh.subscribe(event, (meshEvent) => {
+            callback(meshEvent.payload);
+        });
     }
 
     public publish(event: StrategyEvents, data: any) {
-        console.log(`[HESO Event] ${event}`, data);
-        if (this.listeners[event]) {
-            this.listeners[event].forEach(cb => cb(data));
-        }
+        console.log(`[HCNS-01] [HESO] Publishing: ${event}`);
+        this.mesh.publish({
+            type: event,
+            domain: CognitiveDomain.PLANNING,
+            priority: EventPriority.NORMAL,
+            source: "HESO",
+            payload: data
+        });
     }
 }
+

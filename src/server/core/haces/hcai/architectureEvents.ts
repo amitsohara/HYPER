@@ -1,3 +1,5 @@
+import { HyperMindEventMesh, CognitiveDomain, EventPriority } from "../../hcns01/index.js";
+
 export enum ArchitectureEvents {
     BLUEPRINT_CREATED = "BlueprintCreated",
     BLUEPRINT_APPROVED = "BlueprintApproved",
@@ -13,9 +15,24 @@ export enum ArchitectureEvents {
 
 export type EventCallback = (payload: any) => void;
 
+// Register these schemas so the Mesh allows them
+const mesh = HyperMindEventMesh.getInstance();
+Object.values(ArchitectureEvents).forEach(type => {
+    if (!mesh.registry.isRegistered(type)) {
+        mesh.registerEventType({
+            type,
+            domain: CognitiveDomain.PLANNING, // Architecture falls under planning / execution
+            description: `Architecture Event: ${type}`
+        });
+    }
+});
+
+/**
+ * Backward compatible facade pointing to HyperMindEventMesh (HCNS-01)
+ */
 export class ArchitectureEventBus {
     private static instance: ArchitectureEventBus;
-    private listeners: Map<ArchitectureEvents, EventCallback[]> = new Map();
+    private mesh = HyperMindEventMesh.getInstance();
 
     private constructor() {}
 
@@ -27,14 +44,20 @@ export class ArchitectureEventBus {
     }
 
     public subscribe(event: ArchitectureEvents, callback: EventCallback) {
-        if (!this.listeners.has(event)) {
-            this.listeners.set(event, []);
-        }
-        this.listeners.get(event)?.push(callback);
+        this.mesh.subscribe(event, (meshEvent) => {
+            callback(meshEvent.payload);
+        });
     }
 
     public publish(event: ArchitectureEvents, payload: any) {
-        const callbacks = this.listeners.get(event) || [];
-        callbacks.forEach(cb => cb(payload));
+        console.log(`[HCNS-01] [HCAI] Publishing: ${event}`);
+        this.mesh.publish({
+            type: event,
+            domain: CognitiveDomain.PLANNING,
+            priority: EventPriority.NORMAL,
+            source: "HCAI",
+            payload: payload
+        });
     }
 }
+

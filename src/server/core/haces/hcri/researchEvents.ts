@@ -1,3 +1,5 @@
+import { HyperMindEventMesh, CognitiveDomain, EventPriority } from "../../hcns01/index.js";
+
 export enum ResearchEvents {
     RESEARCH_QUESTION_CREATED = "ResearchQuestionCreated",
     HYPOTHESIS_CREATED = "HypothesisCreated",
@@ -15,9 +17,24 @@ export enum ResearchEvents {
 
 export type EventCallback = (payload: any) => void;
 
+// Register these schemas so the Mesh allows them
+const mesh = HyperMindEventMesh.getInstance();
+Object.values(ResearchEvents).forEach(type => {
+    if (!mesh.registry.isRegistered(type)) {
+        mesh.registerEventType({
+            type,
+            domain: CognitiveDomain.REASONING, // Research falls under Reasoning/Learning
+            description: `Research Event: ${type}`
+        });
+    }
+});
+
+/**
+ * Backward compatible facade pointing to HyperMindEventMesh (HCNS-01)
+ */
 export class ResearchEventBus {
     private static instance: ResearchEventBus;
-    private listeners: Map<ResearchEvents, EventCallback[]> = new Map();
+    private mesh = HyperMindEventMesh.getInstance();
 
     private constructor() {}
 
@@ -29,14 +46,20 @@ export class ResearchEventBus {
     }
 
     public subscribe(event: ResearchEvents, callback: EventCallback) {
-        if (!this.listeners.has(event)) {
-            this.listeners.set(event, []);
-        }
-        this.listeners.get(event)?.push(callback);
+        this.mesh.subscribe(event, (meshEvent) => {
+            callback(meshEvent.payload);
+        });
     }
 
     public publish(event: ResearchEvents, payload: any) {
-        const callbacks = this.listeners.get(event) || [];
-        callbacks.forEach(cb => cb(payload));
+        console.log(`[HCNS-01] [HCRI] Publishing: ${event}`);
+        this.mesh.publish({
+            type: event,
+            domain: CognitiveDomain.REASONING,
+            priority: EventPriority.NORMAL,
+            source: "HCRI",
+            payload: payload
+        });
     }
 }
+

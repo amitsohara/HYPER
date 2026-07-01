@@ -1,3 +1,5 @@
+import { HyperMindEventMesh, CognitiveDomain, EventPriority } from "../../hcns01/index.js";
+
 export enum MemoryEvents {
     EVOLUTION_RECORDED = "HEM_EVOLUTION_RECORDED",
     KNOWLEDGE_CONSOLIDATED = "HEM_KNOWLEDGE_CONSOLIDATED",
@@ -12,9 +14,24 @@ export enum MemoryEvents {
     COGNITIVE_EXPERIENCE_SYNTHESIZED = "HEM_COGNITIVE_EXPERIENCE_SYNTHESIZED"
 }
 
+// Register these schemas so the Mesh allows them
+const mesh = HyperMindEventMesh.getInstance();
+Object.values(MemoryEvents).forEach(type => {
+    if (!mesh.registry.isRegistered(type)) {
+        mesh.registerEventType({
+            type,
+            domain: CognitiveDomain.MEMORY,
+            description: `Memory Event: ${type}`
+        });
+    }
+});
+
+/**
+ * Backward compatible facade pointing to HyperMindEventMesh (HCNS-01)
+ */
 export class MemoryEventBus {
     private static instance: MemoryEventBus;
-    private listeners: Record<string, ((data: any) => void)[]> = {};
+    private mesh = HyperMindEventMesh.getInstance();
 
     private constructor() {}
 
@@ -26,16 +43,20 @@ export class MemoryEventBus {
     }
 
     public subscribe(event: MemoryEvents, callback: (data: any) => void) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
-        }
-        this.listeners[event].push(callback);
+        this.mesh.subscribe(event, (meshEvent) => {
+            callback(meshEvent.payload);
+        });
     }
 
     public publish(event: MemoryEvents, data: any) {
-        console.log(`[HEM Event] ${event}`, data);
-        if (this.listeners[event]) {
-            this.listeners[event].forEach(cb => cb(data));
-        }
+        console.log(`[HCNS-01] [HEM] Publishing: ${event}`);
+        this.mesh.publish({
+            type: event,
+            domain: CognitiveDomain.MEMORY,
+            priority: EventPriority.NORMAL,
+            source: "HEM",
+            payload: data
+        });
     }
 }
+
