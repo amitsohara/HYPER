@@ -33,8 +33,18 @@ export class AbductiveStrategy implements IReasoningStrategy {
         }
 
         const rankedHypotheses: { hypothesis: string, score: number }[] = [];
+        let sumScores = 0;
         for (const [hyp, data] of hypothesisScores.entries()) {
-            rankedHypotheses.push({ hypothesis: hyp, score: data.prior * data.likelihoodScore });
+            const score = data.prior * data.likelihoodScore;
+            rankedHypotheses.push({ hypothesis: hyp, score });
+            sumScores += score;
+        }
+
+        // Normalize to form a proper probability distribution
+        if (sumScores > 0) {
+            for (const h of rankedHypotheses) {
+                h.score /= sumScores;
+            }
         }
 
         rankedHypotheses.sort((a, b) => b.score - a.score);

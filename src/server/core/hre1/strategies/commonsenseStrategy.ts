@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 export interface SemanticConcept {
     id: string;
     properties: string[];
+    negativeProperties?: string[];
     isA: string[];
 }
 
@@ -23,6 +24,8 @@ export class CommonsenseStrategy implements IReasoningStrategy {
         let foundProperty = false;
         const trace: string[] = [];
         
+        let exceptionFound = false;
+
         while (queue.length > 0) {
             const currentId = queue.shift()!;
             if (visited.has(currentId)) continue;
@@ -33,6 +36,12 @@ export class CommonsenseStrategy implements IReasoningStrategy {
             
             trace.push(`Checking concept ${currentId}`);
             
+            if (concept.negativeProperties?.includes(queryProperty)) {
+                exceptionFound = true;
+                trace.push(`Exception found: concept '${currentId}' explicitly negates property '${queryProperty}'`);
+                break;
+            }
+
             if (concept.properties.includes(queryProperty)) {
                 foundProperty = true;
                 trace.push(`Found property '${queryProperty}' in concept '${currentId}'`);
@@ -45,6 +54,34 @@ export class CommonsenseStrategy implements IReasoningStrategy {
             }
         }
         
+        if (exceptionFound) {
+            const conclusionId = uuidv4();
+            const content = `Concept ${queryConceptId} DOES NOT have property ${queryProperty} due to exception`;
+            const conclusion: ReasoningConclusion = {
+                id: conclusionId,
+                content,
+                confidence: 0.9,
+                explanation: {
+                    humanReadable: `Inferred absence of property via exception handling in semantic network.`,
+                    reasoningTrace: trace,
+                    evidenceReferences: evidenceSet.map(e => e.id),
+                    confidenceJustification: `Explicit negative property overrides inheritance.`,
+                    alternativeHypotheses: []
+                },
+                isFinal: true
+            };
+            session.inferenceGraph.nodes.set(conclusionId, {
+                id: conclusionId,
+                type: InferenceNodeType.CONCLUSION,
+                content: conclusion.content,
+                confidence: conclusion.confidence,
+                metadata: { property: queryProperty, negated: true }
+            });
+            session.finalConclusions.push(conclusion);
+            session.overallConfidence = 0.9;
+            return;
+        }
+
         if (foundProperty) {
             const conclusionId = uuidv4();
             const content = `Concept ${queryConceptId} has property ${queryProperty}`;

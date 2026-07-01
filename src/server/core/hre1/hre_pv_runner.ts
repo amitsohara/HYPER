@@ -141,7 +141,7 @@ async function runValidation() {
     // 10. Commonsense Reasoning
     const conceptGraph = new Map<string, SemanticConcept>([
         ["Bird", { id: "Bird", properties: ["can_fly"], isA: ["Animal"] }],
-        ["Penguin", { id: "Penguin", properties: ["cannot_fly"], isA: ["Bird"] }],
+        ["Penguin", { id: "Penguin", properties: [], negativeProperties: ["can_fly"], isA: ["Bird"] }],
         ["Sparrow", { id: "Sparrow", properties: [], isA: ["Bird"] }]
     ]);
     const commonsenseSession = await hre.manager.executeReasoning("Inherit properties", [], "COMMONSENSE", [], { 
@@ -149,8 +149,17 @@ async function runValidation() {
         queryConceptId: "Sparrow", 
         queryProperty: "can_fly" 
     });
-    if (commonsenseSession.finalConclusions.length === 0) {
+    if (commonsenseSession.finalConclusions.length === 0 || commonsenseSession.finalConclusions[0].content.includes("DOES NOT")) {
         throw new Error("Commonsense strategy failed to inherit property");
+    }
+
+    const commonsenseSessionNeg = await hre.manager.executeReasoning("Exception handling", [], "COMMONSENSE", [], { 
+        conceptGraph, 
+        queryConceptId: "Penguin", 
+        queryProperty: "can_fly" 
+    });
+    if (commonsenseSessionNeg.finalConclusions.length === 0 || !commonsenseSessionNeg.finalConclusions[0].content.includes("DOES NOT")) {
+        throw new Error("Commonsense strategy failed exception handling");
     }
 
     console.log("HRE PV-01 Validation Passed.");
