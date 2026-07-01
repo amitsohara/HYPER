@@ -3,6 +3,10 @@ import { DeductiveRule } from "./strategies/deductiveStrategy.js";
 import { CSPVariable, CSPConstraint } from "./strategies/constraintStrategy.js";
 import { BayesEvent, BayesConditional } from "./strategies/probabilisticStrategy.js";
 import { ConceptStructure } from "./strategies/analogicalStrategy.js";
+import { InductiveObservation } from "./strategies/inductiveStrategy.js";
+import { AbductiveRule } from "./strategies/abductiveStrategy.js";
+import { CausalNode, CausalEdge } from "./strategies/causalStrategy.js";
+import { SemanticConcept } from "./strategies/commonsenseStrategy.js";
 
 async function runValidation() {
     const hre = HyperMindReasoningEngine.getInstance();
@@ -34,7 +38,11 @@ async function runValidation() {
     }
 
     // 2. Abductive Reasoning
-    const abductiveSession = await hre.manager.executeReasoning("Determine cause", ["door open"], "ABDUCTIVE", evidence);
+    const abductiveRules: AbductiveRule[] = [
+        { hypothesis: "wind", observation: "door open", likelihood: 0.2, prior: 0.5 },
+        { hypothesis: "intruder", observation: "door open", likelihood: 0.9, prior: 0.1 }
+    ];
+    const abductiveSession = await hre.manager.executeReasoning("Determine cause", ["door open"], "ABDUCTIVE", evidence, { abductiveRules });
     if (abductiveSession.alternativeConclusions.length === 0) {
         throw new Error("Abductive reasoning failed to generate alternative hypotheses");
     }
@@ -95,7 +103,58 @@ async function runValidation() {
         throw new Error("Multi-hop strategy failed to find graph path");
     }
 
+    // 7. Inductive Reasoning
+    const observations: InductiveObservation[] = [
+        { id: "o1", attributes: ["has_feathers", "can_fly"] },
+        { id: "o2", attributes: ["has_feathers", "can_fly"] },
+        { id: "o3", attributes: ["has_feathers", "can_fly"] }
+    ];
+    const inductiveSession = await hre.manager.executeReasoning("Induce rules", [], "INDUCTIVE", [], { observations, supportThreshold: 0.1, confidenceThreshold: 0.9 });
+    if (inductiveSession.finalConclusions.length === 0) {
+        throw new Error("Inductive strategy failed to induce rules");
+    }
+
+    // 8. Causal Reasoning
+    const causalNodes: CausalNode[] = [
+        { id: "Rain", state: true },
+        { id: "WetGrass", state: false }
+    ];
+    const causalEdges: CausalEdge[] = [
+        { sourceId: "Rain", targetId: "WetGrass", weight: 0.9 }
+    ];
+    const causalSession = await hre.manager.executeReasoning("Predict effects", [], "CAUSAL", [], { causalNodes, causalEdges });
+    if (causalSession.finalConclusions.length === 0) {
+        throw new Error("Causal strategy failed to predict effects");
+    }
+
+    // 9. Counterfactual Reasoning
+    const cfSession = await hre.manager.executeReasoning("Simulate counterfactual", [], "COUNTERFACTUAL", [], { 
+        causalNodes, 
+        causalEdges,
+        interventionNodeId: "Rain",
+        interventionState: false
+    });
+    if (cfSession.finalConclusions.length === 0) {
+        throw new Error("Counterfactual strategy failed to simulate intervention");
+    }
+
+    // 10. Commonsense Reasoning
+    const conceptGraph = new Map<string, SemanticConcept>([
+        ["Bird", { id: "Bird", properties: ["can_fly"], isA: ["Animal"] }],
+        ["Penguin", { id: "Penguin", properties: ["cannot_fly"], isA: ["Bird"] }],
+        ["Sparrow", { id: "Sparrow", properties: [], isA: ["Bird"] }]
+    ]);
+    const commonsenseSession = await hre.manager.executeReasoning("Inherit properties", [], "COMMONSENSE", [], { 
+        conceptGraph, 
+        queryConceptId: "Sparrow", 
+        queryProperty: "can_fly" 
+    });
+    if (commonsenseSession.finalConclusions.length === 0) {
+        throw new Error("Commonsense strategy failed to inherit property");
+    }
+
     console.log("HRE PV-01 Validation Passed.");
 }
 
 runValidation().catch(console.error);
+
