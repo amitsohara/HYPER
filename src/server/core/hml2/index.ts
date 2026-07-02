@@ -1,4 +1,4 @@
-import { HyperMindEventMesh } from "../../hcns01/eventMesh.js";
+import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
 import { LiveMissionRunner, MissionAnalyticsEngine, MissionComparisonEngine } from "./engines.js";
 
 export class RealMissionManager {

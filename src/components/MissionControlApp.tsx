@@ -6,6 +6,13 @@ import {
   GitBranch, FlaskConical, Map, LineChart, BookOpen, Layers
 } from "lucide-react";
 import { safeFetchJSON } from "../fetchUtils";
+import { ConceptGraphView } from "./mission/ConceptGraphView";
+import { ThoughtExplorerView } from "./mission/ThoughtExplorerView";
+import { ReasoningExplorerView } from "./mission/ReasoningExplorerView";
+import { DecisionCenterView } from "./mission/DecisionCenterView";
+import { LearningCenterView } from "./mission/LearningCenterView";
+import { AnalyticsView } from "./mission/AnalyticsView";
+import { PluginManagerView, ReportsView, LeaderboardView, BenchmarkView, RegressionView, SettingsView } from "./mission/OtherViews";
 
 export function MissionControlApp() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -113,8 +120,21 @@ export function MissionControlApp() {
           {activeTab === 'simulation_center' && <SimulationCenterView />}
           {activeTab === 'world_model' && <WorldModelView />}
           {activeTab === 'replay' && <ReplayCenterView />}
+          {activeTab === 'concept_graph' && <ConceptGraphView />}
+          {activeTab === 'thought_explorer' && <ThoughtExplorerView />}
+          {activeTab === 'reasoning_explorer' && <ReasoningExplorerView />}
+          {activeTab === 'decision_center' && <DecisionCenterView />}
+          {activeTab === 'learning_center' && <LearningCenterView />}
+          {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'plugin_manager' && <PluginManagerView />}
+          {activeTab === 'reports' && <ReportsView />}
+          {activeTab === 'leaderboard' && <LeaderboardView />}
+          {activeTab === 'benchmark' && <BenchmarkView />}
+          {activeTab === 'regression' && <RegressionView />}
+          {activeTab === 'settings' && <SettingsView />}
+          
           {/* Fallback for other tabs */}
-          {['dashboard', 'mission_control', 'mission_builder', 'live_inputs', 'simulation_center', 'world_model', 'replay'].indexOf(activeTab) === -1 && (
+          {['dashboard', 'mission_control', 'mission_builder', 'live_inputs', 'simulation_center', 'world_model', 'replay', 'concept_graph', 'thought_explorer', 'reasoning_explorer', 'decision_center', 'learning_center', 'analytics', 'plugin_manager', 'reports', 'leaderboard', 'benchmark', 'regression', 'settings'].indexOf(activeTab) === -1 && (
             <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-4">
               <Monitor size={48} className="opacity-20" />
               <p>Module {activeTab.replace('_', ' ')} is online and awaiting HCNS event streams.</p>

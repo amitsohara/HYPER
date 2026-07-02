@@ -1,5 +1,5 @@
-import { HyperMindEventMesh } from "../../hcns01/eventMesh.js";
-import { LiveInput } from "../types.js";
+import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
+import { LiveInput } from "./types.js";
 
 export class LiveMissionRunner {
     constructor(private eventMesh: HyperMindEventMesh) {}

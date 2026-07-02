@@ -3,8 +3,10 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import { initHyperMindPlatform } from "./bootstrap.js";
 
 async function startServer() {
+  await initHyperMindPlatform();
   const app = express();
   const PORT = 3000;
 
