@@ -1,7 +1,10 @@
 import React from "react";
 import { BarChart3, Activity, Gauge } from "lucide-react";
 
-export function AnalyticsView() {
+export function AnalyticsView({ diagnostics }: any) {
+  const latency = diagnostics?.trace?.latency || 12;
+  const throughput = diagnostics?.trace?.throughput || 1250;
+  
   return (
     <div className="h-full flex flex-col space-y-6">
       <div>
@@ -17,7 +20,7 @@ export function AnalyticsView() {
             <svg className="w-full h-full text-indigo-500 opacity-50" viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M0,100 L0,50 Q25,20 50,60 T100,30 L100,100 Z" fill="currentColor" />
             </svg>
-            <div className="absolute top-4 left-4 text-2xl font-bold text-indigo-400">1,250 ev/s</div>
+            <div className="absolute top-4 left-4 text-2xl font-bold text-indigo-400">{throughput} ev/s</div>
           </div>
         </div>
 
@@ -27,7 +30,7 @@ export function AnalyticsView() {
           <div className="flex-1 bg-slate-950 border border-slate-800 rounded relative overflow-hidden flex items-center justify-center flex-col">
              <div className="w-32 h-32 rounded-full border-8 border-slate-800 flex items-center justify-center relative">
                 <div className="absolute inset-0 rounded-full border-8 border-emerald-500" style={{clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 50%)'}}></div>
-                <span className="text-2xl font-bold text-slate-200">12ms</span>
+                <span className="text-2xl font-bold text-slate-200">{Math.floor(latency)}ms</span>
              </div>
              <div className="text-xs text-slate-500 mt-4">Average response time</div>
           </div>

@@ -120,8 +120,19 @@ export class HyperMindThoughtGenerationEngine implements ISpecialist {
     public async handleEvent(event: CognitiveEvent): Promise<void> {
         if (event.type === "ATTENTION_SHIFTED") {
             const wm = event.payload.workingMemory;
+            let focusSource = "";
+            
             if (wm && wm.activeGoals && wm.activeGoals.length > 0) {
-                const thought = this.generator.generateFromGoalFocus(wm.activeGoals[0], 0.8);
+                focusSource = `Goal focus: ${wm.activeGoals[0]}`;
+            } else if (wm && wm.activeConcepts && wm.activeConcepts.length > 0) {
+                focusSource = `Concept focus: ${wm.activeConcepts[0]}`;
+            } else if (wm && wm.activeWorldRegions && wm.activeWorldRegions.length > 0) {
+                focusSource = `World region focus: ${wm.activeWorldRegions[0]}`;
+            }
+
+            if (focusSource) {
+                // We use generateFromGoalFocus just as a mock for now
+                const thought = this.generator.generateFromGoalFocus(focusSource, 0.8);
                 
                 HyperMindEventMesh.getInstance().publish({
                     type: "THOUGHT_GENERATED",

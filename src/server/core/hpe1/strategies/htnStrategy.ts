@@ -11,7 +11,7 @@ export class HTNStrategy implements IPlanningStrategy {
     }
 
     async generatePlans(goal: GoalObject, context: any): Promise<PlanObject[]> {
-        const atomicTasks = this.decompositionEngine.decompose(goal);
+        const atomicTasks = await this.decompositionEngine.decompose(goal);
         
         const plan: PlanObject = {
             id: uuidv4(),

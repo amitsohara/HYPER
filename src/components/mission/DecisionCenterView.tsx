@@ -1,8 +1,8 @@
 import React from "react";
 import { GitBranch, ShieldAlert, CheckCircle2, XCircle } from "lucide-react";
 
-export function DecisionCenterView() {
-  const decisions = [
+export function DecisionCenterView({ diagnostics }: any) {
+  let decisions = [
     {
       id: "opt-A",
       action: "Reroute Traffic via Signal Override",
@@ -28,6 +28,17 @@ export function DecisionCenterView() {
       reason: "Violates executive safety policy."
     }
   ];
+
+  if (diagnostics?.decisionCandidates?.length > 0) {
+      decisions = diagnostics.decisionCandidates.map((c: any, index: number) => ({
+          id: `opt-${index}`,
+          action: c.action || c.title || `Candidate ${index}`,
+          utility: c.score || c.utility || 0,
+          risk: 100 - (c.score || c.utility || 100),
+          status: index === 0 ? "CHOSEN" : "REJECTED", // Sort usually puts best first
+          reason: c.detailed_scores?.justification || c.reason || "Algorithm evaluated this path."
+      }));
+  }
 
   return (
     <div className="h-full flex flex-col space-y-6">

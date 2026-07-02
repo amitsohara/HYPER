@@ -1,7 +1,27 @@
 import React from "react";
 import { GitMerge, ZoomIn, ZoomOut, Maximize, Activity } from "lucide-react";
 
-export function ConceptGraphView() {
+export function ConceptGraphView({ diagnostics }: any) {
+  let entities = [
+     { id: "Vehicle", label: "Vehicle", confidence: 99, color: "indigo" },
+     { id: "Car", label: "Car", instances: 42, color: "emerald" },
+     { id: "Truck", label: "Truck", instances: 8, color: "amber" }
+  ];
+
+  if (diagnostics?.worldModel?.entities?.length > 0) {
+      entities = diagnostics.worldModel.entities.slice(0, 3).map((e: any, i: number) => ({
+          id: e.id || `ent-${i}`,
+          label: e.name || e.label || `Entity ${i}`,
+          confidence: e.confidence || 90,
+          color: i === 0 ? "indigo" : i === 1 ? "emerald" : "amber",
+          instances: e.instances || 1
+      }));
+  }
+
+  const e0 = entities[0] || { label: 'A', color: 'indigo', confidence: 90 };
+  const e1 = entities[1] || { label: 'B', color: 'emerald', instances: 1 };
+  const e2 = entities[2] || { label: 'C', color: 'amber', instances: 1 };
+
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl h-full flex flex-col overflow-hidden">
       <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
@@ -17,13 +37,12 @@ export function ConceptGraphView() {
       </div>
       
       <div className="flex-1 relative flex items-center justify-center bg-slate-950">
-        {/* Mock Concept Graph SVG */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]"></div>
         
         <div className="relative z-10 flex flex-col items-center">
-           <div className="w-32 p-3 bg-indigo-900/30 border border-indigo-500/50 rounded-xl flex flex-col items-center shadow-lg">
-             <span className="font-semibold text-indigo-300">Vehicle</span>
-             <span className="text-xs text-indigo-500 mt-1">Conf: 99%</span>
+           <div className={`w-32 p-3 bg-${e0.color}-900/30 border border-${e0.color}-500/50 rounded-xl flex flex-col items-center shadow-lg`}>
+             <span className={`font-semibold text-${e0.color}-300`}>{e0.label}</span>
+             <span className={`text-xs text-${e0.color}-500 mt-1`}>Conf: {e0.confidence}%</span>
            </div>
            
            <div className="flex gap-16 mt-8 relative">
@@ -32,17 +51,17 @@ export function ConceptGraphView() {
               
               <div className="relative">
                 <div className="absolute top-[-32px] left-1/2 w-px h-8 bg-indigo-500/30 -translate-x-1/2"></div>
-                <div className="w-28 p-2 bg-emerald-900/30 border border-emerald-500/50 rounded-xl flex flex-col items-center shadow-lg">
-                  <span className="font-medium text-emerald-300 text-sm">Car</span>
-                  <span className="text-xs text-emerald-500 mt-1">Instances: 42</span>
+                <div className={`w-28 p-2 bg-${e1.color}-900/30 border border-${e1.color}-500/50 rounded-xl flex flex-col items-center shadow-lg`}>
+                  <span className={`font-medium text-${e1.color}-300 text-sm`}>{e1.label}</span>
+                  <span className={`text-xs text-${e1.color}-500 mt-1`}>Instances: {e1.instances}</span>
                 </div>
               </div>
               
               <div className="relative">
                 <div className="absolute top-[-32px] left-1/2 w-px h-8 bg-indigo-500/30 -translate-x-1/2"></div>
-                <div className="w-28 p-2 bg-amber-900/30 border border-amber-500/50 rounded-xl flex flex-col items-center shadow-lg">
-                  <span className="font-medium text-amber-300 text-sm">Truck</span>
-                  <span className="text-xs text-amber-500 mt-1">Instances: 8</span>
+                <div className={`w-28 p-2 bg-${e2.color}-900/30 border border-${e2.color}-500/50 rounded-xl flex flex-col items-center shadow-lg`}>
+                  <span className={`font-medium text-${e2.color}-300 text-sm`}>{e2.label}</span>
+                  <span className={`text-xs text-${e2.color}-500 mt-1`}>Instances: {e2.instances}</span>
                 </div>
               </div>
            </div>
@@ -53,11 +72,11 @@ export function ConceptGraphView() {
            <div className="space-y-2 text-xs">
               <div className="flex gap-2 items-start text-slate-400">
                  <GitMerge size={12} className="mt-0.5 text-indigo-400" />
-                 <div>Merged <span className="text-indigo-300">"Sedan"</span> into <span className="text-emerald-300">"Car"</span> (Sim: 0.94)</div>
+                 <div>Merged <span className="text-indigo-300">"{e1.label}"</span> into <span className="text-emerald-300">"{e0.label}"</span></div>
               </div>
               <div className="flex gap-2 items-start text-slate-400">
                  <Activity size={12} className="mt-0.5 text-amber-400" />
-                 <div>Split <span className="text-amber-300">"Truck"</span> from <span className="text-indigo-300">"Vehicle"</span></div>
+                 <div>Split <span className="text-amber-300">"{e2.label}"</span> from <span className="text-indigo-300">"{e0.label}"</span></div>
               </div>
            </div>
         </div>

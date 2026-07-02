@@ -99,7 +99,7 @@ export class HSMESpecialist implements ISpecialist {
         if (payload.skillId && payload.feedback) {
             const skill = this.memoryManager.retrieve(payload.skillId) || payload.skill; // fallback for test
             if (skill) {
-                const updatedSkill = this.feedbackEngine.processFeedback(skill, payload.feedback);
+                const updatedSkill = await this.feedbackEngine.processFeedback(skill, payload.feedback);
                 if (updatedSkill.confidence > 0.8) {
                     updatedSkill.validationStatus = ValidationStatus.EXECUTIVE_APPROVED;
                     this.memoryManager.store(updatedSkill);

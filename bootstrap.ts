@@ -14,6 +14,7 @@ import { HSTESpecialist } from "./src/server/core/hste1/hsteSpecialist.js";
 import { HDMESpecialist } from "./src/server/core/hdme1/hdmeSpecialist.js";
 import { HLLESpecialist } from "./src/server/core/hlle1/hlleSpecialist.js";
 import { HSMESpecialist } from "./src/server/core/hsme1/hsmeSpecialist.js";
+import { HyperMindWorldModelEngine } from "./src/server/core/hwme1/worldModelManager.js";
 
 export async function initHyperMindPlatform() {
     console.log("=== Booting HyperMind Core Platform ===");
@@ -34,18 +35,21 @@ export async function initHyperMindPlatform() {
 
     console.log("4. Registering Cognitive Specialists...");
     try {
-        await hcse.registerSpecialist(new HyperMindExecutiveAttentionEngine());
-        await hcse.registerSpecialist(new HyperMindMetaReasoningLayer());
-        await hcse.registerSpecialist(new HyperMindReasoningEngine());
-        await hcse.registerSpecialist(new HyperMindConceptAndAbstractionEngine());
+        await hcse.registerSpecialist(HyperMindExecutiveAttentionEngine.getInstance());
+        await hcse.registerSpecialist(HyperMindMetaReasoningLayer.getInstance());
+        await hcse.registerSpecialist(HyperMindReasoningEngine.getInstance());
+        await hcse.registerSpecialist(HyperMindConceptAndAbstractionEngine.getInstance());
         await hcse.registerSpecialist(new HPESpecialist());
-        await hcse.registerSpecialist(new HyperMindThoughtGenerationEngine());
-        await hcse.registerSpecialist(new HPAESpecialist());
-        await hcse.registerSpecialist(new HSTESpecialist());
-        await hcse.registerSpecialist(new HDMESpecialist());
-        await hcse.registerSpecialist(new HLLESpecialist());
-        await hcse.registerSpecialist(new HSMESpecialist());
+        await hcse.registerSpecialist(HyperMindThoughtGenerationEngine.getInstance());
+        await hcse.registerSpecialist(new HPAESpecialist(eventMesh));
+        await hcse.registerSpecialist(new HSTESpecialist(eventMesh));
+        await hcse.registerSpecialist(new HDMESpecialist(eventMesh));
+        await hcse.registerSpecialist(new HLLESpecialist(eventMesh));
+        await hcse.registerSpecialist(new HSMESpecialist(eventMesh));
         console.log("All Specialists Registered Successfully.");
+        
+        console.log("Initializing World Model Engine...");
+        HyperMindWorldModelEngine.getInstance().initialize();
     } catch (error) {
         console.warn("Some specialists could not be registered:", error);
     }
@@ -60,6 +64,28 @@ export async function initHyperMindPlatform() {
     (global as any).rmv = rmv;
 
     console.log("=== HyperMind Core Platform Fully Operational ===");
+    
+    eventMesh.registerEventType({
+        type: "HOS_HEARTBEAT",
+        domain: "SYSTEM" as any,
+        description: "Heartbeat from HOS"
+    });
+    
+    eventMesh.registerEventType({ type: "WORLD_OBSERVATION", domain: "SYSTEM" as any, description: "Raw observation from environment" });
+    eventMesh.registerEventType({ type: "WORLD_MODEL_UPDATED", domain: "SYSTEM" as any, description: "World model was updated" });
+    eventMesh.registerEventType({ type: "GOAL_CREATED", domain: "SYSTEM" as any, description: "Goal was created" });
+    eventMesh.registerEventType({ type: "PLAN_CREATED", domain: "PLANNING" as any, description: "Plan was created" });
+    eventMesh.registerEventType({ type: "SIMULATION_STARTED", domain: "REASONING" as any, description: "Simulation started" });
+    eventMesh.registerEventType({ type: "SIMULATION_COMPLETED", domain: "REASONING" as any, description: "Simulation completed" });
+    eventMesh.registerEventType({ type: "PLAN_EVALUATED", domain: "REASONING" as any, description: "Plan was evaluated" });
+    eventMesh.registerEventType({ type: "ACTION_AUTHORIZED", domain: "SYSTEM" as any, description: "Action authorized" });
+    eventMesh.registerEventType({ type: "ACTION_REJECTED", domain: "SYSTEM" as any, description: "Action rejected" });
+    eventMesh.registerEventType({ type: "ACTION_COMPLETED", domain: "EXECUTION" as any, description: "Action completed" });
+    eventMesh.registerEventType({ type: "MISSION_COMPLETED", domain: "SYSTEM" as any, description: "Mission completed" });
+    eventMesh.registerEventType({ type: "LEARNING_ARTIFACT_CREATED", domain: "SYSTEM" as any, description: "Learning artifact created" });
+    eventMesh.registerEventType({ type: "FEEDBACK_RECEIVED", domain: "SYSTEM" as any, description: "Feedback received" });
+    eventMesh.registerEventType({ type: "KNOWLEDGE_UPDATED", domain: "SYSTEM" as any, description: "Knowledge updated" });
+
     
     // Simulate some active missions and telemetry so UI has real data points
     setInterval(() => {

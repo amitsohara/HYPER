@@ -1,8 +1,8 @@
 import React from "react";
 import { FileText, AlertCircle, ArrowRight, BrainCircuit } from "lucide-react";
 
-export function ThoughtExplorerView() {
-  const thoughts = [
+export function ThoughtExplorerView({ diagnostics }: any) {
+  let thoughts = [
     {
       id: "th-01",
       priority: "HIGH",
@@ -28,6 +28,25 @@ export function ThoughtExplorerView() {
       state: "REJECTED"
     }
   ];
+
+  if (diagnostics?.workingMemory?.length > 0) {
+      thoughts = diagnostics.workingMemory.map((mem: any, i: number) => {
+          let contentStr = typeof mem === 'string' ? mem : JSON.stringify(mem);
+          let confidence = 0.9;
+          if (typeof mem === 'object' && mem.content) {
+              contentStr = mem.content;
+              confidence = mem.confidence || confidence;
+          }
+          return {
+              id: `th-${i}`,
+              priority: confidence > 0.8 ? "HIGH" : "MEDIUM",
+              confidence: confidence,
+              content: contentStr,
+              evidence: ["Extracted from active cognitive cycle"],
+              state: "ACTIVE"
+          };
+      });
+  }
 
   return (
     <div className="h-full flex flex-col space-y-4">

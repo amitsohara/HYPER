@@ -52,7 +52,12 @@ export class HSTESpecialist implements ISpecialist {
         this.registration.status = SpecialistStatus.ACTIVE;
     }
 
-    async activate(): Promise<void> { this.registration.status = SpecialistStatus.ACTIVE; }
+    async activate(): Promise<void> {
+        this.registration.status = SpecialistStatus.ACTIVE;
+        this.eventMesh.subscribe("PLAN_CREATED", async (event: CognitiveEvent) => {
+            await this.handleEvent(event);
+        });
+    }
     async suspend(): Promise<void> { this.registration.status = SpecialistStatus.SUSPENDED; }
     async resume(): Promise<void> { this.registration.status = SpecialistStatus.ACTIVE; }
     async retire(): Promise<void> { this.registration.status = SpecialistStatus.RETIRING; }

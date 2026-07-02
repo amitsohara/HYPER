@@ -22,7 +22,7 @@ export class ObservationIntegrator {
     }
 
     public startListening(): void {
-        this.hcns.subscribe("NEW_OBSERVATION", async (event: CognitiveEvent) => {
+        this.hcns.subscribe("WORLD_OBSERVATION", async (event: CognitiveEvent) => {
             await this.processObservation(event.payload);
         });
     }

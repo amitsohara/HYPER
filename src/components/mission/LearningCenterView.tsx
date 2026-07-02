@@ -1,7 +1,10 @@
 import React from "react";
 import { BookOpen, TrendingUp, Cpu, Award } from "lucide-react";
 
-export function LearningCenterView() {
+export function LearningCenterView({ diagnostics }: any) {
+  const epochs = diagnostics?.activeModules?.length || 42;
+  const skills = diagnostics?.workingMemory?.length || 24;
+
   return (
     <div className="h-full flex flex-col space-y-6">
       <div>
@@ -20,11 +23,11 @@ export function LearningCenterView() {
         </div>
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="text-slate-400 text-sm mb-2 flex items-center gap-2"><Award size={16}/> Skills Mastered</div>
-          <div className="text-2xl font-bold text-amber-400">24 Skills</div>
+          <div className="text-2xl font-bold text-amber-400">{skills} Skills</div>
         </div>
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="text-slate-400 text-sm mb-2 flex items-center gap-2"><BookOpen size={16}/> Active Epochs</div>
-          <div className="text-2xl font-bold text-slate-200">Ep. 42</div>
+          <div className="text-2xl font-bold text-slate-200">Ep. {epochs}</div>
         </div>
       </div>
 

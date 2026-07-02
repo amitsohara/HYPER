@@ -1,5 +1,6 @@
 import { ISpecialist, SpecialistRegistration, SpecialistStatus, CognitiveRole } from "../hcse01/types.js";
 import { CognitiveDomain, CognitiveEvent } from "../hcns01/types.js";
+import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
 import { PlanManager } from "./planManager.js";
 import { GoalObject, TaskStatus } from "./types.js";
 
@@ -47,6 +48,12 @@ export class HPESpecialist implements ISpecialist {
 
     async activate(): Promise<void> {
         this.registration.status = SpecialistStatus.ACTIVE;
+        HyperMindEventMesh.getInstance().subscribe("GOAL_CREATED", async (event: CognitiveEvent) => {
+            await this.handleEvent(event);
+        });
+        HyperMindEventMesh.getInstance().subscribe("CONCLUSION_GENERATED", async (event: CognitiveEvent) => {
+            await this.handleEvent(event);
+        });
     }
 
     async suspend(): Promise<void> {
@@ -67,16 +74,25 @@ export class HPESpecialist implements ISpecialist {
 
     async handleEvent(event: CognitiveEvent): Promise<void> {
         // Handle planning events
-        if (event.type === "GOAL_CREATED" && event.payload) {
+        if (event.type === "GOAL_CREATED" || event.type === "CONCLUSION_GENERATED") {
             const goal: GoalObject = {
-                id: event.payload.goalId || "G-1",
-                name: event.payload.goalName || "Generic Goal",
-                description: event.payload.goalDescription || "",
+                id: event.payload?.goalId || event.payload?.conclusionId || "G-1",
+                name: event.payload?.goalName || event.payload?.content || "Generic Goal",
+                description: event.payload?.goalDescription || event.payload?.explanation || "",
                 subGoalIds: [],
                 priority: 1,
                 status: TaskStatus.PENDING
             };
-            await this.planManager.createPlansForGoal(goal, {});
+            const plans = await this.planManager.createPlansForGoal(goal, {});
+            if (plans && plans.length > 0) {
+                HyperMindEventMesh.getInstance().publish({
+                    type: "PLAN_CREATED",
+                    domain: CognitiveDomain.PLANNING,
+                    priority: 1,
+                    source: "HPE",
+                    payload: { plan: plans[0], worldState: {} }
+                });
+            }
         }
     }
 

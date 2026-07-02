@@ -61,14 +61,24 @@ export class HPAESpecialist implements ISpecialist {
         });
     }
 
-    async activate(): Promise<void> { this.registration.status = SpecialistStatus.ACTIVE; }
+    async activate(): Promise<void> {
+        this.registration.status = SpecialistStatus.ACTIVE;
+        this.eventMesh.subscribe("MISSION_SCHEDULED", async (event: CognitiveEvent) => {
+            await this.handleEvent(event);
+        });
+        this.eventMesh.subscribe("ACTION_AUTHORIZED", async (event: CognitiveEvent) => {
+            await this.handleEvent(event);
+        });
+    }
     async suspend(): Promise<void> { this.registration.status = SpecialistStatus.SUSPENDED; }
     async resume(): Promise<void> { this.registration.status = SpecialistStatus.ACTIVE; }
     async retire(): Promise<void> { this.registration.status = SpecialistStatus.RETIRING; }
     async recover(): Promise<void> { this.registration.status = SpecialistStatus.ACTIVE; }
 
     async handleEvent(event: CognitiveEvent): Promise<void> {
-        if (event.type === "PLAN_EXECUTE" && event.payload) {
+        if (event.type === "MISSION_SCHEDULED") {
+            await this.perceptionManager.processEnvironment();
+        } else if (event.type === "ACTION_AUTHORIZED" && event.payload) {
             const action: Action = {
                 id: uuidv4(),
                 planId: event.payload.planId || "P-1",
@@ -79,7 +89,22 @@ export class HPAESpecialist implements ISpecialist {
             };
             
             await this.actionManager.executeAction(action);
-            await this.perceptionManager.processEnvironment();
+            
+            this.eventMesh.publish({
+                type: "ACTION_COMPLETED",
+                domain: CognitiveDomain.EXECUTION,
+                priority: 1,
+                source: "HPAE",
+                payload: { action }
+            });
+            
+            this.eventMesh.publish({
+                type: "MISSION_COMPLETED",
+                domain: CognitiveDomain.SYSTEM,
+                priority: 1,
+                source: "HPAE",
+                payload: { missionId: event.payload.decision?.missionId || "sys-mission" }
+            });
         }
     }
 

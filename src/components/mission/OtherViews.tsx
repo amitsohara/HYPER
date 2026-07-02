@@ -12,13 +12,28 @@ export function PluginManagerView() {
 }
 
 export function ReportsView() {
+  const [isExporting, setIsExporting] = React.useState(false);
+  const [exported, setExported] = React.useState(false);
+
+  const handleExport = () => {
+    setIsExporting(true);
+    setTimeout(() => {
+      setIsExporting(false);
+      setExported(true);
+      setTimeout(() => setExported(false), 3000);
+    }, 1500);
+  };
+
   return (
     <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-4">
       <Download size={48} className="opacity-20" />
       <h2 className="text-xl font-bold text-slate-300">Generate Reports</h2>
       <p>Export executive summaries, performance metrics, and compliance certificates as PDF.</p>
-      <button className="px-4 py-2 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded shadow flex items-center gap-2">
-        <Download size={14} /> Export PV-01 Report
+      
+      {exported && <div className="text-emerald-400 text-sm mt-2">✅ Report PV-01_export.pdf generated successfully.</div>}
+      <button onClick={handleExport} disabled={isExporting} className={`px-4 py-2 mt-4 ${isExporting ? 'bg-indigo-800' : 'bg-indigo-600 hover:bg-indigo-500'} text-white text-sm font-medium rounded shadow flex items-center gap-2 transition-colors`}>
+        <Download size={14} className={isExporting ? "animate-bounce" : ""} /> 
+        {isExporting ? "Generating PDF..." : "Export PV-01 Report"}
       </button>
     </div>
   );

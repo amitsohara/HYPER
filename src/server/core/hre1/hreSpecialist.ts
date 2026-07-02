@@ -20,8 +20,10 @@ import { CausalStrategy } from "./strategies/causalStrategy.js";
 import { CommonsenseStrategy } from "./strategies/commonsenseStrategy.js";
 import { CounterfactualStrategy } from "./strategies/counterfactualStrategy.js";
 
+import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
 import { ISpecialist, SpecialistRegistration, SpecialistStatus, CognitiveRole } from "../hcse01/types.js";
-import { CognitiveDomain } from "../hcns01/types.js";
+import { CognitiveDomain, CognitiveEvent } from "../hcns01/types.js";
+import { v4 as uuidv4 } from "uuid";
 
 export class HyperMindReasoningEngine implements ISpecialist {
     private static instance: HyperMindReasoningEngine;
@@ -102,6 +104,9 @@ export class HyperMindReasoningEngine implements ISpecialist {
     public async activate(): Promise<void> {
         this.status = SpecialistStatus.ACTIVE;
         this.identity.status = this.status;
+        HyperMindEventMesh.getInstance().subscribe("THOUGHT_GENERATED", async (event: CognitiveEvent) => {
+            await this.handleEvent(event);
+        });
     }
 
     public async suspend(): Promise<void> {
@@ -125,7 +130,61 @@ export class HyperMindReasoningEngine implements ISpecialist {
     }
 
     public async handleEvent(event: any): Promise<void> {
-        // Handle events
+        if (event.type === "THOUGHT_GENERATED" && event.payload) {
+            // Actually execute reasoning instead of bypassing it
+            const evidence = [{
+                id: uuidv4(),
+                type: "OBSERVATION",
+                content: event.payload.summary || "Generated from thought",
+                confidence: 0.9,
+                source: "THOUGHT_GENERATED",
+                timestamp: Date.now()
+            }];
+            
+            try {
+                const session = await this.manager.executeReasoning(
+                    `Reasoning for Thought ${event.payload.thoughtId}`,
+                    [event.payload.summary || "Generated from thought"],
+                    "DEDUCTIVE",
+                    evidence
+                );
+
+                if (session.finalConclusions && session.finalConclusions.length > 0) {
+                    for (const conclusion of session.finalConclusions) {
+                        HyperMindEventMesh.getInstance().publish({
+                            type: "CONCLUSION_GENERATED",
+                            domain: CognitiveDomain.SYSTEM,
+                            priority: 1,
+                            source: "HRE-01",
+                            payload: {
+                                thoughtId: event.payload.thoughtId,
+                                conclusionId: conclusion.id,
+                                content: conclusion.content,
+                                explanation: conclusion.explanation,
+                                confidence: conclusion.confidence
+                            }
+                        });
+                    }
+                } else {
+                    // Fallback to ensure pipeline continues
+                    HyperMindEventMesh.getInstance().publish({
+                        type: "CONCLUSION_GENERATED",
+                        domain: CognitiveDomain.SYSTEM,
+                        priority: 1,
+                        source: "HRE-01",
+                        payload: {
+                            thoughtId: event.payload.thoughtId,
+                            conclusionId: uuidv4(),
+                            content: "Fallback conclusion generated (no rules met)",
+                            explanation: { humanReadable: "Fallback explanation" },
+                            confidence: 0.5
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Reasoning execution failed", e);
+            }
+        }
     }
 
     public getHealth(): { status: SpecialistStatus; metrics: Record<string, any> } {

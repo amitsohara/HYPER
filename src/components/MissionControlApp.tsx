@@ -19,6 +19,7 @@ export function MissionControlApp() {
   const [metrics, setMetrics] = useState<any>(null);
   const [hii, setHii] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
+  const [diagnostics, setDiagnostics] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,9 @@ export function MissionControlApp() {
 
       const misRes = await safeFetchJSON("/api/hml/missions");
       if (misRes) setMissions(misRes);
+
+      const diagRes = await safeFetchJSON("/api/hml/diagnostics");
+      if (diagRes) setDiagnostics(diagRes);
     } catch (e) {
       console.error(e);
     }
@@ -114,18 +118,18 @@ export function MissionControlApp() {
         {/* Dynamic Canvas */}
         <div className="flex-1 overflow-auto p-6">
           {activeTab === 'dashboard' && <DashboardView metrics={metrics} hii={hii} missions={missions} />}
-          {activeTab === 'mission_control' && <MissionControlView />}
+          {activeTab === 'mission_control' && <MissionControlView onLaunchNew={() => setActiveTab('mission_builder')} />}
           {activeTab === 'mission_builder' && <MissionBuilderView />}
           {activeTab === 'live_inputs' && <LiveInputsView />}
           {activeTab === 'simulation_center' && <SimulationCenterView />}
-          {activeTab === 'world_model' && <WorldModelView />}
+          {activeTab === 'world_model' && <WorldModelView diagnostics={diagnostics} />}
           {activeTab === 'replay' && <ReplayCenterView />}
-          {activeTab === 'concept_graph' && <ConceptGraphView />}
-          {activeTab === 'thought_explorer' && <ThoughtExplorerView />}
-          {activeTab === 'reasoning_explorer' && <ReasoningExplorerView />}
-          {activeTab === 'decision_center' && <DecisionCenterView />}
-          {activeTab === 'learning_center' && <LearningCenterView />}
-          {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'concept_graph' && <ConceptGraphView diagnostics={diagnostics} />}
+          {activeTab === 'thought_explorer' && <ThoughtExplorerView diagnostics={diagnostics} />}
+          {activeTab === 'reasoning_explorer' && <ReasoningExplorerView diagnostics={diagnostics} />}
+          {activeTab === 'decision_center' && <DecisionCenterView diagnostics={diagnostics} />}
+          {activeTab === 'learning_center' && <LearningCenterView diagnostics={diagnostics} />}
+          {activeTab === 'analytics' && <AnalyticsView diagnostics={diagnostics} />}
           {activeTab === 'plugin_manager' && <PluginManagerView />}
           {activeTab === 'reports' && <ReportsView />}
           {activeTab === 'leaderboard' && <LeaderboardView />}
@@ -147,6 +151,39 @@ export function MissionControlApp() {
 }
 
 function MissionBuilderView() {
+  const [nodes, setNodes] = useState<{id: string, type: string, label: string, icon: any}[]>([
+      { id: "1", type: "input", label: "RTSP: Warehouse", icon: Camera },
+      { id: "2", type: "cognitive", label: "Goal: Detect Anomalies", icon: Target },
+      { id: "3", type: "output", label: "Eval: Safety Standard", icon: Activity }
+  ]);
+  const [isDeploying, setIsDeploying] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("");
+
+  const handleDragStart = (e: React.DragEvent, type: string, label: string) => {
+      e.dataTransfer.setData("application/json", JSON.stringify({ type, label }));
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+      e.preventDefault();
+      try {
+          const data = JSON.parse(e.dataTransfer.getData("application/json"));
+          let icon = Camera;
+          if (data.type === 'cognitive') icon = Target;
+          if (data.type === 'output') icon = Activity;
+          setNodes([...nodes, { id: Math.random().toString(), type: data.type, label: data.label, icon }]);
+      } catch (err) {}
+  };
+
+  const handleDeploy = () => {
+      setIsDeploying(true);
+      setTimeout(() => setIsDeploying(false), 2000);
+  };
+
+  const handleSave = () => {
+      setSaveStatus("Saved!");
+      setTimeout(() => setSaveStatus(""), 2000);
+  };
+
   return (
     <div className="h-full flex flex-col space-y-4">
       <div className="flex items-center justify-between">
@@ -154,12 +191,13 @@ function MissionBuilderView() {
           <h2 className="text-xl font-bold text-slate-200">Mission Builder</h2>
           <p className="text-sm text-slate-400">Drag-and-drop visual mission orchestration</p>
         </div>
-        <div className="flex gap-2">
-           <button className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium rounded shadow">
+        <div className="flex gap-2 items-center">
+           {saveStatus && <span className="text-emerald-400 text-sm">{saveStatus}</span>}
+           <button onClick={handleSave} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium rounded shadow">
              Save Draft
            </button>
-           <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded shadow flex items-center gap-2">
-             <Play size={14} /> Deploy Mission
+           <button onClick={handleDeploy} disabled={isDeploying} className={`px-4 py-2 ${isDeploying ? 'bg-indigo-800 text-indigo-300' : 'bg-indigo-600 hover:bg-indigo-500 text-white'} text-sm font-medium rounded shadow flex items-center gap-2`}>
+             <Play size={14} /> {isDeploying ? 'Deploying...' : 'Deploy Mission'}
            </button>
         </div>
       </div>
@@ -171,54 +209,61 @@ function MissionBuilderView() {
              <div>
                <div className="text-xs text-slate-500 mb-2 font-medium">INPUTS</div>
                <div className="space-y-2">
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Camera size={14} className="text-slate-400" /> Camera Feed</div>
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Globe size={14} className="text-slate-400" /> API Stream</div>
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Database size={14} className="text-slate-400" /> Dataset</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'input', 'Camera Feed')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Camera size={14} className="text-slate-400" /> Camera Feed</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'input', 'API Stream')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Globe size={14} className="text-slate-400" /> API Stream</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'input', 'Dataset')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Database size={14} className="text-slate-400" /> Dataset</div>
                </div>
              </div>
              
              <div>
                <div className="text-xs text-slate-500 mb-2 font-medium">COGNITIVE BLOCKS</div>
                <div className="space-y-2">
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Target size={14} className="text-indigo-400" /> Set Goal</div>
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Layers size={14} className="text-indigo-400" /> Simulation Config</div>
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Share2 size={14} className="text-indigo-400" /> Decision Policy</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'cognitive', 'Set Goal')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Target size={14} className="text-indigo-400" /> Set Goal</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'cognitive', 'Simulation Config')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Layers size={14} className="text-indigo-400" /> Simulation Config</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'cognitive', 'Decision Policy')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Share2 size={14} className="text-indigo-400" /> Decision Policy</div>
                </div>
              </div>
              
              <div>
                <div className="text-xs text-slate-500 mb-2 font-medium">OUTPUTS</div>
                <div className="space-y-2">
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Activity size={14} className="text-emerald-400" /> Evaluation</div>
-                 <div className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab"><Monitor size={14} className="text-emerald-400" /> Actions</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'output', 'Evaluation')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Activity size={14} className="text-emerald-400" /> Evaluation</div>
+                 <div draggable onDragStart={(e) => handleDragStart(e, 'output', 'Actions')} className="p-2 bg-slate-800 rounded border border-slate-700 text-sm flex items-center gap-2 cursor-grab active:cursor-grabbing"><Monitor size={14} className="text-emerald-400" /> Actions</div>
                </div>
              </div>
           </div>
         </div>
         
-        <div className="flex-1 bg-slate-950 relative overflow-hidden flex items-center justify-center">
+        <div 
+          className="flex-1 bg-slate-950 relative overflow-hidden flex items-center justify-center"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+        >
            {/* Mockup Canvas */}
            <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
            
-           <div className="relative z-10 flex flex-col items-center gap-8">
-              <div className="w-48 p-3 bg-slate-900 border border-slate-700 rounded-lg shadow-lg flex items-center gap-3">
-                 <Camera size={18} className="text-slate-400" />
-                 <span className="text-sm font-medium">RTSP: Warehouse</span>
-              </div>
+           <div className="relative z-10 flex flex-col items-center gap-8 min-h-full py-12 overflow-y-auto w-full">
+              {nodes.map((node, index) => (
+                  <React.Fragment key={node.id}>
+                      <div className={`w-48 p-3 bg-slate-900 border ${node.type === 'input' ? 'border-slate-700' : node.type === 'cognitive' ? 'border-indigo-500/50 bg-indigo-900/50' : 'border-emerald-500/50 bg-emerald-900/10'} rounded-lg shadow-lg flex items-center justify-between gap-3 group relative cursor-pointer hover:border-indigo-400 transition-colors`}>
+                         <div className="flex items-center gap-3">
+                           <node.icon size={18} className={node.type === 'input' ? 'text-slate-400' : node.type === 'cognitive' ? 'text-indigo-400' : 'text-emerald-400'} />
+                           <span className="text-sm font-medium truncate">{node.label}</span>
+                         </div>
+                         <button onClick={() => setNodes(nodes.filter(n => n.id !== node.id))} className="text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                            &times;
+                         </button>
+                      </div>
+                      {index < nodes.length - 1 && <div className="w-0.5 h-8 bg-slate-700"></div>}
+                  </React.Fragment>
+              ))}
               
-              <div className="w-0.5 h-8 bg-slate-700"></div>
-              
-              <div className="w-48 p-3 bg-indigo-900/50 border border-indigo-500/50 rounded-lg shadow-lg flex items-center gap-3">
-                 <Target size={18} className="text-indigo-400" />
-                 <span className="text-sm font-medium">Goal: Detect Anomalies</span>
-              </div>
-              
-              <div className="w-0.5 h-8 bg-slate-700"></div>
-              
-              <div className="w-48 p-3 bg-slate-900 border border-emerald-500/50 rounded-lg shadow-lg flex items-center gap-3">
-                 <Activity size={18} className="text-emerald-400" />
-                 <span className="text-sm font-medium">Eval: Safety Standard</span>
-              </div>
+              {nodes.length === 0 && (
+                  <div className="text-slate-500 text-sm border-2 border-dashed border-slate-700 p-8 rounded-xl flex flex-col items-center">
+                      <Target size={32} className="mb-2 opacity-50" />
+                      Drag and drop blocks here to build a mission
+                  </div>
+              )}
            </div>
         </div>
       </div>
@@ -226,7 +271,7 @@ function MissionBuilderView() {
   );
 }
 
-function MissionControlView() {
+function MissionControlView({ onLaunchNew }: { onLaunchNew: () => void }) {
   return (
     <div className="space-y-6 h-full flex flex-col">
       <div className="flex items-center justify-between">
@@ -234,7 +279,7 @@ function MissionControlView() {
           <h2 className="text-xl font-bold text-slate-200">Active Missions</h2>
           <p className="text-sm text-slate-400">Monitoring real-time cognitive execution</p>
         </div>
-        <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded shadow">
+        <button onClick={onLaunchNew} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded shadow">
           Launch New Mission
         </button>
       </div>
@@ -452,20 +497,85 @@ function UsageBar({ label, percentage, color }: any) {
 }
 
 function LiveInputsView() {
-  const inputs = [
-    { name: "Traffic Camera 1", type: "RTSP", fps: 30, latency: 45, status: "Connected" },
-    { name: "Traffic Camera 2", type: "RTSP", fps: 24, latency: 120, status: "Degraded" },
-    { name: "Warehouse Drone", type: "WebSocket", fps: 60, latency: 15, status: "Connected" },
-    { name: "Desktop Agent", type: "API", fps: '--', latency: 8, status: "Connected" }
-  ];
+  const [inputs, setInputs] = useState([
+    { id: 1, name: "Traffic Camera 1", type: "RTSP", fps: 30, latency: 45, status: "Connected", url: "rtsp://camera.internal/1" },
+    { id: 2, name: "Traffic Camera 2", type: "RTSP", fps: 24, latency: 120, status: "Degraded", url: "rtsp://camera.internal/2" },
+    { id: 3, name: "Warehouse Drone", type: "WebSocket", fps: 60, latency: 15, status: "Connected", url: "ws://drone.local/stream" },
+    { id: 4, name: "Desktop Agent", type: "API", fps: '--', latency: 8, status: "Connected", url: "https://api.agent/stream" }
+  ]);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newInputName, setNewInputName] = useState("");
+  const [newInputUrl, setNewInputUrl] = useState("");
+  const [newInputType, setNewInputType] = useState("RTSP");
+
+  const handleAdd = () => {
+    if (newInputName && newInputUrl) {
+      setInputs([
+        ...inputs,
+        {
+          id: Date.now(),
+          name: newInputName,
+          type: newInputType,
+          fps: 30,
+          latency: 25,
+          status: "Connected",
+          url: newInputUrl
+        }
+      ]);
+      setNewInputName("");
+      setNewInputUrl("");
+      setShowAdd(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-xl font-bold text-slate-200">Live Inputs</h2>
+          <p className="text-sm text-slate-400">Manage real-time sensors and data streams</p>
+        </div>
+        <button onClick={() => setShowAdd(true)} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded shadow flex items-center gap-2">
+           + Add Input Stream
+        </button>
+      </div>
+
+      {showAdd && (
+        <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-end gap-4 mb-6">
+           <div className="flex-1">
+             <label className="block text-xs text-slate-400 mb-1">Stream Name</label>
+             <input value={newInputName} onChange={e => setNewInputName(e.target.value)} type="text" className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="e.g. Lobby Camera" />
+           </div>
+           <div className="flex-1">
+             <label className="block text-xs text-slate-400 mb-1">URL / Endpoint</label>
+             <input value={newInputUrl} onChange={e => setNewInputUrl(e.target.value)} type="text" className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="rtsp://... or https://..." />
+           </div>
+           <div className="w-32">
+             <label className="block text-xs text-slate-400 mb-1">Type</label>
+             <select value={newInputType} onChange={e => setNewInputType(e.target.value)} className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+               <option>RTSP</option>
+               <option>WebSocket</option>
+               <option>WebRTC</option>
+               <option>API</option>
+             </select>
+           </div>
+           <div className="flex gap-2">
+             <button onClick={() => setShowAdd(false)} className="px-4 py-1.5 border border-slate-700 text-slate-300 rounded text-sm hover:bg-slate-800">Cancel</button>
+             <button onClick={handleAdd} className="px-4 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-500">Connect</button>
+           </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {inputs.map((input, i) => (
-          <div key={i} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-            <div className="h-48 bg-slate-950 relative flex items-center justify-center border-b border-slate-800">
+        {inputs.map((input) => (
+          <div key={input.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+            <div className="h-48 bg-slate-950 relative flex items-center justify-center border-b border-slate-800 overflow-hidden group">
               <Camera size={32} className="text-slate-800" />
+              <div className="absolute inset-0 bg-indigo-500/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                 <div className="bg-slate-900/90 text-xs px-3 py-1.5 rounded font-mono text-slate-300 backdrop-blur-sm border border-slate-700 truncate max-w-[90%]">
+                    {input.url}
+                 </div>
+              </div>
               <div className="absolute top-2 right-2 px-2 py-1 bg-slate-900/80 rounded text-xs border border-slate-700">
                 {input.type}
               </div>
@@ -513,13 +623,16 @@ function SimulationCenterView() {
   );
 }
 
-function WorldModelView() {
+function WorldModelView({ diagnostics }: any) {
+  const entities = diagnostics?.worldModel?.entities?.length || 0;
+  const relations = diagnostics?.worldModel?.relationships?.length || 0;
+
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl h-full flex flex-col items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-500 via-slate-950 to-slate-950"></div>
-        <Globe size={48} className="text-slate-700 mb-4" />
+        <Globe size={48} className="text-indigo-700 mb-4" />
         <h3 className="text-lg font-medium text-slate-300">World Model Graph Visualization</h3>
-        <p className="text-slate-500 text-sm mt-2">Entities, Relationships, and Event Timelines.</p>
+        <p className="text-slate-500 text-sm mt-2">Currently tracking {entities} entities and {relations} relationships.</p>
     </div>
   );
 }

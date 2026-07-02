@@ -28,7 +28,7 @@ export class EventRegistry {
     public validate(event: CognitiveEvent): boolean {
         if (!this.isRegistered(event.type)) {
             // For flexibility, we can either strict fail or warn. We choose strict fail.
-            throw new Error(`Event type \${event.type} is not registered in the EventRegistry.`);
+            throw new Error(`Event type ${event.type} is not registered in the EventRegistry.`);
         }
         return true;
     }
