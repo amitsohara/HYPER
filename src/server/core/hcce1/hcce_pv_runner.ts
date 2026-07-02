@@ -2,6 +2,7 @@ import { HyperMindConceptAndAbstractionEngine } from "./hcceSpecialist.js";
 import { HyperMindWorldModelEngine } from "../hwme1/worldModelManager.js";
 import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
 import { WorldEntityType } from "../hwme1/types.js";
+import { CognitiveDomain } from "../hcns01/types.js";
 
 async function runValidation() {
     const hwme = HyperMindWorldModelEngine.getInstance();
@@ -18,7 +19,10 @@ async function runValidation() {
         attributes: {},
         state: "IDLE",
         temporalState: "PRESENT",
-        evidence: []
+        evidence: [],
+        confidence: 1.0,
+        metadata: {},
+        provenance: "Test Runner"
     });
     
     hwme.entityManager.createEntity({
@@ -27,7 +31,10 @@ async function runValidation() {
         attributes: {},
         state: "IDLE",
         temporalState: "PRESENT",
-        evidence: []
+        evidence: [],
+        confidence: 1.0,
+        metadata: {},
+        provenance: "Test Runner"
     });
 
     // Publish World Update manually since ObservationIntegrator handles this normally
@@ -35,14 +42,14 @@ async function runValidation() {
     if (!mesh.registry.isRegistered("WORLD_MODEL_UPDATED")) {
         mesh.registerEventType({
             type: "WORLD_MODEL_UPDATED",
-            domain: 0,
+            domain: CognitiveDomain.OBSERVATION,
             description: "World Model Updated"
         });
     }
     
     mesh.publish({
         type: "WORLD_MODEL_UPDATED",
-        domain: 0,
+        domain: CognitiveDomain.OBSERVATION,
         priority: 1,
         source: "HWME",
         payload: {}

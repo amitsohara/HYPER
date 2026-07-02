@@ -1,5 +1,6 @@
 import { SpecialistRegistry } from "./specialistRegistry.js";
-import { ISpecialist, CognitiveDomain, CognitiveRole } from "./types.js";
+import { ISpecialist, CognitiveRole } from "./types.js";
+import { CognitiveDomain } from "../hcns01/types.js";
 
 export class CapabilityDiscoveryEngine {
     constructor(private registry: SpecialistRegistry) {}

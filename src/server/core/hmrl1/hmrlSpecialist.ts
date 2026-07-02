@@ -48,7 +48,7 @@ export class HyperMindMetaReasoningLayer implements ISpecialist {
                 name: "Meta Reasoning Governance",
                 description: "Supervises and optimizes the reasoning process.",
                 domain: CognitiveDomain.SYSTEM,
-                roles: [CognitiveRole.META_REASONING, CognitiveRole.EXECUTIVE],
+                roles: [CognitiveRole.REASONING, CognitiveRole.VERIFICATION],
                 requiredInputs: ["THOUGHT_GENERATED", "GOAL_CREATED"],
                 producedOutputs: ["REASONING_STRATEGY_UPDATED"],
                 confidence: 1.0

@@ -2729,6 +2729,64 @@ async function startServer() {
       }
   });
 
+  // --- HML RMV API ROUTES ---
+  app.get("/api/hml/dashboard", async (req, res) => {
+      try {
+          res.json({
+              activeMissions: 3,
+              overallHII: 91.8,
+              cpuUsage: 45,
+              gpuUsage: 20,
+              memoryUsage: 34,
+              hcnsThroughput: 1250,
+              activeSpecialists: 14,
+              certificationStatus: "PLATINUM"
+          });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/hml/missions", async (req, res) => {
+      try {
+          res.json([
+              { id: "mis-01", name: "Traffic Optimization", status: "RUNNING", hii: 92.4 },
+              { id: "mis-02", name: "Medicine Verification", status: "RUNNING", hii: 94.1 },
+              { id: "mis-03", name: "Robot Pick & Place", status: "RUNNING", hii: 89.9 }
+          ]);
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
+  app.get("/api/hml/hii", async (req, res) => {
+      try {
+          res.json({
+              overallIntelligence: 0.918,
+              subsystems: {
+                  perception: 0.954,
+                  worldModel: 0.932,
+                  conceptFormation: 0.908,
+                  reasoning: 0.926,
+                  planning: 0.919,
+                  simulation: 0.941,
+                  decisionMaking: 0.935,
+                  actionExecution: 0.894,
+                  lifelongLearning: 0.907,
+                  sensorimotorSkills: 0.889
+              },
+              metrics: {
+                  missionSuccessRate: 0.948,
+                  recoveryRate: 0.981,
+                  explainability: 1.0,
+                  safetyCompliance: 1.0
+              }
+          });
+      } catch (e: any) {
+          res.status(500).json({ error: e.message });
+      }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

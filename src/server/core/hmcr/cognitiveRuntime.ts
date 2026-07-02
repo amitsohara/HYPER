@@ -1,11 +1,11 @@
-import { SpecialistRegistry } from "./specialistRegistry.js";
+import { SpecialistRegistry, ISpecialist } from "./specialistRegistry.js";
 import { SpecialistManager } from "./specialistManager.js";
 import { CognitiveStateManager } from "./cognitiveStateManager.js";
 import { CognitiveScheduler } from "./cognitiveScheduler.js";
 import { CognitiveCycle } from "./cognitiveCycle.js";
 import { ConfidenceEngine } from "./confidenceEngine.js";
 import { ConflictResolver } from "./conflictResolver.js";
-import { SpecialistType, ISpecialist } from "./cognitiveTypes.js";
+import { SpecialistType } from "./cognitiveTypes.js";
 
 // Mock specialist implementations to prevent failure
 class MockSpecialist implements ISpecialist {

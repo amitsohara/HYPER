@@ -1,5 +1,5 @@
-import { CognitiveEvent, CognitiveDomain, EventPriority, EventTrace, EventSchema, EventMetrics } from "./types.js";
-import { EventRegistry } from "./eventRegistry.js";
+import { CognitiveEvent, CognitiveDomain, EventPriority, EventTrace, EventMetrics } from "./types.js";
+import { EventRegistry, EventSchema } from "./eventRegistry.js";
 import { EventTraceManager } from "./eventTraceManager.js";
 import { EventRouter, EventHandler } from "./eventRouter.js";
 import { EventDispatcher } from "./eventDispatcher.js";

@@ -1,5 +1,5 @@
-import { FutureScenarioSimulator } from "../futureScenarioSimulator.js";
-import { FutureScenario } from "../strategyTypes.js";
+import { FutureScenarioSimulator } from "./futureScenarioSimulator.js";
+import { FutureScenario } from "./strategyTypes.js";
 
 // Mocking the GoogleGenAI client
 class MockGenAI {

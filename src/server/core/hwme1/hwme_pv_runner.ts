@@ -12,7 +12,10 @@ async function runValidation() {
         attributes: { age: 30 },
         state: "IDLE",
         temporalState: "PRESENT",
-        evidence: ["Observation 1"]
+        evidence: ["Observation 1"],
+        confidence: 1.0,
+        metadata: {},
+        provenance: "Test Runner"
     });
     
     // 2. Create another entity
@@ -22,7 +25,10 @@ async function runValidation() {
         attributes: {},
         state: "OPEN",
         temporalState: "PRESENT",
-        evidence: []
+        evidence: [],
+        confidence: 1.0,
+        metadata: {},
+        provenance: "Test Runner"
     });
 
     // 3. Create a relationship
@@ -32,7 +38,10 @@ async function runValidation() {
         type: WorldRelationshipType.LOCATED_IN,
         weight: 1.0,
         isCausal: false,
-        evidence: ["Observation 2"]
+        evidence: ["Observation 2"],
+        confidence: 1.0,
+        metadata: {},
+        provenance: "Test Runner"
     });
 
     // 4. Create a Goal
@@ -44,7 +53,10 @@ async function runValidation() {
         subGoalIds: [],
         constraints: [],
         dependencies: [],
-        completionCriteria: []
+        completionCriteria: [],
+        confidence: 1.0,
+        metadata: {},
+        provenance: "Test Runner"
     });
 
     // 5. Test Temporal Engine
