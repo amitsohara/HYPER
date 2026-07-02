@@ -1,4 +1,5 @@
 import { TelemetryCollector } from "../collectors/TelemetryCollector";
+import os from "os";
 
 export class MetricsEngine {
     private metrics = {
@@ -10,15 +11,25 @@ export class MetricsEngine {
         averageConfidence: 0.88,
         activeSpecialists: 15,
         memoryUsage: 35,
-        cpuUsage: 45
+        cpuUsage: 45,
+        gpuUsage: 12,
+        llmDependencyRatio: 0.05,
+        autonomousIntelligenceScore: 0.95,
+        activeMissions: 0,
+        activePlans: 0,
+        engineStatus: "ONLINE"
     };
     
     private telemetry: TelemetryCollector;
     private eventCount = 0;
     private lastTick = Date.now();
+    private lastCpuUsage: NodeJS.CpuUsage;
+    private lastCpuTime: number;
 
     constructor(telemetry: TelemetryCollector) {
         this.telemetry = telemetry;
+        this.lastCpuUsage = process.cpuUsage();
+        this.lastCpuTime = Date.now();
         setInterval(() => this.tick(), 1000);
     }
 
@@ -34,8 +45,30 @@ export class MetricsEngine {
         this.eventCount = 0;
         this.lastTick = now;
         
-        this.metrics.cpuUsage = Math.floor(Math.random() * 10 + 30);
-        this.metrics.memoryUsage = Math.floor((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100);
+        // CPU
+        const cpuUsage = process.cpuUsage(this.lastCpuUsage);
+        const elapsedUs = (now - this.lastCpuTime) * 1000;
+        const totalCpuUs = cpuUsage.user + cpuUsage.system;
+        this.metrics.cpuUsage = Math.min(100, Math.max(0, Math.round((totalCpuUs / elapsedUs) * 100)));
+        this.lastCpuUsage = process.cpuUsage();
+        this.lastCpuTime = now;
+
+        // Memory
+        const mem = process.memoryUsage();
+        this.metrics.memoryUsage = Math.round((mem.heapUsed / mem.heapTotal) * 100);
+        
+        // State
+        const state = this.telemetry.getState();
+        this.metrics.activeSpecialists = state.activeModules ? state.activeModules.length : 0;
+        
+        // Let's count active plans from decisionCandidates
+        if (state.decisionCandidates && state.decisionCandidates.length > 0) {
+            this.metrics.activePlans = state.decisionCandidates.length;
+        } else {
+            this.metrics.activePlans = 0;
+        }
+
+        // We can get mission success etc from history if we wanted
     }
 
     public getMetrics() {

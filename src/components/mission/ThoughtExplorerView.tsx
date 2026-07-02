@@ -1,52 +1,9 @@
 import React from "react";
 import { FileText, AlertCircle, ArrowRight, BrainCircuit } from "lucide-react";
+import { useThoughtStore } from "../../store/useThoughtStore";
 
 export function ThoughtExplorerView({ diagnostics }: any) {
-  let thoughts = [
-    {
-      id: "th-01",
-      priority: "HIGH",
-      confidence: 0.95,
-      content: "Congestion forming on Northbound lane due to stalled vehicle.",
-      evidence: ["cam-01 motion delta", "speed avg < 5mph"],
-      state: "ACTIVE"
-    },
-    {
-      id: "th-02",
-      priority: "MEDIUM",
-      confidence: 0.82,
-      content: "Pedestrian volume increasing at crosswalk 3.",
-      evidence: ["cam-04 density map"],
-      state: "ACTIVE"
-    },
-    {
-      id: "th-03",
-      priority: "LOW",
-      confidence: 0.45,
-      content: "Possible weather anomaly affecting visibility.",
-      evidence: ["contrast reduction detected"],
-      state: "REJECTED"
-    }
-  ];
-
-  if (diagnostics?.workingMemory?.length > 0) {
-      thoughts = diagnostics.workingMemory.map((mem: any, i: number) => {
-          let contentStr = typeof mem === 'string' ? mem : JSON.stringify(mem);
-          let confidence = 0.9;
-          if (typeof mem === 'object' && mem.content) {
-              contentStr = mem.content;
-              confidence = mem.confidence || confidence;
-          }
-          return {
-              id: `th-${i}`,
-              priority: confidence > 0.8 ? "HIGH" : "MEDIUM",
-              confidence: confidence,
-              content: contentStr,
-              evidence: ["Extracted from active cognitive cycle"],
-              state: "ACTIVE"
-          };
-      });
-  }
+  const thoughts = useThoughtStore((state) => state.thoughts);
 
   return (
     <div className="h-full flex flex-col space-y-4">
@@ -68,7 +25,7 @@ export function ThoughtExplorerView({ diagnostics }: any) {
                   </div>
                   <div className="flex gap-2">
                      <span className={`text-xs px-2 py-1 rounded font-medium ${t.priority === 'HIGH' ? 'bg-rose-500/10 text-rose-400' : t.priority === 'MEDIUM' ? 'bg-amber-500/10 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>{t.priority} PRIORITY</span>
-                     <span className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded font-medium">CONF: {t.confidence * 100}%</span>
+                     <span className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded font-medium">CONF: {(t.confidence * 100).toFixed(0)}%</span>
                   </div>
                 </div>
                 
@@ -82,6 +39,9 @@ export function ThoughtExplorerView({ diagnostics }: any) {
                 </div>
              </div>
            ))}
+           {thoughts.length === 0 && (
+               <div className="text-slate-500 italic p-4">Awaiting cognitive events...</div>
+           )}
         </div>
         
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">

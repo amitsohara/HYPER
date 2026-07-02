@@ -27,7 +27,7 @@ export class ActionAuthorizationEngine {
                 
                 if (arbitration.useExternal) {
                     const prompt = `Evaluate these options and select the best one based on highest utility and lowest risk.
-Decision Goal: ${decision.goalId}
+Decision Goal: ${(decision as any).goalId}
 Options: ${JSON.stringify(decision.options, null, 2)}
 
 Return a JSON object with:

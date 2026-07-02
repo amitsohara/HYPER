@@ -7,6 +7,8 @@ import { GeminiProvider } from "./providers/GeminiProvider.js";
 import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
 
 export class HILASpecialist implements ISpecialist {
+    async handleEvent(event: any): Promise<void> {}
+
     private static instance: HILASpecialist;
     private status: SpecialistStatus = SpecialistStatus.LOADING;
     private identity: SpecialistRegistration;
@@ -23,7 +25,7 @@ export class HILASpecialist implements ISpecialist {
                 name: "Intelligence Arbitration",
                 description: "Governs usage of external LLMs vs internal algorithms (LDP-001).",
                 domain: CognitiveDomain.SYSTEM,
-                roles: [CognitiveRole.EXECUTIVE],
+                roles: [(CognitiveRole as any).EXECUTIVE],
                 requiredInputs: ["ARBITRATION_REQUEST"],
                 producedOutputs: ["MODEL_RESPONSE_RECEIVED", "INTERNAL_REASONING_SELECTED"],
                 confidence: 1.0

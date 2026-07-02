@@ -3,68 +3,32 @@ import {
   Activity, Monitor, LayoutDashboard, Search, Camera, Globe, 
   BrainCircuit, GitCommit, GitMerge, FileText, Share2, 
   Target, BarChart3, Settings, Play, Database, Award, 
-  GitBranch, FlaskConical, Map, LineChart, BookOpen, Layers
+  GitBranch, FlaskConical, Map, LineChart, BookOpen, Layers,
+  Power, ListTree
 } from "lucide-react";
-import { safeFetchJSON } from "../fetchUtils";
+import { useHyperMindStore } from "../store/useHyperMindStore";
 import { ConceptGraphView } from "./mission/ConceptGraphView";
 import { ThoughtExplorerView } from "./mission/ThoughtExplorerView";
 import { ReasoningExplorerView } from "./mission/ReasoningExplorerView";
 import { DecisionCenterView } from "./mission/DecisionCenterView";
 import { LearningCenterView } from "./mission/LearningCenterView";
 import { AnalyticsView } from "./mission/AnalyticsView";
+import { SimulationCenterView } from "./mission/SimulationCenterView";
+import { ReplayCenterView } from "./mission/ReplayCenterView";
 import { PluginManagerView, ReportsView, LeaderboardView, BenchmarkView, RegressionView, SettingsView } from "./mission/OtherViews";
 import { MissionDetailView } from "./MissionDetailView";
 
 export function MissionControlApp({ onBack, activeMission }: { onBack?: () => void, activeMission?: any }) {
   const [activeTab, setActiveTab] = useState(activeMission ? "active_mission_detail" : "dashboard");
-  const [metrics, setMetrics] = useState<any>(null);
-  const [hii, setHii] = useState<any>(null);
-  const [missions, setMissions] = useState<any[]>([]);
-  const [diagnostics, setDiagnostics] = useState<any>(null);
+  const { metrics, hii, missions, diagnostics, connect, disconnect } = useHyperMindStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
-    fetchData(); // Initial fetch
-    
-    // Connect WebSocket
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/api/hml/stream`;
-    const ws = new WebSocket(wsUrl);
-    
-    ws.onmessage = (event) => {
-      try {
-        const msg = JSON.parse(event.data);
-        // We can use the stream to trigger re-fetches or update state directly
-        // For now, we will fetch data when we receive stream events to ensure consistency
-        // But throttle it to avoid spam
-      } catch (e) {}
-    };
-
-    const interval = setInterval(fetchData, 2000); // Polling as fallback/sync
-    
+    connect();
     return () => {
-      clearInterval(interval);
-      ws.close();
+      disconnect();
     };
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const dbRes = await safeFetchJSON("/api/hml/dashboard");
-      if (dbRes) setMetrics(dbRes);
-
-      const hiiRes = await safeFetchJSON("/api/hml/hii");
-      if (hiiRes) setHii(hiiRes);
-
-      const misRes = await safeFetchJSON("/api/hml/missions");
-      if (misRes) setMissions(misRes);
-
-      const diagRes = await safeFetchJSON("/api/hml/diagnostics");
-      if (diagRes) setDiagnostics(diagRes);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  }, [connect, disconnect]);
 
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -434,10 +398,12 @@ function DashboardView({ metrics, hii, missions }: any) {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
+        <MetricCard title="Engine Status" value={metrics.engineStatus || "ONLINE"} trend={null} icon={Power} />
         <MetricCard title="Overall Intelligence (HII)" value={(hii.overallIntelligence * 100).toFixed(1) + '%'} trend="+1.2%" icon={BrainCircuit} />
         <MetricCard title="Mission Success Rate" value={(hii.metrics.missionSuccessRate * 100).toFixed(1) + '%'} trend="+0.5%" icon={Target} />
         <MetricCard title="Active Missions" value={metrics.activeMissions} trend={null} icon={Play} />
+        <MetricCard title="Active Plans" value={metrics.activePlans || 0} trend={null} icon={ListTree} />
         <MetricCard title="HCNS Throughput" value={metrics.hcnsThroughput + ' ev/s'} trend="+120" icon={Activity} />
       </div>
 
@@ -666,33 +632,6 @@ function LiveInputsView() {
   );
 }
 
-function SimulationCenterView() {
-  return (
-    <div className="space-y-6 h-full flex flex-col">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[400px]">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
-          <h4 className="text-slate-400 text-sm mb-4">Canonical World</h4>
-          <div className="flex-1 border border-slate-800 rounded bg-slate-950 flex items-center justify-center text-slate-600">
-             Ground Truth State
-          </div>
-        </div>
-        <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-4 flex flex-col ring-1 ring-indigo-500/50">
-          <h4 className="text-indigo-400 text-sm mb-4">Simulation 1 (High Probability)</h4>
-          <div className="flex-1 border border-indigo-900 rounded bg-slate-950 flex flex-col items-center justify-center text-slate-500 space-y-2">
-             <Layers size={32} className="text-indigo-500/50" />
-             <div className="text-xs">Projected Success: 94%</div>
-          </div>
-        </div>
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
-          <h4 className="text-slate-400 text-sm mb-4">Simulation 2 (Edge Case)</h4>
-          <div className="flex-1 border border-slate-800 rounded bg-slate-950 flex items-center justify-center text-slate-600">
-             Alternative Timeline
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function WorldModelView({ diagnostics }: any) {
   const entities = diagnostics?.worldModel?.entities?.length || 0;
@@ -708,26 +647,3 @@ function WorldModelView({ diagnostics }: any) {
   );
 }
 
-function ReplayCenterView() {
-  return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl h-full flex flex-col">
-      <div className="flex-1 p-6 flex items-center justify-center bg-slate-950 rounded-t-xl">
-        <Play size={48} className="text-slate-800" />
-      </div>
-      <div className="h-24 bg-slate-900 p-4 border-t border-slate-800 rounded-b-xl flex flex-col justify-center">
-        <div className="w-full h-2 bg-slate-800 rounded-full mb-4 relative cursor-pointer">
-          <div className="absolute left-0 top-0 bottom-0 bg-indigo-500 w-1/3 rounded-full"></div>
-          <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow border-2 border-indigo-500"></div>
-        </div>
-        <div className="flex items-center justify-between text-slate-400 text-sm">
-          <div className="flex gap-4">
-             <button className="hover:text-slate-200">Rewind</button>
-             <button className="hover:text-slate-200">Play</button>
-             <button className="hover:text-slate-200">Forward</button>
-          </div>
-          <span>00:14:32 / 01:45:00</span>
-        </div>
-      </div>
-    </div>
-  );
-}

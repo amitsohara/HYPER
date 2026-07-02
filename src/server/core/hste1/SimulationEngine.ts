@@ -36,7 +36,7 @@ export class SimulationEngine {
                 if (decision.useExternal) {
                     const prompt = `Simulate the following scenario.
 Scenario Name: ${scenario.name}
-Description: ${scenario.description}
+Description: ${(scenario as any).description}
 Initial State: ${JSON.stringify(scenario.initialState)}
 
 Return a JSON object with:

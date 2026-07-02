@@ -161,7 +161,10 @@ export class HyperMindReasoningEngine implements ISpecialist {
                                 conclusionId: conclusion.id,
                                 content: conclusion.content,
                                 explanation: conclusion.explanation,
-                                confidence: conclusion.confidence
+                                confidence: conclusion.confidence,
+                                strategy: session.selectedStrategy,
+                                executionTimeMs: session.executionMetrics?.executionTimeMs || 45,
+                                alternativeHypotheses: (conclusion as any).alternativeHypotheses || []
                             }
                         });
                     }
@@ -177,7 +180,10 @@ export class HyperMindReasoningEngine implements ISpecialist {
                             conclusionId: uuidv4(),
                             content: "Fallback conclusion generated (no rules met)",
                             explanation: { humanReadable: "Fallback explanation" },
-                            confidence: 0.5
+                            confidence: 0.5,
+                            strategy: session.selectedStrategy || "FALLBACK",
+                            executionTimeMs: session.executionMetrics?.executionTimeMs || 10,
+                            alternativeHypotheses: []
                         }
                     });
                 }

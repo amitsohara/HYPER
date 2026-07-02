@@ -26,13 +26,13 @@ export class CognitiveObservatory {
     }
 
     private initializeSubscriptions() {
-        this.eventMesh.subscribe("*", (eventType, data) => {
+        this.eventMesh.subscribe("*", (event: any) => {
             // Forward everything to streaming and telemetry
             const eventPayload = {
                 id: crypto.randomUUID(),
-                type: eventType,
-                timestamp: Date.now(),
-                data: data
+                type: event.type || "UNKNOWN",
+                timestamp: event.timestamp || Date.now(),
+                data: event.payload || event.data || event
             };
             this.telemetry.recordEvent(eventPayload);
             this.streamer.broadcast(eventPayload);

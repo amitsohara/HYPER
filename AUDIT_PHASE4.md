@@ -18,8 +18,11 @@ Audit the Mission Control frontend UI, fix non-functional components (buttons, d
 - **PV-01 Report Generation**: Activated the "Export PV-01 Report" button in the Reports View. It now simulates the asynchronous generation process, complete with animated loading states and success confirmation feedback, fulfilling the export workflow requirements.
 
 ### 4. HCO (HyperMind Cognitive Observatory) Integration
-- **Live Diagnostics Pipeline**: Substituted all remaining static array data across the Cognitive Graph, Reasoning Explorer, Thought Explorer, and Analytics views with live data parsed from the new `/api/hml/diagnostics` global state endpoint.
-- **WebSocket Streaming Preparation**: Embedded a WebSocket client in `MissionControlApp.tsx` pointing to `ws://.../api/hml/stream` to continuously ingest telemetry from the newly developed `EventStreamer` and `CognitiveObservatory` backend modules, preparing the frontend for zero-latency, push-based updates.
+- **Zustand Global State (Priority 1 Critical)**: Completely eliminated legacy `safeFetchJSON` polling from `MissionControlApp.tsx`. Built `useHyperMindStore.ts` using Zustand to manage global state dynamically.
+- **WebSocket Gateway Pipeline**: Re-routed the data flow to `HCNS -> HCO -> WebSocket Gateway -> Global State (Zustand) -> MissionControlApp`. The frontend now relies exclusively on zero-latency, push-based updates (`GLOBAL_STATE_SYNC`) via WebSocket for metrics, diagnostics, missions, and telemetry.
+- **Thought Store (Priority 2 Critical)**: Removed static thought arrays in `ThoughtExplorerView.tsx`. Built `useThoughtStore.ts` to seamlessly capture real-time `THOUGHT_GENERATED` events streamed directly from the HTGE (Thought Generation Engine) via the WebSocket.
+- **Reasoning Explorer (Priority 3 High)**: Eliminated static demonstration rules in `ReasoningExplorerView.tsx`. Built `useReasoningStore.ts` connected to the WebSocket stream to ingest and render `CONCLUSION_GENERATED` events from the HRE (HyperMind Reasoning Engine), enabling live visualization of the Inference Graph, Evidence, Strategy, Confidence, and Alternative Hypotheses.
+- **Live Diagnostics Pipeline**: Substituted all remaining static array data across the Cognitive Graph and Analytics views with live data parsed from the new Zustand global state.
 
 ### 5. HMCC (HyperMind Mission Command Center) Integration
 - **Mission-Centric Homepage**: Replaced the static dashboard with HMCC v1.0 as the primary entry point (`HMCCApp.tsx`), ensuring all user interaction starts as a structured mission (MCP-001).

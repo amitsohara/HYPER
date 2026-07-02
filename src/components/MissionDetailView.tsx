@@ -1,57 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Play, Pause, XCircle, Settings, BrainCircuit, Activity, MessageSquare, ShieldAlert, Cpu, Network } from "lucide-react";
+import { useHyperMindStore } from "../store/useHyperMindStore";
 
 export function MissionDetailView({ missionId, missionName }: { missionId: string, missionName: string }) {
     const [messages, setMessages] = useState<any[]>([]);
     const [chatInput, setChatInput] = useState("");
     const [isPaused, setIsPaused] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const globalEvents = useHyperMindStore(state => state.events);
 
     // Auto-scroll chat
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    const [events, setEvents] = useState<any[]>([]);
-
     useEffect(() => {
         setMessages([
             { role: "user", text: "Deploying mission...", time: new Date().toLocaleTimeString() },
             { role: "hypermind", text: "Mission received. Building world model...", time: new Date().toLocaleTimeString() }
         ]);
+    }, []);
 
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/api/hml/stream`;
-        const ws = new WebSocket(wsUrl);
-
-        ws.onmessage = (event) => {
-            if (isPaused) return;
-            try {
-                const msg = JSON.parse(event.data);
-                if (msg.type === "TELEMETRY_UPDATE") {
-                    setEvents(prev => [...prev.slice(-10), { 
-                        time: new Date().toLocaleTimeString(), 
-                        level: "INFO", 
-                        text: `HCNS Event: ${Object.keys(msg.payload.metrics || {}).join(", ")}` 
-                    }]);
-                }
-            } catch (e) {}
-        };
-
-        const interval = setInterval(() => {
-             if (isPaused) return;
-             setEvents(prev => [...prev.slice(-10), {
-                  time: new Date().toLocaleTimeString(),
-                  level: Math.random() > 0.8 ? "WARN" : "INFO",
-                  text: `HCO Tick - Latency: ${Math.floor(Math.random()*40 + 10)}ms`
-             }]);
-        }, 3000);
-
-        return () => {
-             ws.close();
-             clearInterval(interval);
-        };
-    }, [isPaused]);
+    const displayEvents = globalEvents
+        .slice(-10)
+        .map(ev => ({
+            time: new Date(ev.timestamp || Date.now()).toLocaleTimeString(),
+            level: ev.type === 'TELEMETRY_UPDATE' ? "INFO" : (Math.random() > 0.8 ? "WARN" : "INFO"),
+            text: ev.type === 'TELEMETRY_UPDATE' ? `HCNS Event: ${Object.keys(ev.data?.metrics || {}).join(", ")}` : `HCO Event: ${ev.type}`
+        }));
 
     const handleSend = () => {
         if (!chatInput.trim()) return;
@@ -132,7 +108,7 @@ export function MissionDetailView({ missionId, missionName }: { missionId: strin
                         <Network size={18} className="text-indigo-400" /> HCO Event Stream
                     </h3>
                     <div className="flex-1 bg-slate-950 rounded border border-slate-800 p-4 font-mono text-xs overflow-y-auto space-y-2">
-                        {events.map((ev, i) => (
+                        {displayEvents.map((ev, i) => (
                              <div key={i} className="text-slate-500">
                                  [{ev.time}] <span className={ev.level === 'WARN' ? 'text-amber-400' : 'text-indigo-400'}>{ev.level}</span> - {ev.text}
                              </div>

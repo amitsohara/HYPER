@@ -15,7 +15,7 @@ export class TelemetryCollector {
     }
 
     private updateState(event: any) {
-        const type = event.type;
+        const type = event?.type || event?.data?.type;
         const data = event.data;
 
         if (type === 'WORLD_MODEL_UPDATED') {

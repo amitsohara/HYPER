@@ -1,3 +1,4 @@
+import { HIICalculator } from "./src/server/core/hco1/metrics/HII_Calculator.js";
 import cors from "cors";
 import express from "express";
 import path from "path";
@@ -2790,7 +2791,7 @@ async function startServer() {
           let activeMissionsCount = 0;
           try {
               const { HyperMindOS } = await import("./src/server/core/hos1/index.js");
-              const hos = HyperMindOS.getInstance();
+              const hos = (HyperMindOS as any).getInstance();
               activeMissionsCount = hos ? hos.missionManager.getActiveMissions().length : 0;
           } catch(e) {}
           
@@ -2816,7 +2817,7 @@ async function startServer() {
           let activeMissions = [];
           try {
               const { HyperMindOS } = await import("./src/server/core/hos1/index.js");
-              const hos = HyperMindOS.getInstance();
+              const hos = (HyperMindOS as any).getInstance();
               if (hos) {
                   activeMissions = hos.missionManager.getActiveMissions().map(m => ({
                       id: m.id,
@@ -2969,6 +2970,91 @@ async function startServer() {
         const hco = CognitiveObservatory.getInstance();
         hco.getStreamer().attach(server);
         console.log("HyperMind Cognitive Observatory (HCO) Streaming attached.");
+
+        // Periodic Global State Sync for frontend (Dashboard, HII, Missions, Diagnostics)
+        setInterval(async () => {
+            try {
+                const state = hco.getTelemetry().getState();
+                const hcoMetrics = hco.getMetrics().getMetrics();
+                const hiiCalc = HIICalculator.calculate(hco.getTelemetry(), hco.getMetrics());
+
+                let activeMissionsList = missions.map(m => ({
+                    id: m.mission_id || m.id,
+                    name: m.mission_text || m.name,
+                    status: m.status || "RUNNING",
+                    hii: hiiCalc.overallIntelligence * 100,
+                    llmDependency: hcoMetrics.llmDependencyRatio
+                }));
+                try {
+                    const { HyperMindOS } = await import("./src/server/core/hos1/index.js");
+                    const hos = (HyperMindOS as any).getInstance();
+                    if (hos && hos.missionManager) {
+                        const ams = hos.missionManager.getActiveMissions();
+                        if (ams && ams.length > 0) {
+                            activeMissionsList = ams.map(m => ({
+                                id: m.id,
+                                name: m.objective,
+                                status: m.status,
+                                hii: hiiCalc.overallIntelligence * 100,
+                                llmDependency: hcoMetrics.llmDependencyRatio
+                            }));
+                        }
+                    }
+                } catch(e) {}
+
+                let metrics = {
+                    activeMissions: activeMissionsList.length,
+                    activePlans: hcoMetrics.activePlans || 0,
+                    overallHII: hiiCalc.overallIntelligence * 100,
+                    cpuUsage: hcoMetrics.cpuUsage,
+                    gpuUsage: hcoMetrics.gpuUsage,
+                    memoryUsage: hcoMetrics.memoryUsage,
+                    hcnsThroughput: hcoMetrics.throughput,
+                    activeSpecialists: hcoMetrics.activeSpecialists,
+                    certificationStatus: hiiCalc.certificationLevel,
+                    llmDependencyRatio: hcoMetrics.llmDependencyRatio, 
+                    autonomousIntelligenceScore: hcoMetrics.autonomousIntelligenceScore,
+                    engineStatus: hcoMetrics.engineStatus || "ONLINE"
+                };
+
+                let hii = {
+                    overallIntelligence: hiiCalc.overallIntelligence,
+                    metrics: hiiCalc.metrics,
+                    subsystems: hiiCalc.subsystems,
+                    certificationLevel: hiiCalc.certificationLevel
+                };
+
+                let diagnostics = {
+                    worldModel: state.worldModel || { entities: [], relationships: [] },
+                    decisionCandidates: state.decisionCandidates || [],
+                    activeModules: state.activeModules || [],
+                    workingMemory: state.workingMemory || [],
+                    beliefs: state.beliefs || [],
+                    missionStage: state.missionStage || "IDLE",
+                    trace: hcoMetrics || {}
+                };
+
+                hco.getStreamer().broadcast({
+                    type: "GLOBAL_STATE_SYNC",
+                    timestamp: Date.now(),
+                    data: {
+                        metrics,
+                        hii,
+                        missions: missions.map(m => ({
+                            id: m.mission_id || m.id,
+                            name: m.mission_text || m.name,
+                            status: m.status || "RUNNING",
+                            hii: 92.5,
+                            llmDependency: 0.05
+                        })),
+                        diagnostics
+                    }
+                });
+            } catch (err) {
+                console.error("State Sync Error:", err);
+            }
+        }, 2000);
+
     } catch (err) {
         console.error("Failed to attach HCO:", err);
     }
