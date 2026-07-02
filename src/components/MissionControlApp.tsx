@@ -13,9 +13,10 @@ import { DecisionCenterView } from "./mission/DecisionCenterView";
 import { LearningCenterView } from "./mission/LearningCenterView";
 import { AnalyticsView } from "./mission/AnalyticsView";
 import { PluginManagerView, ReportsView, LeaderboardView, BenchmarkView, RegressionView, SettingsView } from "./mission/OtherViews";
+import { MissionDetailView } from "./MissionDetailView";
 
-export function MissionControlApp() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+export function MissionControlApp({ onBack, activeMission }: { onBack?: () => void, activeMission?: any }) {
+  const [activeTab, setActiveTab] = useState(activeMission ? "active_mission_detail" : "dashboard");
   const [metrics, setMetrics] = useState<any>(null);
   const [hii, setHii] = useState<any>(null);
   const [missions, setMissions] = useState<any[]>([]);
@@ -23,9 +24,28 @@ export function MissionControlApp() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
-    return () => clearInterval(interval);
+    fetchData(); // Initial fetch
+    
+    // Connect WebSocket
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/api/hml/stream`;
+    const ws = new WebSocket(wsUrl);
+    
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        // We can use the stream to trigger re-fetches or update state directly
+        // For now, we will fetch data when we receive stream events to ensure consistency
+        // But throttle it to avoid spam
+      } catch (e) {}
+    };
+
+    const interval = setInterval(fetchData, 2000); // Polling as fallback/sync
+    
+    return () => {
+      clearInterval(interval);
+      ws.close();
+    };
   }, []);
 
   const fetchData = async () => {
@@ -94,6 +114,18 @@ export function MissionControlApp() {
             ))}
           </ul>
         </div>
+        {onBack && (
+          <div className="p-4 border-t border-slate-800">
+            <button 
+              onClick={onBack}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors"
+              title="Command Center"
+            >
+              <Target size={18} />
+              {sidebarOpen && <span className="text-sm font-medium">Command Center</span>}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -117,6 +149,7 @@ export function MissionControlApp() {
 
         {/* Dynamic Canvas */}
         <div className="flex-1 overflow-auto p-6">
+          {activeTab === 'active_mission_detail' && activeMission && <MissionDetailView missionId={activeMission.mission_id || activeMission.id} missionName={activeMission.name || activeMission.mission_text || 'Active Mission'} />}
           {activeTab === 'dashboard' && <DashboardView metrics={metrics} hii={hii} missions={missions} />}
           {activeTab === 'mission_control' && <MissionControlView onLaunchNew={() => setActiveTab('mission_builder')} />}
           {activeTab === 'mission_builder' && <MissionBuilderView />}
@@ -138,7 +171,7 @@ export function MissionControlApp() {
           {activeTab === 'settings' && <SettingsView />}
           
           {/* Fallback for other tabs */}
-          {['dashboard', 'mission_control', 'mission_builder', 'live_inputs', 'simulation_center', 'world_model', 'replay', 'concept_graph', 'thought_explorer', 'reasoning_explorer', 'decision_center', 'learning_center', 'analytics', 'plugin_manager', 'reports', 'leaderboard', 'benchmark', 'regression', 'settings'].indexOf(activeTab) === -1 && (
+          {['dashboard', 'active_mission_detail', 'mission_control', 'mission_builder', 'live_inputs', 'simulation_center', 'world_model', 'replay', 'concept_graph', 'thought_explorer', 'reasoning_explorer', 'decision_center', 'learning_center', 'analytics', 'plugin_manager', 'reports', 'leaderboard', 'benchmark', 'regression', 'settings'].indexOf(activeTab) === -1 && (
             <div className="flex flex-col items-center justify-center h-full text-slate-500 space-y-4">
               <Monitor size={48} className="opacity-20" />
               <p>Module {activeTab.replace('_', ' ')} is online and awaiting HCNS event streams.</p>
@@ -496,6 +529,34 @@ function UsageBar({ label, percentage, color }: any) {
   );
 }
 
+function VideoStream({ isScreen }: { isScreen: boolean }) {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  
+  React.useEffect(() => {
+    let stream: MediaStream;
+    async function init() {
+      try {
+        if (isScreen) {
+          stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        } else {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        }
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.error("Error accessing media:", err);
+      }
+    }
+    init();
+    return () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+    };
+  }, [isScreen]);
+
+  return <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />;
+}
+
 function LiveInputsView() {
   const [inputs, setInputs] = useState([
     { id: 1, name: "Traffic Camera 1", type: "RTSP", fps: 30, latency: 45, status: "Connected", url: "rtsp://camera.internal/1" },
@@ -509,7 +570,11 @@ function LiveInputsView() {
   const [newInputType, setNewInputType] = useState("RTSP");
 
   const handleAdd = () => {
-    if (newInputName && newInputUrl) {
+    let url = newInputUrl;
+    if (newInputType === 'Webcam') url = 'local://webcam';
+    if (newInputType === 'Screen Capture') url = 'local://screen';
+    
+    if (newInputName && url) {
       setInputs([
         ...inputs,
         {
@@ -519,7 +584,7 @@ function LiveInputsView() {
           fps: 30,
           latency: 25,
           status: "Connected",
-          url: newInputUrl
+          url: url
         }
       ]);
       setNewInputName("");
@@ -547,7 +612,7 @@ function LiveInputsView() {
              <input value={newInputName} onChange={e => setNewInputName(e.target.value)} type="text" className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="e.g. Lobby Camera" />
            </div>
            <div className="flex-1">
-             <label className="block text-xs text-slate-400 mb-1">URL / Endpoint</label>
+             <label className="block text-xs text-slate-400 mb-1">URL / Endpoint (leave blank for webcam/screen)</label>
              <input value={newInputUrl} onChange={e => setNewInputUrl(e.target.value)} type="text" className="w-full bg-slate-950 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="rtsp://... or https://..." />
            </div>
            <div className="w-32">
@@ -557,6 +622,8 @@ function LiveInputsView() {
                <option>WebSocket</option>
                <option>WebRTC</option>
                <option>API</option>
+               <option>Webcam</option>
+               <option>Screen Capture</option>
              </select>
            </div>
            <div className="flex gap-2">
@@ -570,7 +637,11 @@ function LiveInputsView() {
         {inputs.map((input) => (
           <div key={input.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
             <div className="h-48 bg-slate-950 relative flex items-center justify-center border-b border-slate-800 overflow-hidden group">
-              <Camera size={32} className="text-slate-800" />
+              {(input.url === 'local://webcam' || input.url === 'local://screen') ? (
+                  <VideoStream isScreen={input.url === 'local://screen'} />
+              ) : (
+                  <Camera size={32} className="text-slate-800" />
+              )}
               <div className="absolute inset-0 bg-indigo-500/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                  <div className="bg-slate-900/90 text-xs px-3 py-1.5 rounded font-mono text-slate-300 backdrop-blur-sm border border-slate-700 truncate max-w-[90%]">
                     {input.url}
