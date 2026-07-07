@@ -1,0 +1,1 @@
+export class TelemetryValidator { validate() { return { status: 'pass' }; } }

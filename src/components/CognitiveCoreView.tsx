@@ -10,7 +10,7 @@ export function CognitiveCoreView() {
       try {
         const res = await fetch("/api/core/state");
         if (res.ok) {
-          const data = await res.json();
+          const data = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
           setCoreState(data);
         }
       } catch (e) {

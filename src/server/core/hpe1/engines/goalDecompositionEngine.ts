@@ -30,7 +30,7 @@ Output as JSON array with properties: "name", "description". No markdown wrappin
                     
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, decision);
                     if (response && response.content) {
-                        const parsed = JSON.parse(response.content);
+                        let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
                         let prevId = null;
                         for (let i = 0; i < parsed.length; i++) {
                             const step = parsed[i];

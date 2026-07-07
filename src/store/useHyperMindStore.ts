@@ -26,10 +26,10 @@ export const useHyperMindStore = create<HyperMindState>((set, get) => ({
     if (get().isConnected) return;
     
     // Fetch initial state while WS connects
-    fetch("/api/hml/dashboard").then(r => r.json()).then(data => set({ metrics: data })).catch(() => {});
-    fetch("/api/hml/hii").then(r => r.json()).then(data => set({ hii: data })).catch(() => {});
-    fetch("/api/hml/missions").then(r => r.json()).then(data => set({ missions: data })).catch(() => {});
-    fetch("/api/hml/diagnostics").then(r => r.json()).then(data => {
+    fetch("/api/hml/dashboard").then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } })).then(data => set({ metrics: data })).catch(() => {});
+    fetch("/api/hml/hii").then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } })).then(data => set({ hii: data })).catch(() => {});
+    fetch("/api/hml/missions").then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } })).then(data => set({ missions: data })).catch(() => {});
+    fetch("/api/hml/diagnostics").then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } })).then(data => {
         set({ diagnostics: data });
         if (data?.workingMemory) {
             const thoughts = data.workingMemory.map((mem: any, i: number) => {
@@ -62,7 +62,13 @@ export const useHyperMindStore = create<HyperMindState>((set, get) => ({
 
     ws.onmessage = (event) => {
       try {
-        const msg = JSON.parse(event.data);
+        let msg;
+        try {
+            msg = JSON.parse(event.data);
+        } catch(e) {
+            console.error("Invalid WS message:", event.data);
+            return;
+        }
         
         if (msg.type === "GLOBAL_STATE_SYNC") {
            set({
@@ -118,7 +124,7 @@ export const useHyperMindStore = create<HyperMindState>((set, get) => ({
                isMain: true,
                explanation: msg.payload?.explanation?.humanReadable || JSON.stringify(msg.payload?.explanation),
                strategy: msg.payload?.strategy || "DEDUCTIVE",
-               executionTimeMs: msg.payload?.executionTimeMs || Math.floor(Math.random() * 50 + 10),
+               executionTimeMs: msg.payload?.executionTimeMs || 45,
                alternativeHypotheses: msg.payload?.alternativeHypotheses || []
            });
            

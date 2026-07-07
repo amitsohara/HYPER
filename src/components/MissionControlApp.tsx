@@ -15,6 +15,10 @@ import { LearningCenterView } from "./mission/LearningCenterView";
 import { AnalyticsView } from "./mission/AnalyticsView";
 import { SimulationCenterView } from "./mission/SimulationCenterView";
 import { ReplayCenterView } from "./mission/ReplayCenterView";
+import { LiveCognitivePipelineView } from "./mission/LiveCognitivePipelineView";
+import { EngineStatusView } from "./mission/EngineStatusView";
+import { HUIVDashboardView } from "./mission/HUIVDashboardView";
+import { ShieldCheck } from "lucide-react";
 import { PluginManagerView, ReportsView, LeaderboardView, BenchmarkView, RegressionView, SettingsView } from "./mission/OtherViews";
 import { MissionDetailView } from "./MissionDetailView";
 
@@ -33,6 +37,7 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "mission_control", label: "Mission Control", icon: Target },
+    { id: "engine_status", label: "Engine Status", icon: Activity },
     { id: "mission_builder", label: "Mission Builder", icon: GitCommit },
     { id: "live_inputs", label: "Live Inputs", icon: Camera },
     { id: "world_model", label: "World Model", icon: Globe },
@@ -49,7 +54,8 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
     { id: "benchmark", label: "Benchmark", icon: Activity },
     { id: "regression", label: "Regression", icon: GitBranch },
     { id: "leaderboard", label: "Leaderboard", icon: Award },
-    { id: "settings", label: "Settings", icon: Settings }
+    { id: "settings", label: "Settings", icon: Settings },
+    { id: "huiv", label: "HUIV Validation", icon: ShieldCheck }
   ];
 
   return (
@@ -106,7 +112,7 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
             </div>
             <div className="flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20 text-sm font-medium">
               <Activity size={14} className="animate-pulse" />
-              v2.0 HII: {hii?.overallIntelligence ? (hii.overallIntelligence * 100).toFixed(1) + '%' : 'CALCULATING...'}
+              v2.0 HII: {hii?.overallIntelligence ? Number(hii.overallIntelligence * 100).toFixed(1) + '%' : 'CALCULATING...'}
             </div>
           </div>
         </div>
@@ -116,6 +122,7 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
           {activeTab === 'active_mission_detail' && activeMission && <MissionDetailView missionId={activeMission.mission_id || activeMission.id} missionName={activeMission.name || activeMission.mission_text || 'Active Mission'} />}
           {activeTab === 'dashboard' && <DashboardView metrics={metrics} hii={hii} missions={missions} />}
           {activeTab === 'mission_control' && <MissionControlView onLaunchNew={() => setActiveTab('mission_builder')} />}
+          {activeTab === 'engine_status' && <EngineStatusView />}
           {activeTab === 'mission_builder' && <MissionBuilderView />}
           {activeTab === 'live_inputs' && <LiveInputsView />}
           {activeTab === 'simulation_center' && <SimulationCenterView />}
@@ -133,6 +140,7 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
           {activeTab === 'benchmark' && <BenchmarkView />}
           {activeTab === 'regression' && <RegressionView />}
           {activeTab === 'settings' && <SettingsView />}
+          {activeTab === 'huiv' && <HUIVDashboardView />}
           
           {/* Fallback for other tabs */}
           {['dashboard', 'active_mission_detail', 'mission_control', 'mission_builder', 'live_inputs', 'simulation_center', 'world_model', 'replay', 'concept_graph', 'thought_explorer', 'reasoning_explorer', 'decision_center', 'learning_center', 'analytics', 'plugin_manager', 'reports', 'leaderboard', 'benchmark', 'regression', 'settings'].indexOf(activeTab) === -1 && (
@@ -148,11 +156,7 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
 }
 
 function MissionBuilderView() {
-  const [nodes, setNodes] = useState<{id: string, type: string, label: string, icon: any}[]>([
-      { id: "1", type: "input", label: "RTSP: Warehouse", icon: Camera },
-      { id: "2", type: "cognitive", label: "Goal: Detect Anomalies", icon: Target },
-      { id: "3", type: "output", label: "Eval: Safety Standard", icon: Activity }
-  ]);
+  const [nodes, setNodes] = useState<{id: string, type: string, label: string, icon: any}[]>([]);
   const [isDeploying, setIsDeploying] = useState(false);
   const [saveStatus, setSaveStatus] = useState("");
 
@@ -171,8 +175,13 @@ function MissionBuilderView() {
       } catch (err) {}
   };
 
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
       setIsDeploying(true);
+      try {
+          await fetch('/api/hml/missions/deploy', { method: 'POST' });
+      } catch (e) {
+          console.error(e);
+      }
       setTimeout(() => setIsDeploying(false), 2000);
   };
 
@@ -269,6 +278,7 @@ function MissionBuilderView() {
 }
 
 function MissionControlView({ onLaunchNew }: { onLaunchNew: () => void }) {
+  const missions = useHyperMindStore(state => state.missions) || [];
   return (
     <div className="space-y-6 h-full flex flex-col">
       <div className="flex items-center justify-between">
@@ -282,112 +292,44 @@ function MissionControlView({ onLaunchNew }: { onLaunchNew: () => void }) {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1 min-h-0 overflow-y-auto pb-8">
-        {/* Active Mission 1 */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl flex flex-col overflow-hidden">
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              <h3 className="font-medium text-slate-200">Traffic Optimization (gc-traffic-01)</h3>
-            </div>
-            <div className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded">Running: 01:23:45</div>
-          </div>
-          
-          <div className="p-4 grid grid-cols-2 gap-4 flex-1">
-            <div className="bg-slate-950 rounded border border-slate-800 flex items-center justify-center relative overflow-hidden">
-              {/* Fake video feed */}
-              <div className="absolute inset-0 bg-slate-900/50 flex items-center justify-center flex-col">
-                 <Camera size={24} className="text-slate-700 mb-2" />
-                 <span className="text-xs text-slate-500">Live Traffic Feed</span>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                <div className="text-xs text-slate-500 mb-1">Current Cognitive State</div>
-                <div className="text-indigo-400 text-sm font-medium flex items-center gap-2">
-                   <BrainCircuit size={14} /> Planning Action Sequence
+        {missions.length === 0 ? (
+          <div className="col-span-1 xl:col-span-2 text-slate-500 italic p-6">No active missions running.</div>
+        ) : missions.map(m => (
+            <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-xl flex flex-col overflow-hidden">
+              <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                  <h3 className="font-medium text-slate-200">{m.name}</h3>
                 </div>
+                <div className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded">Status: {m.status}</div>
               </div>
               
-              <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                <div className="text-xs text-slate-500 mb-2">Subsystem Confidence</div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Perception</span>
-                    <span className="text-emerald-400">98%</span>
+              <div className="p-4 grid grid-cols-1 gap-4 flex-1">
+                <div className="space-y-4">
+                  <div className="bg-slate-950 p-3 rounded border border-slate-800">
+                    <div className="text-xs text-slate-500 mb-1">Current Cognitive State</div>
+                    <div className="text-indigo-400 text-sm font-medium flex items-center gap-2">
+                       <BrainCircuit size={14} /> Active
+                    </div>
                   </div>
-                  <div className="w-full bg-slate-900 rounded-full h-1"><div className="bg-emerald-500 h-1 rounded-full" style={{width: '98%'}}></div></div>
                   
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Reasoning</span>
-                    <span className="text-indigo-400">85%</span>
+                  <div className="bg-slate-950 p-3 rounded border border-slate-800">
+                    <div className="text-xs text-slate-500 mb-2">Metrics</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-400">HII</span>
+                        <span className="text-emerald-400">{m.hii ? Number(m.hii).toFixed(1) : 0}%</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-400">LLM Dependency</span>
+                        <span className="text-amber-400">{m.llmDependency ? Number(m.llmDependency).toFixed(2) : 0}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-full bg-slate-900 rounded-full h-1"><div className="bg-indigo-500 h-1 rounded-full" style={{width: '85%'}}></div></div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="p-3 bg-slate-950 border-t border-slate-800 text-xs font-mono text-slate-500 overflow-hidden h-24 flex flex-col justify-end">
-            <div>&gt; [HCNS] Entity Detected: Vehicle (Conf: 0.99)</div>
-            <div>&gt; [HCNS] Update World Model: Intersection Node 42</div>
-            <div>&gt; [HCNS] Goal Eval: Maximize Throughput</div>
-            <div className="text-indigo-400">&gt; [HCNS] Thought: "Congestion forming on Northbound lane, altering signal timing..."</div>
-          </div>
-        </div>
-
-        {/* Active Mission 2 */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl flex flex-col overflow-hidden">
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/80">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              <h3 className="font-medium text-slate-200">Medicine Verification (gc-medicine-01)</h3>
-            </div>
-            <div className="text-xs px-2 py-1 bg-slate-800 text-slate-300 rounded">Running: 00:45:12</div>
-          </div>
-          
-          <div className="p-4 grid grid-cols-2 gap-4 flex-1">
-            <div className="bg-slate-950 rounded border border-slate-800 flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-slate-900/50 flex items-center justify-center flex-col">
-                 <Camera size={24} className="text-slate-700 mb-2" />
-                 <span className="text-xs text-slate-500">Medicine Tray Feed</span>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                <div className="text-xs text-slate-500 mb-1">Current Cognitive State</div>
-                <div className="text-emerald-400 text-sm font-medium flex items-center gap-2">
-                   <Target size={14} /> Concept Matching
-                </div>
-              </div>
-              
-              <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                <div className="text-xs text-slate-500 mb-2">Subsystem Confidence</div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Perception</span>
-                    <span className="text-emerald-400">99%</span>
-                  </div>
-                  <div className="w-full bg-slate-900 rounded-full h-1"><div className="bg-emerald-500 h-1 rounded-full" style={{width: '99%'}}></div></div>
-                  
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Reasoning</span>
-                    <span className="text-emerald-400">92%</span>
-                  </div>
-                  <div className="w-full bg-slate-900 rounded-full h-1"><div className="bg-emerald-500 h-1 rounded-full" style={{width: '92%'}}></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-3 bg-slate-950 border-t border-slate-800 text-xs font-mono text-slate-500 overflow-hidden h-24 flex flex-col justify-end">
-            <div>&gt; [HCNS] OCR Read: "Amoxicillin 500mg"</div>
-            <div>&gt; [HCNS] Invoice Match: Confirmed</div>
-            <div>&gt; [HCNS] Pill Count: 30/30 Detected</div>
-            <div className="text-emerald-400">&gt; [HCNS] Decision: PASS TRAY</div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
@@ -400,12 +342,14 @@ function DashboardView({ metrics, hii, missions }: any) {
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
         <MetricCard title="Engine Status" value={metrics.engineStatus || "ONLINE"} trend={null} icon={Power} />
-        <MetricCard title="Overall Intelligence (HII)" value={(hii.overallIntelligence * 100).toFixed(1) + '%'} trend="+1.2%" icon={BrainCircuit} />
-        <MetricCard title="Mission Success Rate" value={(hii.metrics.missionSuccessRate * 100).toFixed(1) + '%'} trend="+0.5%" icon={Target} />
+        <MetricCard title="Overall Intelligence (HII)" value={((hii?.overallIntelligence || 0) * 100).toFixed(1) + '%'} trend="+1.2%" icon={BrainCircuit} />
+        <MetricCard title="Mission Success Rate" value={((hii?.metrics?.missionSuccessRate || 0) * 100).toFixed(1) + '%'} trend="+0.5%" icon={Target} />
         <MetricCard title="Active Missions" value={metrics.activeMissions} trend={null} icon={Play} />
         <MetricCard title="Active Plans" value={metrics.activePlans || 0} trend={null} icon={ListTree} />
         <MetricCard title="HCNS Throughput" value={metrics.hcnsThroughput + ' ev/s'} trend="+120" icon={Activity} />
       </div>
+
+      <LiveCognitivePipelineView />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -420,7 +364,7 @@ function DashboardView({ metrics, hii, missions }: any) {
                   </div>
                   <div className="flex items-center gap-6 text-sm">
                     <span className="text-slate-400">ID: {m.id}</span>
-                    <span className="px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded">HII: {m.hii.toFixed(1)}%</span>
+                    <span className="px-2 py-1 bg-indigo-500/10 text-indigo-400 rounded">HII: {(m.hii || 0).toFixed(1)}%</span>
                   </div>
                 </div>
               ))}
@@ -524,12 +468,7 @@ function VideoStream({ isScreen }: { isScreen: boolean }) {
 }
 
 function LiveInputsView() {
-  const [inputs, setInputs] = useState([
-    { id: 1, name: "Traffic Camera 1", type: "RTSP", fps: 30, latency: 45, status: "Connected", url: "rtsp://camera.internal/1" },
-    { id: 2, name: "Traffic Camera 2", type: "RTSP", fps: 24, latency: 120, status: "Degraded", url: "rtsp://camera.internal/2" },
-    { id: 3, name: "Warehouse Drone", type: "WebSocket", fps: 60, latency: 15, status: "Connected", url: "ws://drone.local/stream" },
-    { id: 4, name: "Desktop Agent", type: "API", fps: '--', latency: 8, status: "Connected", url: "https://api.agent/stream" }
-  ]);
+  const [inputs, setInputs] = useState<any[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [newInputName, setNewInputName] = useState("");
   const [newInputUrl, setNewInputUrl] = useState("");

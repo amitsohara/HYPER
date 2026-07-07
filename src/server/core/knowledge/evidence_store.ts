@@ -11,12 +11,12 @@ function ensureDb() {
 
 export function saveEvidence(evidenceList: any[]) {
     ensureDb();
-    const existing = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+    let existing = []; try { existing = JSON.parse(fs.readFileSync(DB_PATH, 'utf8')); } catch(e) { existing = []; }
     existing.push(...evidenceList);
     fs.writeFileSync(DB_PATH, JSON.stringify(existing, null, 2));
 }
 
 export function getEvidence() {
     ensureDb();
-    return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+    try { return JSON.parse(fs.readFileSync(DB_PATH, 'utf8')); } catch(e) { return [] as any; }
 }

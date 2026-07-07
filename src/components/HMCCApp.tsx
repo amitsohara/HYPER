@@ -32,7 +32,7 @@ export function HMCCApp({ onStartMission }: { onStartMission: (mission: any) => 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(missionData)
         });
-        const result = await res.json();
+        const result = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
         onStartMission(result.mission || missionData);
     } catch(e) {
         onStartMission(missionData);
@@ -69,7 +69,7 @@ export function HMCCApp({ onStartMission }: { onStartMission: (mission: any) => 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1 bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20 text-sm font-medium">
             <Activity size={14} className="animate-pulse" />
-            HII: {hii?.overallIntelligence ? (hii.overallIntelligence * 100).toFixed(1) + '%' : '...'}
+            HII: {hii?.overallIntelligence ? Number(hii.overallIntelligence * 100).toFixed(1) + '%' : '...'}
           </div>
           <button className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-400"><Bell size={18} /></button>
           <button className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-400"><Settings size={18} /></button>
@@ -157,7 +157,7 @@ function MissionWizard({ initialInput, onClose, onApprove, step, setStep }: any)
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ input: initialInput })
         });
-        const data = await res.json();
+        const data = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
         setMissionData(data);
       } catch (err) {
         console.error(err);

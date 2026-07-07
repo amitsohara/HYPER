@@ -44,27 +44,20 @@ export function ThoughtExplorerView({ diagnostics }: any) {
            )}
         </div>
         
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-           <h3 className="font-medium text-slate-200 mb-4 border-b border-slate-800 pb-2">Cognitive Lifecycle</h3>
-           <div className="relative pl-4 space-y-6">
-              <div className="absolute left-1.5 top-2 bottom-2 w-px bg-slate-800"></div>
-              
-              <div className="relative">
-                <div className="absolute -left-5 top-1 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                <div className="text-sm font-medium text-emerald-400">Formation</div>
-                <div className="text-xs text-slate-500 mt-1">12ms ago from Perception Stream</div>
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 h-fit">
+           <h3 className="font-medium text-slate-200 mb-4 border-b border-slate-800 pb-2">Cognitive Summary</h3>
+           <div className="space-y-4">
+              <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">Total Thoughts</span>
+                  <span className="text-slate-200 font-medium">{thoughts.length}</span>
               </div>
-              
-              <div className="relative">
-                <div className="absolute -left-5 top-1 w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></div>
-                <div className="text-sm font-medium text-indigo-400">Validation</div>
-                <div className="text-xs text-slate-500 mt-1">Cross-referenced World Model</div>
+              <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">High Priority</span>
+                  <span className="text-rose-400 font-medium">{thoughts.filter(t => t.priority === 'HIGH').length}</span>
               </div>
-              
-              <div className="relative">
-                <div className="absolute -left-5 top-1 w-2 h-2 rounded-full bg-slate-700"></div>
-                <div className="text-sm font-medium text-slate-400">Action Binding</div>
-                <div className="text-xs text-slate-600 mt-1">Awaiting decision matrix...</div>
+              <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">Active</span>
+                  <span className="text-indigo-400 font-medium">{thoughts.filter(t => t.state === 'ACTIVE').length}</span>
               </div>
            </div>
         </div>

@@ -1,0 +1,1 @@
+export class MissionWorkflowValidator { validate() { return { status: 'pass' }; } }

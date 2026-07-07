@@ -46,7 +46,7 @@ export class GeminiProvider implements IIntelligenceProvider {
                     contents: prompt + "\nContext: " + JSON.stringify(context),
                     config: options
                 });
-                content = response.text() || "";
+                content = response.text || "";
             } else {
                 content = `[Mock Gemini Output] Processed: ${prompt.substring(0, 50)}...`;
                 confidence = 0.5;

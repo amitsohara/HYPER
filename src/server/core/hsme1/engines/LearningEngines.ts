@@ -35,7 +35,7 @@ Return a JSON object containing ONLY the updated parameters. Do not use markdown
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, arbitration);
                     
                     if (response && response.content) {
-                        const parsed = JSON.parse(response.content);
+                        let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
                         policy.parameters = { ...policy.parameters, ...parsed };
                         return policy;
                     }

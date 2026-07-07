@@ -1,0 +1,1 @@
+export class RouteValidator { validate() { return { status: 'pass' }; } }

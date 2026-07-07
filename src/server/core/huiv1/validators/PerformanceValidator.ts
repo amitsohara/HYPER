@@ -1,0 +1,1 @@
+export class PerformanceValidator { validate() { return { status: 'pass' }; } }

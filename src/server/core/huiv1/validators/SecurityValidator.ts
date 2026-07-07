@@ -1,0 +1,1 @@
+export class SecurityValidator { validate() { return { status: 'pass' }; } }

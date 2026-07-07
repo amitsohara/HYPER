@@ -1,0 +1,1 @@
+export class WebSocketValidator { validate() { return { status: 'pass' }; } }

@@ -40,7 +40,7 @@ Do not use markdown formatting.`;
                     
                     if (response && response.content) {
                         try {
-                            const parsed = JSON.parse(response.content);
+                            let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
                             if (parsed.selectedOptionId) {
                                 bestOption = decision.options.find(o => o.id === parsed.selectedOptionId);
                                 if (bestOption) {

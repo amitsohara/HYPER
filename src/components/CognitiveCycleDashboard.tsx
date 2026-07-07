@@ -29,7 +29,7 @@ export function CognitiveCycleDashboard({ missionId }: { missionId: string }) {
       setLoading(true);
       try {
         const response = await fetch(`/api/cycle/${missionId}`);
-        const data = await response.json();
+        const data = (await response.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
         setCycleState(data);
       } catch (e) {
         console.error("Failed to fetch cycle state", e);

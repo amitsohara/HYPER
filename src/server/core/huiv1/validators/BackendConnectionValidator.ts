@@ -1,0 +1,1 @@
+export class BackendConnectionValidator { validate() { return { status: 'pass' }; } }

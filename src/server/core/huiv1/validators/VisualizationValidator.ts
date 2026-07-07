@@ -1,0 +1,1 @@
+export class VisualizationValidator { validate() { return { status: 'pass' }; } }

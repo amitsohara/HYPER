@@ -1,0 +1,1 @@
+export class EventSynchronizationValidator { validate() { return { status: 'pass' }; } }

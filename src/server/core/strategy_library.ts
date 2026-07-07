@@ -19,7 +19,7 @@ function ensureDb() {
 
 export function getStrategies(): Strategy[] {
     ensureDb();
-    return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+    try { return JSON.parse(fs.readFileSync(DB_PATH, 'utf8')); } catch(e) { return [] as any; }
 }
 
 export function saveStrategy(strategy: Strategy) {

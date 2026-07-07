@@ -1,3 +1,4 @@
+import { CognitiveDomain } from "../../hcns01/types.js";
 import { IntelligenceRequest, ArbitrationDecision, IntelligenceResponse, ProviderType } from "../types/index.js";
 import { KnowledgeGapAnalyzer, NoveltyDetector, ConfidenceEvaluator, MissionCriticalityEvaluator } from "../engines/ArbitrationEngines.js";
 import { ModelRouter } from "../engines/ModelRouter.js";
@@ -65,14 +66,14 @@ export class IntelligenceArbitrator {
             this.eventMesh.publish({
                 type: "INTELLIGENCE_REQUESTED",
                 source: "HILA",
-                payload: { request, decision }
+                domain: CognitiveDomain.SYSTEM, priority: 1, payload: { request, decision }
             });
             this.auditLogger.log("EXTERNAL_ROUTING", { requestId: request.id, provider: decision.selectedProvider, reason });
         } else {
             this.eventMesh.publish({
                 type: "INTERNAL_REASONING_SELECTED",
                 source: "HILA",
-                payload: { request, decision }
+                domain: CognitiveDomain.SYSTEM, priority: 1, payload: { request, decision }
             });
             this.auditLogger.log("INTERNAL_ROUTING", { requestId: request.id, reason });
         }
@@ -99,6 +100,8 @@ export class IntelligenceArbitrator {
         this.eventMesh.publish({
             type: "MODEL_SELECTED",
             source: "HILA",
+            domain: CognitiveDomain.SYSTEM,
+            priority: 1,
             payload: { provider: decision.selectedProvider }
         });
 
@@ -107,7 +110,7 @@ export class IntelligenceArbitrator {
         this.eventMesh.publish({
             type: "MODEL_RESPONSE_RECEIVED",
             source: "HILA",
-            payload: { response }
+            domain: CognitiveDomain.SYSTEM, priority: 1, payload: { response }
         });
 
         this.telemetry.recordExternalExecution(response.costEstimate, response.latencyMs);
@@ -119,11 +122,11 @@ export class IntelligenceArbitrator {
 
         if (validation.valid) {
             this.resultCache.set(prompt, assembledContext, response);
-            this.eventMesh.publish({ type: "RESPONSE_VALIDATED", source: "HILA", payload: { responseId: response.id } });
+            this.eventMesh.publish({ type: "RESPONSE_VALIDATED", source: "HILA", domain: CognitiveDomain.SYSTEM, priority: 1, payload: { responseId: response.id } });
             this.auditLogger.log("RESPONSE_VALIDATED", { requestId: request.id });
         } else {
             this.telemetry.recordValidationFailure();
-            this.eventMesh.publish({ type: "RESPONSE_REJECTED", source: "HILA", payload: { responseId: response.id, errors: validation.errors } });
+            this.eventMesh.publish({ type: "RESPONSE_REJECTED", source: "HILA", domain: CognitiveDomain.SYSTEM, priority: 1, payload: { responseId: response.id, errors: validation.errors } });
             this.auditLogger.log("RESPONSE_REJECTED", { requestId: request.id, errors: validation.errors });
         }
 

@@ -138,7 +138,7 @@ export class HyperMindReasoningEngine implements ISpecialist {
                 content: event.payload.summary || "Generated from thought",
                 confidence: 0.9,
                 source: "THOUGHT_GENERATED",
-                timestamp: Date.now()
+                timestamp: Date.now(), provenance: "HRE"
             }];
             
             try {

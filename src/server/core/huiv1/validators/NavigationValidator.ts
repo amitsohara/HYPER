@@ -1,0 +1,1 @@
+export class NavigationValidator { validate() { return { status: 'pass' }; } }

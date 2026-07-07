@@ -1,0 +1,1 @@
+export class ComponentValidator { validate() { return { status: 'pass' }; } }

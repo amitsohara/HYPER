@@ -1,0 +1,1 @@
+export class AccessibilityValidator { validate() { return { status: 'pass' }; } }

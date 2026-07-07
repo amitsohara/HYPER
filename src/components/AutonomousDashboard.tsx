@@ -34,7 +34,7 @@ export function AutonomousDashboard() {
     try {
       const res = await fetch(endpoint, { method: "POST" });
       if (!res.ok) {
-        const err = await res.json();
+        const err = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
         alert(err.error || "Failed to toggle autonomous AI");
       }
       fetchData();

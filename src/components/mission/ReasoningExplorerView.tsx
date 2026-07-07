@@ -10,7 +10,7 @@ export function ReasoningExplorerView({ diagnostics }: any) {
       <div className="p-5 border-b border-slate-800 flex items-center justify-between">
         <div>
           <h3 className="font-bold text-lg text-slate-200">Reasoning Inference Graph</h3>
-          <p className="text-sm text-slate-400">Execution Time: {executionTimeMs || 45}ms | Strategy: {strategy || "Forward Chaining"}</p>
+          <p className="text-sm text-slate-400">Execution Time: {executionTimeMs || "-"}ms | Strategy: {strategy || "-"}</p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1 bg-indigo-900/30 text-indigo-400 border border-indigo-500/30 rounded-full text-sm font-medium">
            <FastForward size={14} /> Active Inference

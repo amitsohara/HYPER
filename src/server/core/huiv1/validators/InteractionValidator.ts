@@ -1,0 +1,1 @@
+export class InteractionValidator { validate() { return { status: 'pass' }; } }

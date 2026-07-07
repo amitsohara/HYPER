@@ -71,7 +71,7 @@ export function MissionQueueView() {
             </div>
 
             <div className="grid grid-cols-1 gap-6">
-                {Object.entries(groupedMissions).map(([status, list]) => {
+                {Object.entries(groupedMissions).map(([status, list]: [string, any[]]) => {
                     if (list.length === 0 && status !== "RUNNING" && status !== "QUEUED") return null;
                     return (
                         <div key={status} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">

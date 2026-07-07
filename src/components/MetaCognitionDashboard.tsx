@@ -12,11 +12,11 @@ export default function MetaCognitionDashboard() {
     const fetchData = async () => {
       try {
         const [missionRes, capRes, execRes, scoresRes, graphRes] = await Promise.all([
-          fetch('/api/meta/mission').then(r => r.json()),
-          fetch('/api/meta/capabilities').then(r => r.json()),
-          fetch('/api/meta/execution-plan').then(r => r.json()),
-          fetch('/api/meta/module-scores').then(r => r.json()),
-          fetch('/api/meta/mission-graph').then(r => r.json())
+          fetch('/api/meta/mission').then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }).catch(() => ({}))),
+          fetch('/api/meta/capabilities').then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }).catch(() => ([]))),
+          fetch('/api/meta/execution-plan').then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }).catch(() => ({}))),
+          fetch('/api/meta/module-scores').then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }).catch(() => ([]))),
+          fetch('/api/meta/mission-graph').then(r => r.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }).catch(() => ({ nodes: [], edges: [] })))
         ]);
         
         setMission(missionRes || {});

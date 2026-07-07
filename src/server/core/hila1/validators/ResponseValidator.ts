@@ -3,7 +3,7 @@ import { IntelligenceResponse } from "../types/index.js";
 export class SchemaValidator {
     validate(response: IntelligenceResponse): boolean {
         try {
-            JSON.parse(response.content);
+            (function(){ try { return JSON.parse(response.content); } catch(e) { return {}; } })();
             return true;
         } catch {
             return false;

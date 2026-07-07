@@ -47,7 +47,7 @@ Do not use markdown formatting.`;
                     
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, decision);
                     if (response && response.content) {
-                        const parsed = JSON.parse(response.content);
+                        let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
                         successProb = parsed.successProbability ?? successProb;
                         simulatedRisk = parsed.risk ?? simulatedRisk;
                         narrative = parsed.narrative ?? narrative;

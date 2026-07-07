@@ -12,7 +12,7 @@ export function SocialIntelligenceDashboard() {
   const fetchHistory = async () => {
     try {
       const res = await fetch("/api/social/history");
-      const data = await res.json();
+      const data = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
       setHistory(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);

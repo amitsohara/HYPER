@@ -33,6 +33,25 @@ async function runTrace() {
         console.log(`[EVENT] ${event.type} (from ${event.source}) -> id: ${event.id}`);
     });
 
+
+    const eventsToRegister = [
+        "WORLD_OBSERVATION", "WORLD_MODEL_UPDATED", "CONCEPT_DISCOVERED", 
+        "ATTENTION_SHIFTED", "THOUGHT_GENERATED", "CONCLUSION_GENERATED",
+        "PLAN_CREATED", "SIMULATION_STARTED", "SIMULATION_COMPLETED", "PLAN_EVALUATED", 
+        "ACTION_AUTHORIZED", "ACTION_REJECTED", "ACTION_COMPLETED", 
+        "MISSION_COMPLETED", "LEARNING_ARTIFACT_CREATED",
+        "KNOWLEDGE_UPDATED", "GOAL_CREATED"
+    ];
+    eventsToRegister.forEach(evt => {
+        if (!mesh.registry.isRegistered(evt)) {
+            mesh.registerEventType({
+                type: evt,
+                domain: CognitiveDomain.SYSTEM,
+                description: `Event: ${evt}`
+            });
+        }
+    });
+
     // 1. Instantiate Specialists
     const hpae = new HPAESpecialist(mesh);
     const hwme = HyperMindWorldModelEngine.getInstance(); // No specialist wrapper directly subscribed, wait, hwme1 doesn't have a specialist class extending ISpecialist registered to society in our list, but observationIntegrator listens to it!
@@ -63,23 +82,6 @@ async function runTrace() {
     console.log("Registering and initializing all specialists...");
     hwme.initialize(); // Initialize HWME manually
     
-    // Register necessary events that might not be registered by the specialists themselves
-    const eventsToRegister = [
-        "WORLD_OBSERVATION", "WORLD_MODEL_UPDATED", "CONCEPT_DISCOVERED", 
-        "ATTENTION_SHIFTED", "THOUGHT_GENERATED", "CONCLUSION_GENERATED",
-        "PLAN_CREATED", "SIMULATION_STARTED", "SIMULATION_COMPLETED", "PLAN_EVALUATED", 
-        "ACTION_AUTHORIZED", "ACTION_REJECTED", "ACTION_COMPLETED", 
-        "MISSION_COMPLETED", "LEARNING_ARTIFACT_CREATED",
-        "KNOWLEDGE_UPDATED"
-    ];
-
-    eventsToRegister.forEach(evt => {
-        if (!mesh.registry.isRegistered(evt)) {
-            mesh.registerEventType({
-                type: evt,
-                domain: CognitiveDomain.SYSTEM,
-                description: `Event: ${evt}`
-            });
         }
     });
 

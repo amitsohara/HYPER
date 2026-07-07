@@ -27,7 +27,7 @@ export function IntelligenceDashboard() {
     setLoading(true);
     try {
       const res = await fetch("/benchmark/history");
-      const data = await res.json();
+      const data = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
       setHistory(data.reverse()); // latest first
     } catch (e) {
       console.error(e);

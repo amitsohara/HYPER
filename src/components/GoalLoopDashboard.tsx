@@ -38,7 +38,7 @@ export function GoalLoopDashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ purpose: purposeInput })
       });
-      const newLoop = await res.json();
+      const newLoop = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
       setPurposeInput("");
       fetchLoops();
       setSelectedLoop(newLoop);
@@ -53,7 +53,7 @@ export function GoalLoopDashboard() {
     setIsStepping(true);
     try {
       const res = await fetch(`/api/loop/${selectedLoop.id}/step`, { method: "POST" });
-      const updated = await res.json();
+      const updated = (await res.text().then(t => { try { return JSON.parse(t); } catch(e) { return {}; } }));
       setSelectedLoop(updated);
       fetchLoops();
     } catch (e) {

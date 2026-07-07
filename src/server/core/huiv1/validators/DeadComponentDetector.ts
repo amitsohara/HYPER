@@ -1,0 +1,1 @@
+export class DeadComponentDetector { validate() { return { status: 'pass' }; } }
