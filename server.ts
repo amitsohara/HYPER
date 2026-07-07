@@ -8,11 +8,13 @@ import { HILASpecialist } from "./src/server/core/hila1/hilaSpecialist.js";
 import { HyperMindEventMesh } from "./src/server/core/hcns01/eventMesh.js";
 import { CognitiveDomain } from "./src/server/core/hcns01/types.js";
 import { HIICalculator } from "./src/server/core/hco1/metrics/HII_Calculator.js";
+import { MissionLogger } from "./src/server/core/logging/MissionLogger.js";
 
 async function startServer() {
   await initHyperMindPlatform();
   const app = express();
   initSociety().catch(console.error);
+  MissionLogger.getInstance();
 
   const PORT = 3000;
   app.use(cors());
