@@ -1,3 +1,4 @@
+import { MissionResultManager } from "./src/server/core/hmrc1/managers/MissionResultManager.js";
 import * as fs from 'fs';
 const logFile = 'server_logs.txt';
 fs.writeFileSync(logFile, '--- START ---\n');
@@ -28,6 +29,7 @@ async function startServer() {
   const app = express();
   initSociety().catch(console.error);
   MissionLogger.getInstance();
+  MissionResultManager.getInstance();
 
   const PORT = 3000;
   app.use(cors());
@@ -123,6 +125,25 @@ async function startServer() {
       } catch (e: any) {
           res.status(500).json({ error: e.message });
       }
+  });
+
+  app.get("/api/hmrc/results", (req, res) => { 
+    try {
+      const manager = MissionResultManager.getInstance();
+      res.json(manager.getResults());
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/hmrc/result/:missionId", (req, res) => {
+    try {
+      const manager = MissionResultManager.getInstance();
+      const result = manager.getResult(req.params.missionId);
+      if (result) res.json(result); else res.status(404).json({ error: "Not found" });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
   });
 
   // VITE MIDDLEWARE

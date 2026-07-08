@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { 
-  Home, ListTodo, Activity, Network, BookOpen, Settings as SettingsIcon, Hexagon
+  Home, ListTodo, Activity, Network, BookOpen, Settings as SettingsIcon, Hexagon, FileText
 } from "lucide-react";
 import { useHyperMindStore } from "../../store/useHyperMindStore";
 import { HomeView } from "./views/HomeView";
@@ -9,6 +9,7 @@ import { MissionControlView } from "./views/MissionControlView";
 import { ObservatoryView } from "./views/ObservatoryView";
 import { KnowledgeCenterView } from "./views/KnowledgeCenterView";
 import { SettingsView } from "./views/SettingsView";
+import { MissionResultsView } from "./views/MissionResultsView";
 
 export function HuxpApp() {
   const [currentView, setCurrentView] = useState("home");
@@ -29,6 +30,7 @@ export function HuxpApp() {
     { id: "home", label: "Home", icon: Home },
     { id: "mission_queue", label: "Mission Queue", icon: ListTodo },
     { id: "mission_control", label: "Mission Control", icon: Activity },
+    { id: "mission_results", label: "Mission Results", icon: FileText },
     { id: "observatory", label: "Cognitive Observatory", icon: Network },
     { id: "knowledge", label: "Knowledge Center", icon: BookOpen },
     { id: "settings", label: "Settings", icon: SettingsIcon },
@@ -71,6 +73,7 @@ export function HuxpApp() {
         {currentView === "observatory" && <ObservatoryView />}
         {currentView === "knowledge" && <KnowledgeCenterView />}
         {currentView === "settings" && <SettingsView />}
+        {currentView === "mission_results" && <MissionResultsView />}
       </main>
     </div>
   );
