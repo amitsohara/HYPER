@@ -1,0 +1,27 @@
+# Component Hierarchy
+
+- App
+  - SidebarNav
+  - GlobalHeader
+  - MainContentArea
+    - Home
+      - NewMissionWizard
+        - Step1Details
+        - Step2Inputs
+        - Step3Mode
+        - Step4Review
+      - RecentMissionsGrid
+    - MissionQueue
+      - MissionDataTable
+    - MissionControl
+      - ControlHeader
+      - LeftPanel (Timeline, TaskTree)
+      - CenterCanvas (WorldModelRenderer)
+      - RightPanel (CognitivePipelineGraph)
+      - BottomPanel (EventConsole)
+    - CognitiveObservatory
+      - TelemetryChart
+      - ReplayCenter
+    - KnowledgeCenter
+      - MemorySearch
+      - KnowledgeGraph
