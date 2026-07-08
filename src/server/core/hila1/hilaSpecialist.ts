@@ -52,6 +52,7 @@ export class HILASpecialist implements ISpecialist {
     }
 
     public async initialize(): Promise<void> {
+console.log("[HILA] initialize called!");
         this.status = SpecialistStatus.INITIALIZING;
         this.identity.status = this.status;
 
@@ -71,6 +72,7 @@ export class HILASpecialist implements ISpecialist {
 
         const modelRouter = new ModelRouter(this.providerManager);
         this.arbitrator = new IntelligenceArbitrator(this.providerManager, modelRouter, mesh);
+console.log("[HILA] arbitrator assigned! type:", typeof this.arbitrator);
     }
 
     public async activate(): Promise<void> {

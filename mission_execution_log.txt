@@ -1,7 +1,7 @@
 
 
---- LOGGER STARTED AT 2026-07-08T06:48:16.594Z ---
-[2026-07-08T06:48:18.547Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: 1a7da42a-7374-4586-bfc9-c8eb9f280a22
+--- LOGGER STARTED AT 2026-07-08T07:04:14.497Z ---
+[2026-07-08T07:04:17.680Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: 552f0898-2c70-4e7c-bec6-eaf6c0288a49
   Payload: {
   "missionDirective": "fallback_trigger solve mystery.",
   "context": {
@@ -83,20 +83,20 @@
     }
   ]
 }
-[2026-07-08T06:48:18.547Z] [EVENT: GOAL_CREATED] (Source: HWME-01) ID: 30891695-29e8-4f0c-88d3-6da974e873f7
+[2026-07-08T07:04:17.681Z] [EVENT: GOAL_CREATED] (Source: HWME-01) ID: d91957f7-afe4-40ce-9736-507084bcc791
   Payload: {
-  "goalId": "b4e9db91-06e2-4019-b17c-85ec095cd36b",
+  "goalId": "4b2b7395-f9a1-4c0e-91d0-ee4dd5668dbb",
   "goalName": "Mission Directive",
   "goalDescription": "fallback_trigger solve mystery."
 }
-[2026-07-08T06:48:18.548Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: c7567acf-d369-41a8-97a4-6692ebd2b6d1
+[2026-07-08T07:04:17.681Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: 044bdb4d-d907-4a0d-aa23-4bd4a8e949fe
   Payload: {
-  "timestamp": 1783493298548
+  "timestamp": 1783494257681
 }
-[2026-07-08T06:48:18.556Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 968e2e07-d2a9-42c4-af4a-303d7a600fdd
+[2026-07-08T07:04:17.839Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: ead33600-aed2-43b7-b3af-126f76926012
   Payload: {
   "selected": [
-    "33407b10-017b-4923-8c44-bdfb8428aca1"
+    "760fddd4-cd22-46ae-aac9-cda855e80eb0"
   ],
   "workingMemory": {
     "activeGoals": [],
@@ -108,19 +108,19 @@
     "currentLoad": 1
   }
 }
-[2026-07-08T06:48:18.556Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: 24267141-a147-4d2d-b354-902ed4e09bc7
+[2026-07-08T07:04:17.838Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: 65e31341-6077-49c9-8912-9aa71c8efd3d
   Payload: {
   "plan": {
-    "id": "0bb73c5b-0d6f-418e-a195-607d54b9c217",
-    "goalId": "b4e9db91-06e2-4019-b17c-85ec095cd36b",
+    "id": "36004426-8241-4ce9-af86-558219d71843",
+    "goalId": "4b2b7395-f9a1-4c0e-91d0-ee4dd5668dbb",
     "version": 1,
     "status": "READY",
     "priority": 1,
     "atomicTasks": {
-      "944a07e5-e67e-431b-8770-894af6e1a7ed": {
-        "id": "944a07e5-e67e-431b-8770-894af6e1a7ed",
+      "2bf7bce1-2b3b-4c89-b6b9-cec53e5b74ee": {
+        "id": "2bf7bce1-2b3b-4c89-b6b9-cec53e5b74ee",
         "name": "Execute Mission Directive",
-        "description": "Apply GOAP_PLANNER ",
+        "description": "Apply GRAPH_PLANNER using facts: [Mock Gemini Output - Fallback after Error] Processed: Task: Provide facts, constraints, and strategies t...",
         "status": "PENDING",
         "dependencies": [],
         "preconditions": [],
@@ -151,17 +151,17 @@
       "cascadingFailuresScore": 0.1
     },
     "confidence": 0.7,
-    "explainability": "Generated via Goal-Oriented Action Planning.",
+    "explainability": "Generated via Graph-based heuristic search.",
     "planningTrace": [
       {
-        "timestamp": 1783493298554,
+        "timestamp": 1783494257838,
         "action": "GENERATION",
-        "details": "Created plan using GOAP_PLANNER."
+        "details": "Created plan using GRAPH_PLANNER."
       },
       {
-        "timestamp": 1783493298555,
+        "timestamp": 1783494257838,
         "action": "EVALUATION",
-        "details": "Evaluated plan with score 0.47"
+        "details": "Evaluated plan with score 0.46"
       }
     ],
     "executionMetrics": {},
@@ -171,50 +171,50 @@
       "mrpId": ""
     },
     "metadata": {
-      "strategy": "GOAP_PLANNER",
-      "usedExternalKnowledge": false
+      "strategy": "GRAPH_PLANNER",
+      "usedExternalKnowledge": true
     },
-    "createdAt": 1783493298554,
-    "updatedAt": 1783493298554,
+    "createdAt": 1783494257838,
+    "updatedAt": 1783494257838,
     "evaluation": {
-      "expectedUtility": 0.943108425096026,
+      "expectedUtility": 0.9140722249864138,
       "riskScore": 0.1,
       "confidenceScore": 0.7,
       "complexityScore": 0.1,
       "efficiencyScore": 0.4,
       "noveltyScore": 0.5,
       "constraintSatisfaction": 1,
-      "overallScore": 0.46724337003841043,
-      "explainability": "Score: 0.47. Utility: 0.94, Risk: 0.10."
+      "overallScore": 0.4556288899945655,
+      "explainability": "Score: 0.46. Utility: 0.91, Risk: 0.10."
     },
     "candidateRank": 1
   },
   "worldState": {
     "entities": [
       {
-        "id": "bc786545-4b59-4133-b0e2-178c72bff28c",
+        "id": "f1504918-ad3e-4841-be68-2f9dbfcb6c17",
         "name": "Nashik Road Junction",
         "type": "INTERSECTION",
         "properties": {
           "status": "congested"
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "9d8b40c1-cd7c-420a-8d6f-39c4b40b9b1b",
+        "id": "1a03dde8-288c-43d9-a1d8-333c07c21278",
         "name": "Main Road",
         "type": "ROAD",
         "properties": {
           "lanes": 4
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "8d8f2539-27e7-4a6a-bdf6-8d9a9ed617d4",
+        "id": "31fa4268-5f4c-4078-a9af-7205b9e71abc",
         "name": "Vehicle 101",
         "type": "VEHICLE",
         "properties": {
@@ -222,11 +222,11 @@
           "status": "stopped"
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "66423cde-68e7-4ba3-b5d1-56e24441cf40",
+        "id": "6b73781a-6a5b-4425-be63-8849a0d51739",
         "name": "Vehicle 102",
         "type": "VEHICLE",
         "properties": {
@@ -234,11 +234,11 @@
           "status": "stopped"
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "b34cd310-ea63-466f-9b57-8427f2203f98",
+        "id": "c1db71ba-8d86-4211-84e9-064d605cc1c4",
         "name": "Signal A",
         "type": "SIGNAL",
         "properties": {
@@ -246,22 +246,22 @@
           "timer": 45
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "7f4fe815-ee03-431e-ad4b-242f3c6ba6f2",
+        "id": "ed56e47d-cbf6-469a-92ac-4d47d39cc008",
         "name": "Pedestrian Flow",
         "type": "PEDESTRIAN",
         "properties": {
           "density": "high"
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "2750b02a-4a3a-4f35-b9c2-fe37e8583472",
+        "id": "61d210a1-3293-41fc-8b29-e27f54010efa",
         "name": "Minor Accident",
         "type": "ACCIDENT",
         "properties": {
@@ -269,57 +269,30 @@
           "blockingLanes": 1
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
-        "id": "e8acb734-939e-432f-9b84-128c587e98df",
+        "id": "dfbf3ddb-176d-412d-b2b5-13332bf8afac",
         "name": "Debris",
         "type": "OBSTACLE",
         "properties": {
           "size": "small"
         },
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       },
       {
         "name": "User Request",
         "type": "MISSION_DIRECTIVE",
-        "id": "71d0eddc-8e44-4918-a6e7-011b57b688b7",
+        "id": "ed7fac80-d383-4ce0-9d77-de1d1b9152db",
         "version": 1,
-        "createdAt": 1783493298548,
-        "updatedAt": 1783493298548
+        "createdAt": 1783494257681,
+        "updatedAt": 1783494257681
       }
     ],
     "relationships": [],
     "context": {}
   }
-}
-[2026-07-08T06:48:18.557Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: 436b6b83-5142-45a3-b3e6-41406b7469f9
-  Payload: {
-  "processed": true
-}
-[2026-07-08T06:48:18.560Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 8a8dd17c-4059-446d-b747-45ec7354a69e
-  Payload: {
-  "selected": [
-    "223626cb-d1ad-4eb8-86ae-24768a394286",
-    "33407b10-017b-4923-8c44-bdfb8428aca1"
-  ],
-  "workingMemory": {
-    "activeGoals": [],
-    "activeWorldRegions": [
-      "world_region_1"
-    ],
-    "activeConcepts": [
-      "concept_1"
-    ],
-    "capacity": 10,
-    "currentLoad": 2
-  }
-}
-[2026-07-08T06:48:18.558Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 7c133b5b-1880-410c-9fea-395a4b04e66a
-  Payload: {
-  "thoughtId": "63396ba8-e485-481e-8db7-b7e5a8b71650",
-  "summary": "Focused on Goal World region focus: world_region_1"
 }

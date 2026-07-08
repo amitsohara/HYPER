@@ -35,7 +35,8 @@ export class PlannerOrchestrator {
             let knowledge = "";
             try {
                 const hila = HILASpecialist.getInstance();
-                if (hila && hila.arbitrator) {
+                console.log(`[PlannerOrchestrator] hila exists: ${!!hila}, arbitrator exists: ${!!hila?.arbitrator}`);
+if (hila && hila.arbitrator) {
                     const request = {
                         id: uuidv4(),
                         missionId: "SYSTEM",
@@ -49,7 +50,8 @@ export class PlannerOrchestrator {
                     const arbitration = await hila.arbitrator.arbitrate(request, 0.2);
                     if (arbitration.useExternal) {
                         const response = await hila.arbitrator.executeExternal(request, arbitration);
-                        if (response && response.content) {
+                        console.log(`[PlannerOrchestrator] response exists: ${!!response}, content: ${response?.content}`);
+if (response && response.content) {
                             knowledge = response.content;
                         }
                     }

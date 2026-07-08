@@ -43,7 +43,7 @@ export class HTNPlanner implements IPlanningStrategy {
     async generatePlans(goal: GoalObject, context: any): Promise<PlanObject[]> {
         const knowledge = context.retrievedKnowledge || "";
         
-        let recipe = HTN_LIBRARY.find(r => r.match(goal.name));
+        let recipe = HTN_LIBRARY.find(r => r.match(goal.name + " " + goal.description));
         
         // If we found the fallback recipe AND we don't have knowledge, fail this planner so the orchestrator can fetch knowledge
         if (recipe === HTN_LIBRARY[HTN_LIBRARY.length - 1] && !knowledge) {

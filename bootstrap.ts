@@ -14,6 +14,7 @@ import { HSTESpecialist } from "./src/server/core/hste1/hsteSpecialist.js";
 import { HDMESpecialist } from "./src/server/core/hdme1/hdmeSpecialist.js";
 import { HLLESpecialist } from "./src/server/core/hlle1/hlleSpecialist.js";
 import { HSMESpecialist } from "./src/server/core/hsme1/hsmeSpecialist.js";
+import { HILASpecialist } from "./src/server/core/hila1/hilaSpecialist.js";
 import { HyperMindWorldModelEngine } from "./src/server/core/hwme1/worldModelManager.js";
 
 export async function initHyperMindPlatform() {
@@ -46,6 +47,7 @@ export async function initHyperMindPlatform() {
         await hcse.registerSpecialist(new HDMESpecialist(eventMesh));
         await hcse.registerSpecialist(new HLLESpecialist(eventMesh));
         await hcse.registerSpecialist(new HSMESpecialist(eventMesh));
+        await hcse.registerSpecialist(HILASpecialist.getInstance());
         console.log("All Specialists Registered Successfully.");
         
         console.log("Initializing World Model Engine...");

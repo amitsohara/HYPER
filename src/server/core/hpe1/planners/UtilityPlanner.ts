@@ -10,7 +10,7 @@ export class UtilityPlanner implements IPlanningStrategy {
     async generatePlans(goal: GoalObject, context: any): Promise<PlanObject[]> {
         const knowledge = context.retrievedKnowledge || "";
         
-        if (goal.name.includes("fallback_trigger") && !knowledge) return [];
+        if (goal.description.includes("fallback_trigger") && !knowledge) return [];
 
         const taskId = uuidv4();
         const tasks: Record<string, AtomicTask> = {
