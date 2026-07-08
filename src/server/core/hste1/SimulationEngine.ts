@@ -2,6 +2,12 @@ import { SimulationScenario, SimulationRun, OutcomePrediction, SimulationTrace, 
 import { v4 as uuidv4 } from "uuid";
 import { HILASpecialist } from "../hila1/hilaSpecialist.js";
 
+function cleanJson(str) {
+    if (!str) return "{}";
+    const match = str.match(/```(?:json)?([\s\S]*?)```/);
+    return match ? match[1].trim() : str.trim();
+}
+
 export class SimulationEngine {
     
     async runSimulation(scenario: SimulationScenario): Promise<SimulationRun> {
@@ -36,18 +42,22 @@ export class SimulationEngine {
                 if (decision.useExternal) {
                     const prompt = `Simulate the following scenario.
 Scenario Name: ${scenario.name}
-Description: ${(scenario as any).description}
-Initial State: ${JSON.stringify(scenario.initialState)}
+Plan (Intervention): ${JSON.stringify(scenario.interventions?.atomicTasks || [])}
+World State:
+Entities: ${JSON.stringify(scenario.initialState?.state?.entities || [])}
+Relationships: ${JSON.stringify(scenario.initialState?.state?.relationships || [])}
+
+Based on the actual entities (roads, vehicles, signals, pedestrians, obstacles) and their properties, predict the outcome of applying the intervention. Evolve the world state logically.
 
 Return a JSON object with:
 - "successProbability": A float from 0 to 1 indicating the likelihood of success.
 - "risk": A float from 0 to 1 indicating the likelihood of failure/risk.
-- "narrative": A short descriptive text of the simulated outcome.
+- "narrative": A short descriptive text of the simulated outcome, explicitly mentioning the entities involved (e.g. "By optimizing Signal A, Vehicle 101 cleared the intersection...").
 Do not use markdown formatting.`;
                     
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, decision);
                     if (response && response.content) {
-                        let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
+                        let parsed: any = {}; try { parsed = JSON.parse(cleanJson(response.content)); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
                         successProb = parsed.successProbability ?? successProb;
                         simulatedRisk = parsed.risk ?? simulatedRisk;
                         narrative = parsed.narrative ?? narrative;

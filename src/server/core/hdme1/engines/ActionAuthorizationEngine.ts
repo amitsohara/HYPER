@@ -4,6 +4,12 @@ import { CognitiveDomain } from "../../hcns01/types.js";
 import { HILASpecialist } from "../../hila1/hilaSpecialist.js";
 import { v4 as uuidv4 } from "uuid";
 
+function cleanJson(str) {
+    if (!str) return "{}";
+    const match = str.match(/```(?:json)?([\s\S]*?)```/);
+    return match ? match[1].trim() : str.trim();
+}
+
 export class ActionAuthorizationEngine {
     constructor(private eventMesh: HyperMindEventMesh) {}
 
@@ -40,7 +46,7 @@ Do not use markdown formatting.`;
                     
                     if (response && response.content) {
                         try {
-                            let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
+                            let parsed: any = {}; try { parsed = JSON.parse(cleanJson(response.content)); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
                             if (parsed.selectedOptionId) {
                                 bestOption = decision.options.find(o => o.id === parsed.selectedOptionId);
                                 if (bestOption) {
@@ -73,9 +79,25 @@ Do not use markdown formatting.`;
                     }
                 }
             }
+        
         } catch (e) {
             console.error("Failed to authorize with HILA:", e);
         }
+        
+        // Ensure fallback runs if HILA fails or is not available
+        if (!bestOption && decision.options.length > 0) {
+            let maxUtility = -1;
+            for (const option of decision.options) {
+                if (option.policyPassed && (option.riskScore || 0) < 0.8) {
+                    if ((option.utilityScore || 0) > maxUtility) {
+                        maxUtility = option.utilityScore || 0;
+                        bestOption = option;
+                        decision.authorizationReason = `Approved by Fallback with utility ${bestOption.utilityScore} and risk ${bestOption.riskScore}`;
+                    }
+                }
+            }
+        }
+
 
         if (bestOption) {
             decision.status = DecisionStatus.APPROVED;
@@ -90,7 +112,19 @@ Do not use markdown formatting.`;
             });
         } else {
             decision.status = DecisionStatus.REJECTED;
-            decision.authorizationReason = decision.authorizationReason || "No options passed policy or risk thresholds.";
+            let reason = "Rejected because:\n";
+            for (const option of decision.options) {
+                reason += `- Option ${option.id}: Risk = ${(option.riskScore || 0).toFixed(2)}, Utility = ${(option.utilityScore || 0).toFixed(2)}, Policy Passed = ${option.policyPassed}.\n`;
+                if ((option.riskScore || 0) >= 0.8) {
+                    reason += `  Reason: Risk exceeds threshold (0.80).\n`;
+                } else if (!option.policyPassed) {
+                    reason += `  Reason: Policy check failed.\n`;
+                } else {
+                    reason += `  Reason: Utility score too low.\n`;
+                }
+            }
+            if (decision.options.length === 0) reason += "No options provided.\n";
+            decision.authorizationReason = reason;
             
             this.eventMesh.publish({
                 type: "ACTION_REJECTED",

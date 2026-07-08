@@ -1,3 +1,4 @@
+import { HyperMindWorldModelEngine } from "../hwme1/worldModelManager.js";
 import { ISpecialist, SpecialistRegistration, SpecialistStatus, CognitiveRole } from "../hcse01/types.js";
 import { CognitiveDomain, CognitiveEvent } from "../hcns01/types.js";
 import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
@@ -103,7 +104,14 @@ export class HDMESpecialist implements ISpecialist {
         const payload = event.payload;
         
         // 1. Fuse
-        const context: DecisionContext = { missionId: "sys-mission", worldStateSnapshot: {} };
+        let ws = {};
+        try {
+            ws = {
+                entities: Array.from(HyperMindWorldModelEngine.getInstance().stateManager.getCanonicalWorld().entities.values()),
+                relationships: Array.from(HyperMindWorldModelEngine.getInstance().stateManager.getCanonicalWorld().relationships.values())
+            };
+        } catch(e) {}
+        const context: DecisionContext = { missionId: "sys-mission", worldStateSnapshot: ws };
         const decision = this.fusionEngine.fuse(payload, context);
 
         // 2. Evaluate Utility & Risk

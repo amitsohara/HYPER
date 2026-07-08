@@ -2,7 +2,7 @@ import { PlanObject, RiskAssessment } from "../types.js";
 
 export class RiskAssessmentEngine {
     assess(plan: PlanObject): RiskAssessment {
-        const hasManyTasks = plan.atomicTasks.size > 5;
+        const hasManyTasks = Object.keys(plan.atomicTasks).length > 5;
         
         return {
             failureProbability: hasManyTasks ? 0.3 : 0.1,

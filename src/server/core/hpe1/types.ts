@@ -72,7 +72,7 @@ export interface PlanObject {
     status: PlanStatus;
     candidateRank?: number;
     priority: number;
-    atomicTasks: Map<string, AtomicTask>;
+    atomicTasks: Record<string, AtomicTask>;
     resourceEstimate: ResourceEstimate;
     riskAssessment: RiskAssessment;
     evaluation?: PlanEvaluation;

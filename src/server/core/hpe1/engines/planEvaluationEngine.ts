@@ -13,7 +13,7 @@ export class PlanEvaluationEngine {
             expectedUtility,
             riskScore,
             confidenceScore: plan.confidence,
-            complexityScore: plan.atomicTasks.size * 0.1,
+            complexityScore: Object.keys(plan.atomicTasks).length * 0.1,
             efficiencyScore,
             noveltyScore: 0.5,
             constraintSatisfaction: 1.0,

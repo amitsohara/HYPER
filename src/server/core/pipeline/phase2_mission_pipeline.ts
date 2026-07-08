@@ -95,7 +95,8 @@ async function runTrace() {
         priority: 1,
         source: "InputAdapter",
         payload: {
-            entity: { name: "Anomalous Signature", type: "THREAT" }
+            missionDirective: "Optimize heavy traffic at Nashik Road Junction.",
+            entity: { name: "User Request", type: "MISSION_DIRECTIVE" }
         }
     });
 

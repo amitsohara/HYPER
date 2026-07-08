@@ -11,12 +11,12 @@ export class PlanRepairEngine {
         });
 
         // Simple repair: skip failed task and update dependencies
-        const failedTask = plan.atomicTasks.get(failurePointId);
+        const failedTask = plan.atomicTasks[failurePointId];
         if (failedTask) {
             failedTask.status = TaskStatus.FAILED;
             
             // Find tasks dependent on the failed task
-            for (const task of plan.atomicTasks.values()) {
+            for (const task of Object.values(plan.atomicTasks)) {
                 if (task.dependencies.includes(failurePointId)) {
                     // In a real system, we'd replace the failed task or find an alternative path.
                     // For V1, we remove the dependency so execution can continue if possible,

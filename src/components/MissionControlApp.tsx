@@ -157,6 +157,7 @@ export function MissionControlApp({ onBack, activeMission }: { onBack?: () => vo
 
 function MissionBuilderView() {
   const [nodes, setNodes] = useState<{id: string, type: string, label: string, icon: any}[]>([]);
+  const [missionDirective, setMissionDirective] = useState("Optimize heavy traffic at Nashik Road Junction.");
   const [isDeploying, setIsDeploying] = useState(false);
   const [saveStatus, setSaveStatus] = useState("");
 
@@ -178,7 +179,11 @@ function MissionBuilderView() {
   const handleDeploy = async () => {
       setIsDeploying(true);
       try {
-          await fetch('/api/hml/missions/deploy', { method: 'POST' });
+          await fetch('/api/hml/missions/deploy', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ directive: missionDirective })
+          });
       } catch (e) {
           console.error(e);
       }
@@ -241,14 +246,25 @@ function MissionBuilderView() {
         </div>
         
         <div 
-          className="flex-1 bg-slate-950 relative overflow-hidden flex items-center justify-center"
+          className="flex-1 bg-slate-950 relative overflow-hidden flex flex-col"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
         >
+           <div className="relative z-20 p-4 border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+             <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Mission Directive (Natural Language)</label>
+             <textarea 
+               className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 resize-none h-20"
+               value={missionDirective}
+               onChange={(e) => setMissionDirective(e.target.value)}
+               placeholder="e.g. Optimize heavy traffic at Nashik Road Junction."
+             />
+           </div>
+
            {/* Mockup Canvas */}
-           <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
+           <div className="flex-1 relative flex items-center justify-center">
+             <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
            
-           <div className="relative z-10 flex flex-col items-center gap-8 min-h-full py-12 overflow-y-auto w-full">
+             <div className="relative z-10 flex flex-col items-center gap-8 min-h-full py-12 overflow-y-auto w-full">
               {nodes.map((node, index) => (
                   <React.Fragment key={node.id}>
                       <div className={`w-48 p-3 bg-slate-900 border ${node.type === 'input' ? 'border-slate-700' : node.type === 'cognitive' ? 'border-indigo-500/50 bg-indigo-900/50' : 'border-emerald-500/50 bg-emerald-900/10'} rounded-lg shadow-lg flex items-center justify-between gap-3 group relative cursor-pointer hover:border-indigo-400 transition-colors`}>
@@ -270,6 +286,7 @@ function MissionBuilderView() {
                       Drag and drop blocks here to build a mission
                   </div>
               )}
+           </div>
            </div>
         </div>
       </div>

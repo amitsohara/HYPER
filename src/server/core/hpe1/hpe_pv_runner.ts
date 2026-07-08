@@ -45,7 +45,7 @@ async function runValidation() {
 
     console.log(`\n2. Plan Repair`);
     // Simulate failure of the first task
-    const taskIds = Array.from(selectedPlan.atomicTasks.keys());
+    const taskIds = Array.from(Object.keys(selectedPlan.atomicTasks));
     if (taskIds.length === 0) throw new Error("No atomic tasks generated");
 
     const failedTaskId = taskIds[0];
@@ -57,7 +57,7 @@ async function runValidation() {
         throw new Error(`Plan status should be READY after repair, got ${repairedPlan.status}`);
     }
     
-    const repairedTask = repairedPlan.atomicTasks.get(failedTaskId);
+    const repairedTask = repairedPlan.atomicTasks[failedTaskId];
     if (repairedTask?.status !== TaskStatus.FAILED) {
         throw new Error(`Failed task status not updated to FAILED`);
     }

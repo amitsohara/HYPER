@@ -1,21 +1,102 @@
 
 
---- LOGGER STARTED AT 2026-07-08T05:08:15.734Z ---
-[2026-07-08T05:10:11.963Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: 2515f180-f503-42b5-860e-88e28aadea8f
+--- LOGGER STARTED AT 2026-07-08T06:48:16.594Z ---
+[2026-07-08T06:48:18.547Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: 1a7da42a-7374-4586-bfc9-c8eb9f280a22
   Payload: {
+  "missionDirective": "fallback_trigger solve mystery.",
+  "context": {
+    "type": "USER_DIRECTIVE",
+    "description": "fallback_trigger solve mystery."
+  },
   "entity": {
-    "name": "Anomalous Signature",
-    "type": "THREAT"
-  }
+    "name": "User Request",
+    "type": "MISSION_DIRECTIVE"
+  },
+  "additionalEntities": [
+    {
+      "id": "e1",
+      "name": "Nashik Road Junction",
+      "type": "INTERSECTION",
+      "properties": {
+        "status": "congested"
+      }
+    },
+    {
+      "id": "e2",
+      "name": "Main Road",
+      "type": "ROAD",
+      "properties": {
+        "lanes": 4
+      }
+    },
+    {
+      "id": "e3",
+      "name": "Vehicle 101",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 5,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e4",
+      "name": "Vehicle 102",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 0,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e5",
+      "name": "Signal A",
+      "type": "SIGNAL",
+      "properties": {
+        "state": "red",
+        "timer": 45
+      }
+    },
+    {
+      "id": "e6",
+      "name": "Pedestrian Flow",
+      "type": "PEDESTRIAN",
+      "properties": {
+        "density": "high"
+      }
+    },
+    {
+      "id": "e7",
+      "name": "Minor Accident",
+      "type": "ACCIDENT",
+      "properties": {
+        "severity": "low",
+        "blockingLanes": 1
+      }
+    },
+    {
+      "id": "e8",
+      "name": "Debris",
+      "type": "OBSTACLE",
+      "properties": {
+        "size": "small"
+      }
+    }
+  ]
 }
-[2026-07-08T05:10:11.963Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: 3e7ebc9a-e9df-41a5-b6e3-c97bc5206e56
+[2026-07-08T06:48:18.547Z] [EVENT: GOAL_CREATED] (Source: HWME-01) ID: 30891695-29e8-4f0c-88d3-6da974e873f7
   Payload: {
-  "timestamp": 1783487411963
+  "goalId": "b4e9db91-06e2-4019-b17c-85ec095cd36b",
+  "goalName": "Mission Directive",
+  "goalDescription": "fallback_trigger solve mystery."
 }
-[2026-07-08T05:10:11.965Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 0dba1601-259b-4899-af3d-ab9bced5357e
+[2026-07-08T06:48:18.548Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: c7567acf-d369-41a8-97a4-6692ebd2b6d1
+  Payload: {
+  "timestamp": 1783493298548
+}
+[2026-07-08T06:48:18.556Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 968e2e07-d2a9-42c4-af4a-303d7a600fdd
   Payload: {
   "selected": [
-    "79c9ea8e-dc1d-4550-83d5-9a83ddb4ba84"
+    "33407b10-017b-4923-8c44-bdfb8428aca1"
   ],
   "workingMemory": {
     "activeGoals": [],
@@ -27,15 +108,203 @@
     "currentLoad": 1
   }
 }
-[2026-07-08T05:10:11.965Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: 5a314c91-64f5-448f-8a49-6bf8508df7f4
+[2026-07-08T06:48:18.556Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: 24267141-a147-4d2d-b354-902ed4e09bc7
+  Payload: {
+  "plan": {
+    "id": "0bb73c5b-0d6f-418e-a195-607d54b9c217",
+    "goalId": "b4e9db91-06e2-4019-b17c-85ec095cd36b",
+    "version": 1,
+    "status": "READY",
+    "priority": 1,
+    "atomicTasks": {
+      "944a07e5-e67e-431b-8770-894af6e1a7ed": {
+        "id": "944a07e5-e67e-431b-8770-894af6e1a7ed",
+        "name": "Execute Mission Directive",
+        "description": "Apply GOAP_PLANNER ",
+        "status": "PENDING",
+        "dependencies": [],
+        "preconditions": [],
+        "postconditions": [
+          "Goal resolved"
+        ],
+        "requiredSpecialists": [],
+        "estimatedDurationMs": 1500,
+        "metrics": {}
+      }
+    },
+    "resourceEstimate": {
+      "specialistsRequired": [
+        "GENERAL"
+      ],
+      "memoryUsage": 10,
+      "computationBudget": 5,
+      "executionTimeMs": 1500,
+      "parallelismOpportunities": 0
+    },
+    "riskAssessment": {
+      "failureProbability": 0.1,
+      "missingResources": [],
+      "dependencyRisks": [
+        "Task timeout"
+      ],
+      "uncertaintyScore": 0.2,
+      "cascadingFailuresScore": 0.1
+    },
+    "confidence": 0.7,
+    "explainability": "Generated via Goal-Oriented Action Planning.",
+    "planningTrace": [
+      {
+        "timestamp": 1783493298554,
+        "action": "GENERATION",
+        "details": "Created plan using GOAP_PLANNER."
+      },
+      {
+        "timestamp": 1783493298555,
+        "action": "EVALUATION",
+        "details": "Evaluated plan with score 0.47"
+      }
+    ],
+    "executionMetrics": {},
+    "researchTraceability": {
+      "hirqIds": [],
+      "tgpId": "",
+      "mrpId": ""
+    },
+    "metadata": {
+      "strategy": "GOAP_PLANNER",
+      "usedExternalKnowledge": false
+    },
+    "createdAt": 1783493298554,
+    "updatedAt": 1783493298554,
+    "evaluation": {
+      "expectedUtility": 0.943108425096026,
+      "riskScore": 0.1,
+      "confidenceScore": 0.7,
+      "complexityScore": 0.1,
+      "efficiencyScore": 0.4,
+      "noveltyScore": 0.5,
+      "constraintSatisfaction": 1,
+      "overallScore": 0.46724337003841043,
+      "explainability": "Score: 0.47. Utility: 0.94, Risk: 0.10."
+    },
+    "candidateRank": 1
+  },
+  "worldState": {
+    "entities": [
+      {
+        "id": "bc786545-4b59-4133-b0e2-178c72bff28c",
+        "name": "Nashik Road Junction",
+        "type": "INTERSECTION",
+        "properties": {
+          "status": "congested"
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "9d8b40c1-cd7c-420a-8d6f-39c4b40b9b1b",
+        "name": "Main Road",
+        "type": "ROAD",
+        "properties": {
+          "lanes": 4
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "8d8f2539-27e7-4a6a-bdf6-8d9a9ed617d4",
+        "name": "Vehicle 101",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 5,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "66423cde-68e7-4ba3-b5d1-56e24441cf40",
+        "name": "Vehicle 102",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 0,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "b34cd310-ea63-466f-9b57-8427f2203f98",
+        "name": "Signal A",
+        "type": "SIGNAL",
+        "properties": {
+          "state": "red",
+          "timer": 45
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "7f4fe815-ee03-431e-ad4b-242f3c6ba6f2",
+        "name": "Pedestrian Flow",
+        "type": "PEDESTRIAN",
+        "properties": {
+          "density": "high"
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "2750b02a-4a3a-4f35-b9c2-fe37e8583472",
+        "name": "Minor Accident",
+        "type": "ACCIDENT",
+        "properties": {
+          "severity": "low",
+          "blockingLanes": 1
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "id": "e8acb734-939e-432f-9b84-128c587e98df",
+        "name": "Debris",
+        "type": "OBSTACLE",
+        "properties": {
+          "size": "small"
+        },
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      },
+      {
+        "name": "User Request",
+        "type": "MISSION_DIRECTIVE",
+        "id": "71d0eddc-8e44-4918-a6e7-011b57b688b7",
+        "version": 1,
+        "createdAt": 1783493298548,
+        "updatedAt": 1783493298548
+      }
+    ],
+    "relationships": [],
+    "context": {}
+  }
+}
+[2026-07-08T06:48:18.557Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: 436b6b83-5142-45a3-b3e6-41406b7469f9
   Payload: {
   "processed": true
 }
-[2026-07-08T05:10:11.966Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: cae86a8f-7073-45ed-8188-b007c7a688ef
+[2026-07-08T06:48:18.560Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 8a8dd17c-4059-446d-b747-45ec7354a69e
   Payload: {
   "selected": [
-    "94c57662-4c60-45a9-8f42-8eac19746c66",
-    "79c9ea8e-dc1d-4550-83d5-9a83ddb4ba84"
+    "223626cb-d1ad-4eb8-86ae-24768a394286",
+    "33407b10-017b-4923-8c44-bdfb8428aca1"
   ],
   "workingMemory": {
     "activeGoals": [],
@@ -49,1360 +318,8 @@
     "currentLoad": 2
   }
 }
-[2026-07-08T05:10:11.966Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 607f0f09-8e4e-4d00-a39d-c9d52f4d3292
+[2026-07-08T06:48:18.558Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 7c133b5b-1880-410c-9fea-395a4b04e66a
   Payload: {
-  "thoughtId": "d36f6dc2-6395-440e-8260-1c4c4fe0fa97",
+  "thoughtId": "63396ba8-e485-481e-8db7-b7e5a8b71650",
   "summary": "Focused on Goal World region focus: world_region_1"
-}
-[2026-07-08T05:10:11.966Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: bae92812-ee6c-4c4d-adf6-af8350ba3d8d
-  Payload: {
-  "thoughtId": "22105718-235b-41af-9268-99a743c08db5",
-  "summary": "Focused on Goal Concept focus: concept_1"
-}
-[2026-07-08T05:10:11.968Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: c888c0dc-aaed-4351-892b-b2fcf3208333
-  Payload: {
-  "thoughtId": "d36f6dc2-6395-440e-8260-1c4c4fe0fa97",
-  "conclusionId": "7db38125-37b1-485d-9d14-7be62f8a9fd2",
-  "content": "Fallback conclusion generated (no rules met)",
-  "explanation": {
-    "humanReadable": "Fallback explanation"
-  },
-  "confidence": 0.5,
-  "strategy": "DEDUCTIVE",
-  "executionTimeMs": 2,
-  "alternativeHypotheses": []
-}
-[2026-07-08T05:10:11.968Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 5254878b-95df-4ccf-8245-85a37d12efe0
-  Payload: {
-  "thoughtId": "22105718-235b-41af-9268-99a743c08db5",
-  "conclusionId": "6ca70d30-cdb4-48db-b139-1dea1c2f41ac",
-  "content": "Fallback conclusion generated (no rules met)",
-  "explanation": {
-    "humanReadable": "Fallback explanation"
-  },
-  "confidence": 0.5,
-  "strategy": "DEDUCTIVE",
-  "executionTimeMs": 2,
-  "alternativeHypotheses": []
-}
-[2026-07-08T05:10:11.970Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: cd52d1bd-b603-44fd-bc8e-8e914e280a41
-  Payload: {
-  "plan": {
-    "id": "d7b3d71e-2940-4d89-b943-da779fa92606",
-    "goalId": "7db38125-37b1-485d-9d14-7be62f8a9fd2",
-    "version": 1,
-    "status": "READY",
-    "priority": 1,
-    "atomicTasks": {},
-    "resourceEstimate": {
-      "specialistsRequired": [
-        "GENERAL"
-      ],
-      "memoryUsage": 30,
-      "computationBudget": 15,
-      "executionTimeMs": 3000,
-      "parallelismOpportunities": 1
-    },
-    "riskAssessment": {
-      "failureProbability": 0.1,
-      "missingResources": [],
-      "dependencyRisks": [
-        "Task timeout"
-      ],
-      "uncertaintyScore": 0.2,
-      "cascadingFailuresScore": 0.1
-    },
-    "confidence": 0.8,
-    "explainability": "Generated via Hierarchical Task Network decomposition.",
-    "planningTrace": [
-      {
-        "timestamp": 1783487411969,
-        "action": "GENERATION",
-        "details": "Decomposed goal into atomic tasks using HTN strategy."
-      },
-      {
-        "timestamp": 1783487411969,
-        "action": "EVALUATION",
-        "details": "Evaluated plan with score 0.35"
-      }
-    ],
-    "executionMetrics": {},
-    "researchTraceability": {
-      "hirqIds": [],
-      "tgpId": "",
-      "mrpId": ""
-    },
-    "metadata": {
-      "strategy": "HTN_STRATEGY"
-    },
-    "createdAt": 1783487411969,
-    "updatedAt": 1783487411969,
-    "evaluation": {
-      "expectedUtility": 0.7508550781521653,
-      "riskScore": 0.1,
-      "confidenceScore": 0.8,
-      "complexityScore": 0.30000000000000004,
-      "efficiencyScore": 0.25,
-      "noveltyScore": 0.5,
-      "constraintSatisfaction": 1,
-      "overallScore": 0.34534203126086616,
-      "explainability": "Score: 0.35. Utility: 0.75, Risk: 0.10."
-    },
-    "candidateRank": 1
-  },
-  "worldState": {}
-}
-[2026-07-08T05:10:11.970Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: e9cb4949-ed9a-446b-adab-c2a5435c7f85
-  Payload: {
-  "plan": {
-    "id": "83c2290c-7310-4a02-b0a0-1459fe863535",
-    "goalId": "6ca70d30-cdb4-48db-b139-1dea1c2f41ac",
-    "version": 1,
-    "status": "READY",
-    "priority": 1,
-    "atomicTasks": {},
-    "resourceEstimate": {
-      "specialistsRequired": [
-        "GENERAL"
-      ],
-      "memoryUsage": 30,
-      "computationBudget": 15,
-      "executionTimeMs": 3000,
-      "parallelismOpportunities": 1
-    },
-    "riskAssessment": {
-      "failureProbability": 0.1,
-      "missingResources": [],
-      "dependencyRisks": [
-        "Task timeout"
-      ],
-      "uncertaintyScore": 0.2,
-      "cascadingFailuresScore": 0.1
-    },
-    "confidence": 0.8,
-    "explainability": "Generated via Hierarchical Task Network decomposition.",
-    "planningTrace": [
-      {
-        "timestamp": 1783487411970,
-        "action": "GENERATION",
-        "details": "Decomposed goal into atomic tasks using HTN strategy."
-      },
-      {
-        "timestamp": 1783487411970,
-        "action": "EVALUATION",
-        "details": "Evaluated plan with score 0.38"
-      }
-    ],
-    "executionMetrics": {},
-    "researchTraceability": {
-      "hirqIds": [],
-      "tgpId": "",
-      "mrpId": ""
-    },
-    "metadata": {
-      "strategy": "HTN_STRATEGY"
-    },
-    "createdAt": 1783487411970,
-    "updatedAt": 1783487411970,
-    "evaluation": {
-      "expectedUtility": 0.8360599770490701,
-      "riskScore": 0.1,
-      "confidenceScore": 0.8,
-      "complexityScore": 0.30000000000000004,
-      "efficiencyScore": 0.25,
-      "noveltyScore": 0.5,
-      "constraintSatisfaction": 1,
-      "overallScore": 0.3794239908196281,
-      "explainability": "Score: 0.38. Utility: 0.84, Risk: 0.10."
-    },
-    "candidateRank": 1
-  },
-  "worldState": {}
-}
-[2026-07-08T05:10:11.971Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: 9ab06bba-b2d3-4a70-940b-fad49662ee6d
-  Payload: {
-  "planId": "d7b3d71e-2940-4d89-b943-da779fa92606",
-  "outcomes": [
-    {
-      "id": "34cea9b4-81ff-4a13-9673-8f4d24bf1593",
-      "scenarioId": "707e14da-0ee6-4cf6-9460-35625c0f9b15",
-      "finalState": {
-        "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487411970,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 100,
-        "risk": 0,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 1
-      },
-      "narrative": "Simulated Best Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 100% probability."
-    },
-    {
-      "id": "c51e5f53-e41f-442c-b931-538d3fc6eae8",
-      "scenarioId": "f234f972-a2d8-4d9b-a615-f0239d37ccef",
-      "finalState": {
-        "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487411970,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 40,
-        "risk": 60,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.4
-      },
-      "narrative": "Simulated Worst Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 40% probability."
-    },
-    {
-      "id": "94e23d5b-0575-4f71-8b58-a9a537a3a9c7",
-      "scenarioId": "7d0ea9d8-f95a-4f03-86ab-16fc47d30422",
-      "finalState": {
-        "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487411970,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 80,
-        "risk": 19.999999999999996,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.8
-      },
-      "narrative": "Simulated Average Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 80% probability."
-    }
-  ]
-}
-[2026-07-08T05:10:11.971Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: 1c5ec79e-dfe9-4991-b58e-28c529a12f46
-  Payload: {
-  "planId": "83c2290c-7310-4a02-b0a0-1459fe863535",
-  "outcomes": [
-    {
-      "id": "0d8620fb-dca6-4988-adbb-e5143796b288",
-      "scenarioId": "0860392a-2818-49a2-ad90-cba7a0deb220",
-      "finalState": {
-        "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487411971,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 100,
-        "risk": 0,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 1
-      },
-      "narrative": "Simulated Best Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 100% probability."
-    },
-    {
-      "id": "3b134252-31ec-40e0-9a1b-69ca0d14b572",
-      "scenarioId": "7971e649-4c45-4719-aba4-40cbfb1240d5",
-      "finalState": {
-        "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487411971,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 40,
-        "risk": 60,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.4
-      },
-      "narrative": "Simulated Worst Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 40% probability."
-    },
-    {
-      "id": "2d60cb11-e777-485c-8d99-cbf871f79e76",
-      "scenarioId": "ac15f0d5-38d7-49aa-bf4f-2e008ecca1a2",
-      "finalState": {
-        "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487411971,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 80,
-        "risk": 19.999999999999996,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.8
-      },
-      "narrative": "Simulated Average Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 80% probability."
-    }
-  ]
-}
-[2026-07-08T05:10:11.973Z] [EVENT: ACTION_REJECTED] (Source: HDME) ID: 06ace469-cf83-433a-a103-7ac2767e2742
-  Payload: {
-  "decision": {
-    "id": "dec-ae6fba5c-5e6c-4531-b593-709868f13d21",
-    "context": {
-      "missionId": "sys-mission",
-      "worldStateSnapshot": {}
-    },
-    "options": [
-      {
-        "id": "opt-4fcc6329-8c20-4f7e-9fa5-87ea63ad0d48",
-        "planId": "d7b3d71e-2940-4d89-b943-da779fa92606",
-        "predictedOutcomes": [
-          {
-            "id": "34cea9b4-81ff-4a13-9673-8f4d24bf1593",
-            "scenarioId": "707e14da-0ee6-4cf6-9460-35625c0f9b15",
-            "finalState": {
-              "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487411970,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 100,
-              "risk": 0,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 1
-            },
-            "narrative": "Simulated Best Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 100% probability."
-          },
-          {
-            "id": "c51e5f53-e41f-442c-b931-538d3fc6eae8",
-            "scenarioId": "f234f972-a2d8-4d9b-a615-f0239d37ccef",
-            "finalState": {
-              "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487411970,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 40,
-              "risk": 60,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.4
-            },
-            "narrative": "Simulated Worst Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 40% probability."
-          },
-          {
-            "id": "94e23d5b-0575-4f71-8b58-a9a537a3a9c7",
-            "scenarioId": "7d0ea9d8-f95a-4f03-86ab-16fc47d30422",
-            "finalState": {
-              "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487411970,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 80,
-              "risk": 19.999999999999996,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.8
-            },
-            "narrative": "Simulated Average Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 80% probability."
-          }
-        ],
-        "confidence": {
-          "score": 0.8,
-          "sources": [
-            {
-              "sourceId": "HSTE",
-              "confidence": 0.8
-            }
-          ]
-        },
-        "utilityScore": 0.15,
-        "riskScore": 0,
-        "policyPassed": true
-      }
-    ],
-    "status": "REJECTED",
-    "traceId": "trc-7a078ecf-55e1-4586-84a1-ebf9bbf86fd8",
-    "timestamp": 1783487411972,
-    "authorizationReason": "No options passed policy or risk thresholds."
-  },
-  "reason": "No options passed policy or risk thresholds.",
-  "debug": [
-    {
-      "id": "opt-4fcc6329-8c20-4f7e-9fa5-87ea63ad0d48",
-      "planId": "d7b3d71e-2940-4d89-b943-da779fa92606",
-      "predictedOutcomes": [
-        {
-          "id": "34cea9b4-81ff-4a13-9673-8f4d24bf1593",
-          "scenarioId": "707e14da-0ee6-4cf6-9460-35625c0f9b15",
-          "finalState": {
-            "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487411970,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 100,
-            "risk": 0,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 1
-          },
-          "narrative": "Simulated Best Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 100% probability."
-        },
-        {
-          "id": "c51e5f53-e41f-442c-b931-538d3fc6eae8",
-          "scenarioId": "f234f972-a2d8-4d9b-a615-f0239d37ccef",
-          "finalState": {
-            "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487411970,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 40,
-            "risk": 60,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.4
-          },
-          "narrative": "Simulated Worst Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 40% probability."
-        },
-        {
-          "id": "94e23d5b-0575-4f71-8b58-a9a537a3a9c7",
-          "scenarioId": "7d0ea9d8-f95a-4f03-86ab-16fc47d30422",
-          "finalState": {
-            "id": "4604f88c-e4ac-4be2-9a18-2aa8d8dc1658",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487411970,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 80,
-            "risk": 19.999999999999996,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.8
-          },
-          "narrative": "Simulated Average Case - d7b3d71e-2940-4d89-b943-da779fa92606 completing with 80% probability."
-        }
-      ],
-      "confidence": {
-        "score": 0.8,
-        "sources": [
-          {
-            "sourceId": "HSTE",
-            "confidence": 0.8
-          }
-        ]
-      },
-      "utilityScore": 0.15,
-      "riskScore": 0,
-      "policyPassed": true
-    }
-  ]
-}
-[2026-07-08T05:10:11.974Z] [EVENT: ACTION_REJECTED] (Source: HDME) ID: ab8ed345-909b-4251-a2d8-f6e7339b2c8e
-  Payload: {
-  "decision": {
-    "id": "dec-71506f8f-503a-493b-9ca3-2fb9571fa859",
-    "context": {
-      "missionId": "sys-mission",
-      "worldStateSnapshot": {}
-    },
-    "options": [
-      {
-        "id": "opt-4830c540-9ed6-4ce4-9926-e5fdafb21225",
-        "planId": "83c2290c-7310-4a02-b0a0-1459fe863535",
-        "predictedOutcomes": [
-          {
-            "id": "0d8620fb-dca6-4988-adbb-e5143796b288",
-            "scenarioId": "0860392a-2818-49a2-ad90-cba7a0deb220",
-            "finalState": {
-              "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487411971,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 100,
-              "risk": 0,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 1
-            },
-            "narrative": "Simulated Best Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 100% probability."
-          },
-          {
-            "id": "3b134252-31ec-40e0-9a1b-69ca0d14b572",
-            "scenarioId": "7971e649-4c45-4719-aba4-40cbfb1240d5",
-            "finalState": {
-              "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487411971,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 40,
-              "risk": 60,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.4
-            },
-            "narrative": "Simulated Worst Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 40% probability."
-          },
-          {
-            "id": "2d60cb11-e777-485c-8d99-cbf871f79e76",
-            "scenarioId": "ac15f0d5-38d7-49aa-bf4f-2e008ecca1a2",
-            "finalState": {
-              "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487411971,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 80,
-              "risk": 19.999999999999996,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.8
-            },
-            "narrative": "Simulated Average Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 80% probability."
-          }
-        ],
-        "confidence": {
-          "score": 0.8,
-          "sources": [
-            {
-              "sourceId": "HSTE",
-              "confidence": 0.8
-            }
-          ]
-        },
-        "utilityScore": 0.15,
-        "riskScore": 0,
-        "policyPassed": true
-      }
-    ],
-    "status": "REJECTED",
-    "traceId": "trc-22179f66-b13d-4e8a-84bc-f3e05de51872",
-    "timestamp": 1783487411974,
-    "authorizationReason": "No options passed policy or risk thresholds."
-  },
-  "reason": "No options passed policy or risk thresholds.",
-  "debug": [
-    {
-      "id": "opt-4830c540-9ed6-4ce4-9926-e5fdafb21225",
-      "planId": "83c2290c-7310-4a02-b0a0-1459fe863535",
-      "predictedOutcomes": [
-        {
-          "id": "0d8620fb-dca6-4988-adbb-e5143796b288",
-          "scenarioId": "0860392a-2818-49a2-ad90-cba7a0deb220",
-          "finalState": {
-            "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487411971,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 100,
-            "risk": 0,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 1
-          },
-          "narrative": "Simulated Best Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 100% probability."
-        },
-        {
-          "id": "3b134252-31ec-40e0-9a1b-69ca0d14b572",
-          "scenarioId": "7971e649-4c45-4719-aba4-40cbfb1240d5",
-          "finalState": {
-            "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487411971,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 40,
-            "risk": 60,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.4
-          },
-          "narrative": "Simulated Worst Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 40% probability."
-        },
-        {
-          "id": "2d60cb11-e777-485c-8d99-cbf871f79e76",
-          "scenarioId": "ac15f0d5-38d7-49aa-bf4f-2e008ecca1a2",
-          "finalState": {
-            "id": "9ba09d28-435b-45dc-8f93-03b215723514",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487411971,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 80,
-            "risk": 19.999999999999996,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.8
-          },
-          "narrative": "Simulated Average Case - 83c2290c-7310-4a02-b0a0-1459fe863535 completing with 80% probability."
-        }
-      ],
-      "confidence": {
-        "score": 0.8,
-        "sources": [
-          {
-            "sourceId": "HSTE",
-            "confidence": 0.8
-          }
-        ]
-      },
-      "utilityScore": 0.15,
-      "riskScore": 0,
-      "policyPassed": true
-    }
-  ]
-}
-
-
---- LOGGER STARTED AT 2026-07-08T05:15:16.904Z ---
-[2026-07-08T05:15:18.605Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: f3deb12a-3bd5-4f28-bd38-c94399269660
-  Payload: {
-  "entity": {
-    "name": "Anomalous Signature",
-    "type": "THREAT"
-  }
-}
-[2026-07-08T05:15:18.605Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: 17e42a63-d26e-43da-ab13-6bda5a53a62d
-  Payload: {
-  "timestamp": 1783487718605
-}
-[2026-07-08T05:15:18.610Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: c978472d-c185-4405-a288-b6e556847191
-  Payload: {
-  "selected": [
-    "b421d6fd-ab99-4572-a4db-acf0be1b7933"
-  ],
-  "workingMemory": {
-    "activeGoals": [],
-    "activeWorldRegions": [
-      "world_region_1"
-    ],
-    "activeConcepts": [],
-    "capacity": 10,
-    "currentLoad": 1
-  }
-}
-[2026-07-08T05:15:18.611Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: 886e73fd-26f0-4a8a-bc7f-8fd3a32bcf74
-  Payload: {
-  "processed": true
-}
-[2026-07-08T05:15:18.613Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: ead9a090-572a-4f58-8639-f4b615596f24
-  Payload: {
-  "selected": [
-    "2a3859a8-4813-4e9d-95f3-f5d202519ca8",
-    "b421d6fd-ab99-4572-a4db-acf0be1b7933"
-  ],
-  "workingMemory": {
-    "activeGoals": [],
-    "activeWorldRegions": [
-      "world_region_1"
-    ],
-    "activeConcepts": [
-      "concept_1"
-    ],
-    "capacity": 10,
-    "currentLoad": 2
-  }
-}
-[2026-07-08T05:15:18.612Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 77e93ae3-47df-4446-8992-6bb32662f48b
-  Payload: {
-  "thoughtId": "cc2277d7-a5f5-48d8-963d-b5c9f78e1ad1",
-  "summary": "Focused on Goal World region focus: world_region_1"
-}
-[2026-07-08T05:15:18.613Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: d640c6ad-88b2-4150-9a88-bfa6e9c48961
-  Payload: {
-  "thoughtId": "dc2fa378-bcf6-447a-8f15-c8b2bd70751f",
-  "summary": "Focused on Goal Concept focus: concept_1"
-}
-[2026-07-08T05:15:18.615Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: d2fc7ee1-3e3f-4117-af30-27bd89f30bde
-  Payload: {
-  "thoughtId": "cc2277d7-a5f5-48d8-963d-b5c9f78e1ad1",
-  "conclusionId": "57cfe5c0-7f46-46a7-9bf5-81ee09e0f2b1",
-  "content": "Fallback conclusion generated (no rules met)",
-  "explanation": {
-    "humanReadable": "Fallback explanation"
-  },
-  "confidence": 0.5,
-  "strategy": "DEDUCTIVE",
-  "executionTimeMs": 2,
-  "alternativeHypotheses": []
-}
-[2026-07-08T05:15:18.615Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 30f5620f-23e0-42b0-adb7-0bfee9cd03e8
-  Payload: {
-  "thoughtId": "dc2fa378-bcf6-447a-8f15-c8b2bd70751f",
-  "conclusionId": "27a58ce4-cef3-407f-9560-99a2dff6848a",
-  "content": "Fallback conclusion generated (no rules met)",
-  "explanation": {
-    "humanReadable": "Fallback explanation"
-  },
-  "confidence": 0.5,
-  "strategy": "DEDUCTIVE",
-  "executionTimeMs": 2,
-  "alternativeHypotheses": []
-}
-[2026-07-08T05:15:18.617Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: 0db98fac-fff7-47f7-b993-c8f8ae61fe6b
-  Payload: {
-  "plan": {
-    "id": "66adc58e-a224-47bf-bb21-badf2116a5b1",
-    "goalId": "57cfe5c0-7f46-46a7-9bf5-81ee09e0f2b1",
-    "version": 1,
-    "status": "READY",
-    "priority": 1,
-    "atomicTasks": {},
-    "resourceEstimate": {
-      "specialistsRequired": [
-        "GENERAL"
-      ],
-      "memoryUsage": 30,
-      "computationBudget": 15,
-      "executionTimeMs": 3000,
-      "parallelismOpportunities": 1
-    },
-    "riskAssessment": {
-      "failureProbability": 0.1,
-      "missingResources": [],
-      "dependencyRisks": [
-        "Task timeout"
-      ],
-      "uncertaintyScore": 0.2,
-      "cascadingFailuresScore": 0.1
-    },
-    "confidence": 0.9,
-    "explainability": "Generated via Expected Utility Maximization.",
-    "planningTrace": [
-      {
-        "timestamp": 1783487718616,
-        "action": "GENERATION",
-        "details": "Optimized task sequence for maximum utility."
-      },
-      {
-        "timestamp": 1783487718617,
-        "action": "EVALUATION",
-        "details": "Evaluated plan with score 0.42"
-      }
-    ],
-    "executionMetrics": {},
-    "researchTraceability": {
-      "hirqIds": [],
-      "tgpId": "",
-      "mrpId": ""
-    },
-    "metadata": {
-      "strategy": "UTILITY_BASED_STRATEGY",
-      "expectedUtility": 0.95
-    },
-    "createdAt": 1783487718616,
-    "updatedAt": 1783487718616,
-    "evaluation": {
-      "expectedUtility": 0.9308480768883982,
-      "riskScore": 0.1,
-      "confidenceScore": 0.9,
-      "complexityScore": 0.30000000000000004,
-      "efficiencyScore": 0.25,
-      "noveltyScore": 0.5,
-      "constraintSatisfaction": 1,
-      "overallScore": 0.4173392307553593,
-      "explainability": "Score: 0.42. Utility: 0.93, Risk: 0.10."
-    },
-    "candidateRank": 1
-  },
-  "worldState": {}
-}
-[2026-07-08T05:15:18.617Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: cb950a54-0826-4bf8-abe5-9cba4a1e3d55
-  Payload: {
-  "plan": {
-    "id": "267f3254-e09f-4fe5-9544-5e600b1fed69",
-    "goalId": "27a58ce4-cef3-407f-9560-99a2dff6848a",
-    "version": 1,
-    "status": "READY",
-    "priority": 1,
-    "atomicTasks": {},
-    "resourceEstimate": {
-      "specialistsRequired": [
-        "GENERAL"
-      ],
-      "memoryUsage": 30,
-      "computationBudget": 15,
-      "executionTimeMs": 3000,
-      "parallelismOpportunities": 1
-    },
-    "riskAssessment": {
-      "failureProbability": 0.1,
-      "missingResources": [],
-      "dependencyRisks": [
-        "Task timeout"
-      ],
-      "uncertaintyScore": 0.2,
-      "cascadingFailuresScore": 0.1
-    },
-    "confidence": 0.75,
-    "explainability": "Generated via State-Space Graph Search.",
-    "planningTrace": [
-      {
-        "timestamp": 1783487718617,
-        "action": "GENERATION",
-        "details": "Traversed state space to find viable goal path."
-      },
-      {
-        "timestamp": 1783487718617,
-        "action": "EVALUATION",
-        "details": "Evaluated plan with score 0.33"
-      }
-    ],
-    "executionMetrics": {},
-    "researchTraceability": {
-      "hirqIds": [],
-      "tgpId": "",
-      "mrpId": ""
-    },
-    "metadata": {
-      "strategy": "GRAPH_PLANNING_STRATEGY",
-      "pathLength": 3
-    },
-    "createdAt": 1783487718617,
-    "updatedAt": 1783487718617,
-    "evaluation": {
-      "expectedUtility": 0.7195784621016797,
-      "riskScore": 0.1,
-      "confidenceScore": 0.75,
-      "complexityScore": 0.30000000000000004,
-      "efficiencyScore": 0.25,
-      "noveltyScore": 0.5,
-      "constraintSatisfaction": 1,
-      "overallScore": 0.3328313848406719,
-      "explainability": "Score: 0.33. Utility: 0.72, Risk: 0.10."
-    },
-    "candidateRank": 1
-  },
-  "worldState": {}
-}
-[2026-07-08T05:15:18.618Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: e03adfcd-f3d8-4571-aafb-503f69a3b6d4
-  Payload: {
-  "planId": "66adc58e-a224-47bf-bb21-badf2116a5b1",
-  "outcomes": [
-    {
-      "id": "65994e77-4421-4851-8f44-d0c639936c78",
-      "scenarioId": "90ed052d-6dcd-4d24-aadc-b24276bcff6e",
-      "finalState": {
-        "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487718618,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 100,
-        "risk": 0,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 1
-      },
-      "narrative": "Simulated Best Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 100% probability."
-    },
-    {
-      "id": "ecbf40ea-c62d-4360-aba8-2729fd208256",
-      "scenarioId": "47d7cf3d-afc2-46f7-a0f2-19e57aac8673",
-      "finalState": {
-        "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487718618,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 40,
-        "risk": 60,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.4
-      },
-      "narrative": "Simulated Worst Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 40% probability."
-    },
-    {
-      "id": "73244461-97e9-4b93-be1e-c2763281aea7",
-      "scenarioId": "233a8b6e-a6f4-43f5-af5b-26a151d7cbfe",
-      "finalState": {
-        "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487718618,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 80,
-        "risk": 19.999999999999996,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.8
-      },
-      "narrative": "Simulated Average Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 80% probability."
-    }
-  ]
-}
-[2026-07-08T05:15:18.619Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: 106be726-35bc-4a09-98bc-24464a8ff49e
-  Payload: {
-  "planId": "267f3254-e09f-4fe5-9544-5e600b1fed69",
-  "outcomes": [
-    {
-      "id": "b4ddaf5d-7b28-4074-88c8-4f52940b904d",
-      "scenarioId": "72ca007c-948c-47df-a5bd-0e8bb8056f64",
-      "finalState": {
-        "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487718618,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 100,
-        "risk": 0,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 1
-      },
-      "narrative": "Simulated Best Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 100% probability."
-    },
-    {
-      "id": "d3c0accd-4271-4e5d-a8d2-f090e3b494eb",
-      "scenarioId": "ad011c91-014a-42c7-b05f-e0e76030c7d8",
-      "finalState": {
-        "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487718618,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 40,
-        "risk": 60,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.4
-      },
-      "narrative": "Simulated Worst Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 40% probability."
-    },
-    {
-      "id": "10a8810f-3d52-403e-8eff-b5c95f004cbf",
-      "scenarioId": "53ba27db-050f-4765-8c05-e5e3968c43d9",
-      "finalState": {
-        "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-        "parentWorldId": "CANONICAL",
-        "version": 1,
-        "timestamp": 1783487718618,
-        "state": {},
-        "metadata": {}
-      },
-      "metrics": {
-        "utility": 80,
-        "risk": 19.999999999999996,
-        "cost": 10,
-        "confidence": 0.85,
-        "successProbability": 0.8
-      },
-      "narrative": "Simulated Average Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 80% probability."
-    }
-  ]
-}
-[2026-07-08T05:15:18.620Z] [EVENT: ACTION_REJECTED] (Source: HDME) ID: 70c3c197-4d7e-4ed0-8055-b7d3e0abc6e9
-  Payload: {
-  "decision": {
-    "id": "dec-cb0e0ae1-d1d1-4609-9f5d-85a080dda148",
-    "context": {
-      "missionId": "sys-mission",
-      "worldStateSnapshot": {}
-    },
-    "options": [
-      {
-        "id": "opt-5d2f2f28-abc7-45c7-9159-3c9ae689d517",
-        "planId": "66adc58e-a224-47bf-bb21-badf2116a5b1",
-        "predictedOutcomes": [
-          {
-            "id": "65994e77-4421-4851-8f44-d0c639936c78",
-            "scenarioId": "90ed052d-6dcd-4d24-aadc-b24276bcff6e",
-            "finalState": {
-              "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487718618,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 100,
-              "risk": 0,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 1
-            },
-            "narrative": "Simulated Best Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 100% probability."
-          },
-          {
-            "id": "ecbf40ea-c62d-4360-aba8-2729fd208256",
-            "scenarioId": "47d7cf3d-afc2-46f7-a0f2-19e57aac8673",
-            "finalState": {
-              "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487718618,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 40,
-              "risk": 60,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.4
-            },
-            "narrative": "Simulated Worst Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 40% probability."
-          },
-          {
-            "id": "73244461-97e9-4b93-be1e-c2763281aea7",
-            "scenarioId": "233a8b6e-a6f4-43f5-af5b-26a151d7cbfe",
-            "finalState": {
-              "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487718618,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 80,
-              "risk": 19.999999999999996,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.8
-            },
-            "narrative": "Simulated Average Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 80% probability."
-          }
-        ],
-        "confidence": {
-          "score": 0.8,
-          "sources": [
-            {
-              "sourceId": "HSTE",
-              "confidence": 0.8
-            }
-          ]
-        },
-        "utilityScore": 0.15,
-        "riskScore": 0,
-        "policyPassed": true
-      }
-    ],
-    "status": "REJECTED",
-    "traceId": "trc-633265d1-66bc-4f87-99b9-c806f7a8df46",
-    "timestamp": 1783487718619,
-    "authorizationReason": "No options passed policy or risk thresholds."
-  },
-  "reason": "No options passed policy or risk thresholds.",
-  "debug": [
-    {
-      "id": "opt-5d2f2f28-abc7-45c7-9159-3c9ae689d517",
-      "planId": "66adc58e-a224-47bf-bb21-badf2116a5b1",
-      "predictedOutcomes": [
-        {
-          "id": "65994e77-4421-4851-8f44-d0c639936c78",
-          "scenarioId": "90ed052d-6dcd-4d24-aadc-b24276bcff6e",
-          "finalState": {
-            "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487718618,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 100,
-            "risk": 0,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 1
-          },
-          "narrative": "Simulated Best Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 100% probability."
-        },
-        {
-          "id": "ecbf40ea-c62d-4360-aba8-2729fd208256",
-          "scenarioId": "47d7cf3d-afc2-46f7-a0f2-19e57aac8673",
-          "finalState": {
-            "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487718618,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 40,
-            "risk": 60,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.4
-          },
-          "narrative": "Simulated Worst Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 40% probability."
-        },
-        {
-          "id": "73244461-97e9-4b93-be1e-c2763281aea7",
-          "scenarioId": "233a8b6e-a6f4-43f5-af5b-26a151d7cbfe",
-          "finalState": {
-            "id": "4b924b49-eb28-471c-b77f-c5744ac6d052",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487718618,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 80,
-            "risk": 19.999999999999996,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.8
-          },
-          "narrative": "Simulated Average Case - 66adc58e-a224-47bf-bb21-badf2116a5b1 completing with 80% probability."
-        }
-      ],
-      "confidence": {
-        "score": 0.8,
-        "sources": [
-          {
-            "sourceId": "HSTE",
-            "confidence": 0.8
-          }
-        ]
-      },
-      "utilityScore": 0.15,
-      "riskScore": 0,
-      "policyPassed": true
-    }
-  ]
-}
-[2026-07-08T05:15:18.620Z] [EVENT: ACTION_REJECTED] (Source: HDME) ID: 3435b088-20bb-4507-a3ff-01a3594f240e
-  Payload: {
-  "decision": {
-    "id": "dec-a5e2c508-31b9-43ac-ac0b-1c67c0f085ab",
-    "context": {
-      "missionId": "sys-mission",
-      "worldStateSnapshot": {}
-    },
-    "options": [
-      {
-        "id": "opt-e00a5b35-f50f-4f09-b164-82ec7dfbf199",
-        "planId": "267f3254-e09f-4fe5-9544-5e600b1fed69",
-        "predictedOutcomes": [
-          {
-            "id": "b4ddaf5d-7b28-4074-88c8-4f52940b904d",
-            "scenarioId": "72ca007c-948c-47df-a5bd-0e8bb8056f64",
-            "finalState": {
-              "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487718618,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 100,
-              "risk": 0,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 1
-            },
-            "narrative": "Simulated Best Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 100% probability."
-          },
-          {
-            "id": "d3c0accd-4271-4e5d-a8d2-f090e3b494eb",
-            "scenarioId": "ad011c91-014a-42c7-b05f-e0e76030c7d8",
-            "finalState": {
-              "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487718618,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 40,
-              "risk": 60,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.4
-            },
-            "narrative": "Simulated Worst Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 40% probability."
-          },
-          {
-            "id": "10a8810f-3d52-403e-8eff-b5c95f004cbf",
-            "scenarioId": "53ba27db-050f-4765-8c05-e5e3968c43d9",
-            "finalState": {
-              "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-              "parentWorldId": "CANONICAL",
-              "version": 1,
-              "timestamp": 1783487718618,
-              "state": {},
-              "metadata": {}
-            },
-            "metrics": {
-              "utility": 80,
-              "risk": 19.999999999999996,
-              "cost": 10,
-              "confidence": 0.85,
-              "successProbability": 0.8
-            },
-            "narrative": "Simulated Average Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 80% probability."
-          }
-        ],
-        "confidence": {
-          "score": 0.8,
-          "sources": [
-            {
-              "sourceId": "HSTE",
-              "confidence": 0.8
-            }
-          ]
-        },
-        "utilityScore": 0.15,
-        "riskScore": 0,
-        "policyPassed": true
-      }
-    ],
-    "status": "REJECTED",
-    "traceId": "trc-c2b7c1af-a7d2-4827-acf4-e4a7f35a9813",
-    "timestamp": 1783487718620,
-    "authorizationReason": "No options passed policy or risk thresholds."
-  },
-  "reason": "No options passed policy or risk thresholds.",
-  "debug": [
-    {
-      "id": "opt-e00a5b35-f50f-4f09-b164-82ec7dfbf199",
-      "planId": "267f3254-e09f-4fe5-9544-5e600b1fed69",
-      "predictedOutcomes": [
-        {
-          "id": "b4ddaf5d-7b28-4074-88c8-4f52940b904d",
-          "scenarioId": "72ca007c-948c-47df-a5bd-0e8bb8056f64",
-          "finalState": {
-            "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487718618,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 100,
-            "risk": 0,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 1
-          },
-          "narrative": "Simulated Best Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 100% probability."
-        },
-        {
-          "id": "d3c0accd-4271-4e5d-a8d2-f090e3b494eb",
-          "scenarioId": "ad011c91-014a-42c7-b05f-e0e76030c7d8",
-          "finalState": {
-            "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487718618,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 40,
-            "risk": 60,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.4
-          },
-          "narrative": "Simulated Worst Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 40% probability."
-        },
-        {
-          "id": "10a8810f-3d52-403e-8eff-b5c95f004cbf",
-          "scenarioId": "53ba27db-050f-4765-8c05-e5e3968c43d9",
-          "finalState": {
-            "id": "c5e7f489-2fba-4e67-905e-4641d8cb483c",
-            "parentWorldId": "CANONICAL",
-            "version": 1,
-            "timestamp": 1783487718618,
-            "state": {},
-            "metadata": {}
-          },
-          "metrics": {
-            "utility": 80,
-            "risk": 19.999999999999996,
-            "cost": 10,
-            "confidence": 0.85,
-            "successProbability": 0.8
-          },
-          "narrative": "Simulated Average Case - 267f3254-e09f-4fe5-9544-5e600b1fed69 completing with 80% probability."
-        }
-      ],
-      "confidence": {
-        "score": 0.8,
-        "sources": [
-          {
-            "sourceId": "HSTE",
-            "confidence": 0.8
-          }
-        ]
-      },
-      "utilityScore": 0.15,
-      "riskScore": 0,
-      "policyPassed": true
-    }
-  ]
 }

@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import { ReasoningPersistence } from "./persistence.js";
 import { InferenceGraphEngine } from "./inferenceGraphEngine.js";
 import { ReasoningSessionManager } from "./reasoningSessionManager.js";
@@ -20,12 +21,16 @@ import { CausalStrategy } from "./strategies/causalStrategy.js";
 import { CommonsenseStrategy } from "./strategies/commonsenseStrategy.js";
 import { CounterfactualStrategy } from "./strategies/counterfactualStrategy.js";
 
+import { HILASpecialist } from "../hila1/hilaSpecialist.js";
+import { GoogleGenAI } from "@google/genai";
 import { HyperMindEventMesh } from "../hcns01/eventMesh.js";
 import { ISpecialist, SpecialistRegistration, SpecialistStatus, CognitiveRole } from "../hcse01/types.js";
 import { CognitiveDomain, CognitiveEvent } from "../hcns01/types.js";
 import { v4 as uuidv4 } from "uuid";
 
 export class HyperMindReasoningEngine implements ISpecialist {
+    private cache: Map<string, any> = new Map();
+    private activeRequests: Map<string, Promise<any>> = new Map();
     private static instance: HyperMindReasoningEngine;
     private status: SpecialistStatus = SpecialistStatus.LOADING;
     private identity: SpecialistRegistration;
@@ -131,25 +136,88 @@ export class HyperMindReasoningEngine implements ISpecialist {
 
     public async handleEvent(event: any): Promise<void> {
         if (event.type === "THOUGHT_GENERATED" && event.payload) {
-            // Actually execute reasoning instead of bypassing it
+            const thoughtContext = event.payload.summary || event.payload.content || "Generated from thought";
             const evidence = [{
                 id: uuidv4(),
                 type: "OBSERVATION",
-                content: event.payload.summary || "Generated from thought",
+                content: thoughtContext,
                 confidence: 0.9,
                 source: "THOUGHT_GENERATED",
                 timestamp: Date.now(), provenance: "HRE"
             }];
             
             try {
+                // Initialize session via manager
                 const session = await this.manager.executeReasoning(
                     `Reasoning for Thought ${event.payload.thoughtId}`,
-                    [event.payload.summary || "Generated from thought"],
+                    [thoughtContext],
                     "DEDUCTIVE",
                     evidence
                 );
 
-                if (session.finalConclusions && session.finalConclusions.length > 0) {
+                fs.appendFileSync("hre_debug.log", "Starting HILA...\n");
+                                let llmConclusions = [];
+                try {
+                    const cacheKey = thoughtContext;
+                if (this.cache.has(cacheKey)) {
+                    llmConclusions = this.cache.get(cacheKey);
+                } else if (this.activeRequests.has(cacheKey)) {
+                    llmConclusions = await this.activeRequests.get(cacheKey);
+                } else {
+                    const req = (async () => {
+                        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+                        const prompt = `Perform deep reasoning on the following thought context: "${thoughtContext}".
+You must perform and explicitly label the following types of reasoning:
+1. Knowledge graph traversal
+2. Inference
+3. Causal reasoning
+4. Abductive reasoning
+5. Commonsense reasoning
+Return a JSON array of conclusion objects. Each object must have:
+- "content": A string describing the conclusion (prefix it with the reasoning type, e.g. "[Causal] The congestion is caused by...").
+- "explanation": A string detailing the reasoning trace.
+- "confidence": A number between 0 and 1.
+Do not wrap in markdown \`\`\`json blocks. Just return the raw JSON array.`;
+                        const response = await ai.models.generateContent({
+                            model: "gemini-2.5-flash",
+                            contents: prompt
+                        });
+                        let text = response.text || "";
+                        if (text.startsWith('```json')) {
+                            text = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                        } else if (text.startsWith('```')) {
+                            text = text.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                        }
+                        return JSON.parse(text);
+                    })();
+                    this.activeRequests.set(cacheKey, req);
+                    llmConclusions = await req;
+                    this.cache.set(cacheKey, llmConclusions);
+                    this.activeRequests.delete(cacheKey);
+                }
+                } catch(e) {
+                    console.error("Gemini Reasoning failed:", e); fs.appendFileSync("hre_debug.log", "Gemini error: " + e.stack + "\n");
+                }
+                if (llmConclusions.length > 0) {
+                    for (const conc of llmConclusions) {
+                        HyperMindEventMesh.getInstance().publish({
+                            type: "CONCLUSION_GENERATED",
+                            domain: CognitiveDomain.SYSTEM,
+                            priority: 1,
+                            source: "HRE-01",
+                            payload: {
+                                thoughtId: event.payload.thoughtId,
+                                conclusionId: uuidv4(),
+                                content: conc.content,
+                                explanation: { humanReadable: conc.explanation, reasoningTrace: [conc.explanation] },
+                                confidence: conc.confidence || 0.9,
+                                strategy: "OMNI_REASONING",
+                                executionTimeMs: session.executionMetrics?.executionTimeMs || 150,
+                                alternativeHypotheses: []
+                            }
+                        });
+                    }
+                } else if (session.finalConclusions && session.finalConclusions.length > 0) {
                     for (const conclusion of session.finalConclusions) {
                         HyperMindEventMesh.getInstance().publish({
                             type: "CONCLUSION_GENERATED",
@@ -188,7 +256,7 @@ export class HyperMindReasoningEngine implements ISpecialist {
                     });
                 }
             } catch (e) {
-                console.error("Reasoning execution failed", e);
+                console.error("Reasoning execution failed", e); fs.appendFileSync("hre_debug.log", "Error: " + e.stack + "\n");
             }
         }
     }
