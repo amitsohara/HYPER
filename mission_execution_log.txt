@@ -86,3 +86,4956 @@
   "goalName": "Mission Directive",
   "goalDescription": "fallback_trigger solve mystery."
 }
+
+
+--- LOGGER STARTED AT 2026-07-08T09:58:04.377Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:12:29.438Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:14:12.019Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:21:21.336Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:21:30.428Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:25:52.728Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:26:05.582Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:28:07.231Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:28:14.733Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:45:35.967Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:45:44.475Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:59:18.230Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:59:40.981Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T10:59:59.888Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T11:01:40.823Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T11:02:07.306Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T11:43:47.768Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T11:43:58.253Z ---
+[2026-07-08T11:46:08.293Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: fb326aec-b41c-45fd-bcba-96b4f0c8488f
+  Payload: {
+  "missionDirective": "CONTROL FLOOD WATER: ",
+  "context": {
+    "type": "USER_DIRECTIVE",
+    "description": "CONTROL FLOOD WATER: "
+  },
+  "entity": {
+    "name": "User Request",
+    "type": "MISSION_DIRECTIVE"
+  },
+  "additionalEntities": [
+    {
+      "id": "e1",
+      "name": "Nashik Road Junction",
+      "type": "INTERSECTION",
+      "properties": {
+        "status": "congested"
+      }
+    },
+    {
+      "id": "e2",
+      "name": "Main Road",
+      "type": "ROAD",
+      "properties": {
+        "lanes": 4
+      }
+    },
+    {
+      "id": "e3",
+      "name": "Vehicle 101",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 5,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e4",
+      "name": "Vehicle 102",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 0,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e5",
+      "name": "Signal A",
+      "type": "SIGNAL",
+      "properties": {
+        "state": "red",
+        "timer": 45
+      }
+    },
+    {
+      "id": "e6",
+      "name": "Pedestrian Flow",
+      "type": "PEDESTRIAN",
+      "properties": {
+        "density": "high"
+      }
+    },
+    {
+      "id": "e7",
+      "name": "Minor Accident",
+      "type": "ACCIDENT",
+      "properties": {
+        "severity": "low",
+        "blockingLanes": 1
+      }
+    },
+    {
+      "id": "e8",
+      "name": "Debris",
+      "type": "OBSTACLE",
+      "properties": {
+        "size": "small"
+      }
+    }
+  ]
+}
+[2026-07-08T11:46:08.293Z] [EVENT: GOAL_CREATED] (Source: HWME-01) ID: e0c7e947-9a6d-4220-8010-3bf039d2f492
+  Payload: {
+  "goalId": "513462f3-44cc-4ab3-9522-cfca3a156589",
+  "goalName": "Mission Directive",
+  "goalDescription": "CONTROL FLOOD WATER: "
+}
+[2026-07-08T11:46:08.293Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: 572dd675-e4bf-412b-8201-6a9d147acdc1
+  Payload: {
+  "timestamp": 1783511168293
+}
+[2026-07-08T11:46:08.298Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: b3acc5ba-6ca9-4e99-9221-af914fbf2aa1
+  Payload: {
+  "selected": [
+    "a936b846-eeaa-4030-88a0-cb79ecb316b3"
+  ],
+  "workingMemory": {
+    "activeGoals": [],
+    "activeWorldRegions": [
+      "world_region_1"
+    ],
+    "activeConcepts": [],
+    "capacity": 10,
+    "currentLoad": 1
+  }
+}
+[2026-07-08T11:46:08.297Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: e7b934bd-6017-41ad-b7aa-3e92c68db461
+  Payload: {
+  "plan": {
+    "id": "20fa33de-ae65-46a4-b4e7-68529e2c0128",
+    "goalId": "513462f3-44cc-4ab3-9522-cfca3a156589",
+    "version": 1,
+    "status": "READY",
+    "priority": 1,
+    "atomicTasks": {
+      "aba0af4b-b486-40f0-b5d3-b3dc4fd2cc4d": {
+        "id": "aba0af4b-b486-40f0-b5d3-b3dc4fd2cc4d",
+        "name": "Execute Mission Directive",
+        "description": "Apply UTILITY_PLANNER ",
+        "status": "PENDING",
+        "dependencies": [],
+        "preconditions": [],
+        "postconditions": [
+          "Goal resolved"
+        ],
+        "requiredSpecialists": [],
+        "estimatedDurationMs": 1500,
+        "metrics": {}
+      }
+    },
+    "resourceEstimate": {
+      "specialistsRequired": [
+        "GENERAL"
+      ],
+      "memoryUsage": 10,
+      "computationBudget": 5,
+      "executionTimeMs": 1500,
+      "parallelismOpportunities": 0
+    },
+    "riskAssessment": {
+      "failureProbability": 0.1,
+      "missingResources": [],
+      "dependencyRisks": [
+        "Task timeout"
+      ],
+      "uncertaintyScore": 0.2,
+      "cascadingFailuresScore": 0.1
+    },
+    "confidence": 0.7,
+    "explainability": "Generated via Expected Utility Maximization.",
+    "planningTrace": [
+      {
+        "timestamp": 1783511168296,
+        "action": "GENERATION",
+        "details": "Created plan using UTILITY_PLANNER."
+      },
+      {
+        "timestamp": 1783511168297,
+        "action": "EVALUATION",
+        "details": "Evaluated plan with score 0.46"
+      }
+    ],
+    "executionMetrics": {},
+    "researchTraceability": {
+      "hirqIds": [],
+      "tgpId": "",
+      "mrpId": ""
+    },
+    "metadata": {
+      "strategy": "UTILITY_PLANNER",
+      "usedExternalKnowledge": false
+    },
+    "createdAt": 1783511168296,
+    "updatedAt": 1783511168296,
+    "evaluation": {
+      "expectedUtility": 0.9363262533651836,
+      "riskScore": 0.1,
+      "confidenceScore": 0.7,
+      "complexityScore": 0.1,
+      "efficiencyScore": 0.4,
+      "noveltyScore": 0.5,
+      "constraintSatisfaction": 1,
+      "overallScore": 0.46453050134607343,
+      "explainability": "Score: 0.46. Utility: 0.94, Risk: 0.10."
+    },
+    "candidateRank": 1
+  },
+  "worldState": {
+    "entities": [
+      {
+        "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+        "name": "Nashik Road Junction",
+        "type": "INTERSECTION",
+        "properties": {
+          "status": "congested"
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+        "name": "Main Road",
+        "type": "ROAD",
+        "properties": {
+          "lanes": 4
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "8f130571-14a8-4764-8fa6-50608be89134",
+        "name": "Vehicle 101",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 5,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+        "name": "Vehicle 102",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 0,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+        "name": "Signal A",
+        "type": "SIGNAL",
+        "properties": {
+          "state": "red",
+          "timer": 45
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+        "name": "Pedestrian Flow",
+        "type": "PEDESTRIAN",
+        "properties": {
+          "density": "high"
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+        "name": "Minor Accident",
+        "type": "ACCIDENT",
+        "properties": {
+          "severity": "low",
+          "blockingLanes": 1
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+        "name": "Debris",
+        "type": "OBSTACLE",
+        "properties": {
+          "size": "small"
+        },
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      },
+      {
+        "name": "User Request",
+        "type": "MISSION_DIRECTIVE",
+        "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+        "version": 1,
+        "createdAt": 1783511168293,
+        "updatedAt": 1783511168293
+      }
+    ],
+    "relationships": [],
+    "context": {}
+  }
+}
+[2026-07-08T11:46:08.299Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: 9ca2f521-8c1a-459d-9592-30c3837870f9
+  Payload: {
+  "processed": true
+}
+[2026-07-08T11:46:30.013Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 6d20f720-5c54-428a-8439-b1cc262fc6d9
+  Payload: {
+  "selected": [
+    "8d69dd70-6f0c-4ab3-908a-e6c7c37215b5",
+    "a936b846-eeaa-4030-88a0-cb79ecb316b3"
+  ],
+  "workingMemory": {
+    "activeGoals": [],
+    "activeWorldRegions": [
+      "world_region_1"
+    ],
+    "activeConcepts": [
+      "concept_1"
+    ],
+    "capacity": 10,
+    "currentLoad": 2
+  }
+}
+[2026-07-08T11:46:08.300Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 73216476-7762-4ee5-ab6f-67b73741ba5e
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "summary": "Focused on Goal World region focus: world_region_1"
+}
+[2026-07-08T11:46:30.013Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: cb71caf3-199c-4afd-9508-e6d4426ed212
+  Payload: {
+  "planId": "20fa33de-ae65-46a4-b4e7-68529e2c0128",
+  "outcomes": [
+    {
+      "id": "9bc07d44-c1cc-4257-b297-b52f6acb1143",
+      "scenarioId": "482ad52a-0c1f-48e6-8dda-9ff79ee6e669",
+      "finalState": {
+        "id": "a6706259-9fe4-430e-b1a4-4619813f7258",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783511168301,
+        "state": {
+          "entities": [
+            {
+              "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "8f130571-14a8-4764-8fa6-50608be89134",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 99,
+        "risk": 1,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.99
+      },
+      "narrative": "The UTILITY_PLANNER effectively initiated an intervention at Nashik Road Junction. Signal A, which was red with a 45-second timer, was immediately optimized and switched to green. Concurrently, rapid response teams (implied by UTILITY_PLANNER's efficiency in a best-case scenario) cleared the Minor Accident, which was blocking 1 lane, and removed the small Debris. Vehicle 101 and Vehicle 102, previously stopped, began moving smoothly with increased speeds (e.g., to 25 and 20 respectively) as the path cleared. The high Pedestrian Flow was efficiently managed to allow continuous vehicle movement without incidents. As a result, the Nashik Road Junction transitioned from a 'congested' state to 'clear' within the estimated duration, successfully resolving the mission directive."
+    },
+    {
+      "id": "3263dddc-8464-479e-ad94-f83c36697c74",
+      "scenarioId": "14d8c81f-151e-4870-8aed-ceff096eae9e",
+      "finalState": {
+        "id": "a6706259-9fe4-430e-b1a4-4619813f7258",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783511168301,
+        "state": {
+          "entities": [
+            {
+              "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "8f130571-14a8-4764-8fa6-50608be89134",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 15,
+        "risk": 85,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.15
+      },
+      "narrative": "The UTILITY_PLANNER attempts to alleviate the congestion at Nashik Road Junction by optimizing Signal A's timing. However, the high pedestrian density significantly limits the ability to extend green light phases for vehicles without creating safety hazards. Although Signal A briefly cycles to green, the existing minor accident, which blocks one lane of Main Road, combined with the small debris, severely restricts traffic flow. Efforts to clear the accident and debris are hampered by the persistent congestion and resource limitations, resulting in minimal progress. Consequently, Vehicle 101 and Vehicle 102 remain largely stopped, unable to move past the junction. The overall congestion at Nashik Road Junction persists and potentially worsens due to the multiple unresolved issues, and the mission directive to resolve the situation is not achieved."
+    },
+    {
+      "id": "5014aaca-5f03-4ced-90fe-3cf43d22d2f7",
+      "scenarioId": "6ae5bbcf-48a9-4b15-a2ed-1e99da462b6f",
+      "finalState": {
+        "id": "a6706259-9fe4-430e-b1a4-4619813f7258",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783511168301,
+        "state": {
+          "entities": [
+            {
+              "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "8f130571-14a8-4764-8fa6-50608be89134",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+              "version": 1,
+              "createdAt": 1783511168293,
+              "updatedAt": 1783511168293
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 80,
+        "risk": 19.999999999999996,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.8
+      },
+      "narrative": "Simulated Average Case - 20fa33de-ae65-46a4-b4e7-68529e2c0128 completing with 80% probability."
+    }
+  ]
+}
+[2026-07-08T11:46:30.014Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 644de798-6b80-497a-85e8-58af89a30ef3
+  Payload: {
+  "thoughtId": "8f8906e1-a10b-4a24-a5e8-e125b3d55c5e",
+  "summary": "Focused on Goal Concept focus: concept_1"
+}
+[2026-07-08T11:46:40.052Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 0b4bb981-ea3e-4404-9e6d-da4f442e2b13
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "conclusionId": "76acafbf-a6b3-41c6-8526-1f5d786156e0",
+  "content": "[Knowledge graph traversal] World_region_1 has a diverse geography including coastal areas, mountainous terrains, and a significant river system.",
+  "explanation": {
+    "humanReadable": "Assuming access to a generalized knowledge graph for geopolitical regions, 'world_region_1' as a placeholder would link to common geographical and demographic attributes typically associated with a defined region, such as its topography and key natural features.",
+    "reasoningTrace": [
+      "Assuming access to a generalized knowledge graph for geopolitical regions, 'world_region_1' as a placeholder would link to common geographical and demographic attributes typically associated with a defined region, such as its topography and key natural features."
+    ]
+  },
+  "confidence": 0.9,
+  "strategy": "OMNI_REASONING",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:40.052Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 1acd81c2-6808-4fda-bd60-db98b2b75ec4
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "conclusionId": "a388d8c0-aba1-4fe1-846d-49981c2c6ed5",
+  "content": "[Inference] Resources, both human and material, are likely being allocated or prioritized for deployment within world_region_1.",
+  "explanation": {
+    "humanReadable": "The act of 'focusing' on a region within a 'Goal World' context logically implies that attention and subsequently tangible assets (resources) will be directed towards achieving the 'Goal' within that specific region. This is a direct deduction from the statement.",
+    "reasoningTrace": [
+      "The act of 'focusing' on a region within a 'Goal World' context logically implies that attention and subsequently tangible assets (resources) will be directed towards achieving the 'Goal' within that specific region. This is a direct deduction from the statement."
+    ]
+  },
+  "confidence": 0.95,
+  "strategy": "OMNI_REASONING",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:40.052Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 5d1511f2-5aac-4713-88c7-6adf19d8598f
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "conclusionId": "db6afdd2-1bf9-41ac-a6e9-e52fe0b980eb",
+  "content": "[Causal reasoning] The focus on world_region_1 is likely caused by a recent significant development or a strategic objective requiring immediate attention in that area.",
+  "explanation": {
+    "humanReadable": "A deliberate 'focus' on a specific region, especially within a 'Goal World' framework, is rarely arbitrary. It is usually a direct consequence of an event (e.g., crisis, opportunity, change) or a pre-defined strategic priority that has now become active, necessitating concentrated effort.",
+    "reasoningTrace": [
+      "A deliberate 'focus' on a specific region, especially within a 'Goal World' framework, is rarely arbitrary. It is usually a direct consequence of an event (e.g., crisis, opportunity, change) or a pre-defined strategic priority that has now become active, necessitating concentrated effort."
+    ]
+  },
+  "confidence": 0.85,
+  "strategy": "OMNI_REASONING",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:40.052Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: b9c4b055-5c0d-48d5-96ac-83f59e8fc729
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "conclusionId": "df798a7c-95f7-4d9b-87cc-a571b54d9528",
+  "content": "[Causal reasoning] An effect of focusing on world_region_1 will be an increase in data collection and intelligence gathering specific to that region.",
+  "explanation": {
+    "humanReadable": "To effectively achieve goals in a focused region, understanding its current state and dynamics is crucial. Therefore, an intensified focus would causally lead to efforts to acquire more information and intelligence to inform decision-making.",
+    "reasoningTrace": [
+      "To effectively achieve goals in a focused region, understanding its current state and dynamics is crucial. Therefore, an intensified focus would causally lead to efforts to acquire more information and intelligence to inform decision-making."
+    ]
+  },
+  "confidence": 0.9,
+  "strategy": "OMNI_REASONING",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:40.052Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 3557263a-0fa5-4474-90b5-6c0e4b0dcea1
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "conclusionId": "c9aef144-0682-4d94-94f9-eed3f338bc21",
+  "content": "[Abductive reasoning] The most probable reason for focusing on world_region_1 is that it represents a critical leverage point or a significant bottleneck for achieving overall 'Goal World' objectives.",
+  "explanation": {
+    "humanReadable": "Given the 'Goal World' context, the focus on a specific region suggests that this region holds disproportionate importance. Abductively, the simplest and most encompassing explanation is that progress or failure in this region will critically impact the broader goals, making it a priority to either exploit a strength or mitigate a weakness.",
+    "reasoningTrace": [
+      "Given the 'Goal World' context, the focus on a specific region suggests that this region holds disproportionate importance. Abductively, the simplest and most encompassing explanation is that progress or failure in this region will critically impact the broader goals, making it a priority to either exploit a strength or mitigate a weakness."
+    ]
+  },
+  "confidence": 0.8,
+  "strategy": "OMNI_REASONING",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:40.052Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: ec7a2c0f-0d9e-4888-98b9-81074410a79a
+  Payload: {
+  "thoughtId": "e5b36795-444d-4b77-8832-d9d9eaaa7c6d",
+  "conclusionId": "454e9b38-93c9-441e-8de4-5d94de8c1884",
+  "content": "[Commonsense reasoning] Sustained focus on world_region_1 implies a temporary or long-term reduction in active focus on other potential world regions.",
+  "explanation": {
+    "humanReadable": "Based on general human and organizational principles, resources and attention are finite. Prioritizing one area (world_region_1) inherently means that other areas will receive comparatively less direct focus, at least for the duration of this concentrated effort. This is an opportunity cost principle.",
+    "reasoningTrace": [
+      "Based on general human and organizational principles, resources and attention are finite. Prioritizing one area (world_region_1) inherently means that other areas will receive comparatively less direct focus, at least for the duration of this concentrated effort. This is an opportunity cost principle."
+    ]
+  },
+  "confidence": 0.95,
+  "strategy": "OMNI_REASONING",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:40.414Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: c4272f19-087b-4023-a8b6-8e5755b23d51
+  Payload: {
+  "thoughtId": "8f8906e1-a10b-4a24-a5e8-e125b3d55c5e",
+  "conclusionId": "de44cb93-ca7a-4c9a-a4ed-42903d1446b9",
+  "content": "Fallback conclusion generated (no rules met)",
+  "explanation": {
+    "humanReadable": "Fallback explanation"
+  },
+  "confidence": 0.5,
+  "strategy": "DEDUCTIVE",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:46:45.938Z] [EVENT: ACTION_AUTHORIZED] (Source: HDME) ID: 2d34da00-a432-4352-8ced-fae075cc8d1b
+  Payload: {
+  "decision": {
+    "id": "dec-d2da1028-ba61-435e-a8a5-28d313ac6714",
+    "context": {
+      "missionId": "sys-mission",
+      "worldStateSnapshot": {
+        "entities": [
+          {
+            "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+            "name": "Nashik Road Junction",
+            "type": "INTERSECTION",
+            "properties": {
+              "status": "congested"
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+            "name": "Main Road",
+            "type": "ROAD",
+            "properties": {
+              "lanes": 4
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "8f130571-14a8-4764-8fa6-50608be89134",
+            "name": "Vehicle 101",
+            "type": "VEHICLE",
+            "properties": {
+              "speed": 5,
+              "status": "stopped"
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+            "name": "Vehicle 102",
+            "type": "VEHICLE",
+            "properties": {
+              "speed": 0,
+              "status": "stopped"
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+            "name": "Signal A",
+            "type": "SIGNAL",
+            "properties": {
+              "state": "red",
+              "timer": 45
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+            "name": "Pedestrian Flow",
+            "type": "PEDESTRIAN",
+            "properties": {
+              "density": "high"
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+            "name": "Minor Accident",
+            "type": "ACCIDENT",
+            "properties": {
+              "severity": "low",
+              "blockingLanes": 1
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+            "name": "Debris",
+            "type": "OBSTACLE",
+            "properties": {
+              "size": "small"
+            },
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          },
+          {
+            "name": "User Request",
+            "type": "MISSION_DIRECTIVE",
+            "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+            "version": 1,
+            "createdAt": 1783511168293,
+            "updatedAt": 1783511168293
+          }
+        ],
+        "relationships": []
+      }
+    },
+    "options": [
+      {
+        "id": "opt-e099686f-1f27-4efd-877b-6253809241c5",
+        "planId": "20fa33de-ae65-46a4-b4e7-68529e2c0128",
+        "predictedOutcomes": [
+          {
+            "id": "9bc07d44-c1cc-4257-b297-b52f6acb1143",
+            "scenarioId": "482ad52a-0c1f-48e6-8dda-9ff79ee6e669",
+            "finalState": {
+              "id": "a6706259-9fe4-430e-b1a4-4619813f7258",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783511168301,
+              "state": {
+                "entities": [
+                  {
+                    "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "8f130571-14a8-4764-8fa6-50608be89134",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 99,
+              "risk": 1,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.99
+            },
+            "narrative": "The UTILITY_PLANNER effectively initiated an intervention at Nashik Road Junction. Signal A, which was red with a 45-second timer, was immediately optimized and switched to green. Concurrently, rapid response teams (implied by UTILITY_PLANNER's efficiency in a best-case scenario) cleared the Minor Accident, which was blocking 1 lane, and removed the small Debris. Vehicle 101 and Vehicle 102, previously stopped, began moving smoothly with increased speeds (e.g., to 25 and 20 respectively) as the path cleared. The high Pedestrian Flow was efficiently managed to allow continuous vehicle movement without incidents. As a result, the Nashik Road Junction transitioned from a 'congested' state to 'clear' within the estimated duration, successfully resolving the mission directive."
+          },
+          {
+            "id": "3263dddc-8464-479e-ad94-f83c36697c74",
+            "scenarioId": "14d8c81f-151e-4870-8aed-ceff096eae9e",
+            "finalState": {
+              "id": "a6706259-9fe4-430e-b1a4-4619813f7258",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783511168301,
+              "state": {
+                "entities": [
+                  {
+                    "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "8f130571-14a8-4764-8fa6-50608be89134",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 15,
+              "risk": 85,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.15
+            },
+            "narrative": "The UTILITY_PLANNER attempts to alleviate the congestion at Nashik Road Junction by optimizing Signal A's timing. However, the high pedestrian density significantly limits the ability to extend green light phases for vehicles without creating safety hazards. Although Signal A briefly cycles to green, the existing minor accident, which blocks one lane of Main Road, combined with the small debris, severely restricts traffic flow. Efforts to clear the accident and debris are hampered by the persistent congestion and resource limitations, resulting in minimal progress. Consequently, Vehicle 101 and Vehicle 102 remain largely stopped, unable to move past the junction. The overall congestion at Nashik Road Junction persists and potentially worsens due to the multiple unresolved issues, and the mission directive to resolve the situation is not achieved."
+          },
+          {
+            "id": "5014aaca-5f03-4ced-90fe-3cf43d22d2f7",
+            "scenarioId": "6ae5bbcf-48a9-4b15-a2ed-1e99da462b6f",
+            "finalState": {
+              "id": "a6706259-9fe4-430e-b1a4-4619813f7258",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783511168301,
+              "state": {
+                "entities": [
+                  {
+                    "id": "810a90f8-3c26-47c2-ae49-e19911d492e5",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "13298de4-db27-42c4-a6f3-1b1922749645",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "8f130571-14a8-4764-8fa6-50608be89134",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "a4d841ff-cb0e-477f-a443-f14c912dce6c",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "2b638d59-2e64-4028-aff9-a3f4efc7fc09",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "1884f2f2-4cd5-41b0-af5d-6960ef0ce47e",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "7423c27f-e028-42c8-9738-f5e5ad6ed819",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "id": "333b877f-70f2-4c8a-81cb-bf821886bc53",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "67a69719-60b8-4d8f-9e6c-9949d4e754bf",
+                    "version": 1,
+                    "createdAt": 1783511168293,
+                    "updatedAt": 1783511168293
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 80,
+              "risk": 19.999999999999996,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.8
+            },
+            "narrative": "Simulated Average Case - 20fa33de-ae65-46a4-b4e7-68529e2c0128 completing with 80% probability."
+          }
+        ],
+        "confidence": {
+          "score": 0.8,
+          "sources": [
+            {
+              "sourceId": "HSTE",
+              "confidence": 0.8
+            }
+          ]
+        },
+        "utilityScore": 0.15,
+        "riskScore": 0,
+        "policyPassed": true
+      }
+    ],
+    "status": "APPROVED",
+    "traceId": "trc-18ac89b9-f313-4991-a59c-2993b3e2abb1",
+    "timestamp": 1783511200054,
+    "authorizationReason": "This is the only option provided and has a risk score of 0, fulfilling the lowest risk criteria.",
+    "selectedOptionId": "opt-e099686f-1f27-4efd-877b-6253809241c5"
+  },
+  "planId": "20fa33de-ae65-46a4-b4e7-68529e2c0128"
+}
+[2026-07-08T11:46:45.939Z] [EVENT: ACTION_COMPLETED] (Source: HPAE_ACTION_MANAGER) ID: 765a8857-7fd2-45a0-86d1-e9caf63a3ca4
+  Payload: {
+  "action": {
+    "id": "9fbf7ea4-7b5d-4c1f-8e7c-c40e0ba7c45e",
+    "planId": "20fa33de-ae65-46a4-b4e7-68529e2c0128",
+    "skillId": "S-1",
+    "parameters": {},
+    "status": "COMPLETED",
+    "timestamp": 1783511205938
+  },
+  "feedback": {
+    "actionId": "9fbf7ea4-7b5d-4c1f-8e7c-c40e0ba7c45e",
+    "success": true,
+    "latencyMs": 10,
+    "reward": 1
+  }
+}
+[2026-07-08T11:46:45.939Z] [EVENT: ACTION_COMPLETED] (Source: HPAE) ID: 561fb98d-d53a-44a6-af7c-e19ed27bae14
+  Payload: {
+  "action": {
+    "id": "9fbf7ea4-7b5d-4c1f-8e7c-c40e0ba7c45e",
+    "planId": "20fa33de-ae65-46a4-b4e7-68529e2c0128",
+    "skillId": "S-1",
+    "parameters": {},
+    "status": "COMPLETED",
+    "timestamp": 1783511205938
+  }
+}
+[2026-07-08T11:46:45.939Z] [EVENT: MISSION_COMPLETED] (Source: HPAE) ID: 9b73dc36-7c90-4357-9e72-18e7a2e8949c
+  Payload: {
+  "missionId": "sys-mission"
+}
+[2026-07-08T11:46:45.940Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: ff848123-7248-48ef-8fec-98525384d0c6
+  Payload: {
+  "artifact": {
+    "id": "pat-0552aada-0f49-4716-84f4-9fce6c84c689",
+    "traceId": "trc-8cced48a-945c-4200-a0fe-3508e0d1245d",
+    "researchId": "res-8ad3a230-2fca-4b44-a4ef-10ff7183c528",
+    "type": "PATTERN",
+    "name": "Frequent Success Pattern",
+    "description": "Identified a common sequence leading to success.",
+    "evidence": [],
+    "confidence": 0.85,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511205940,
+    "provenance": "HLLE_PATTERN_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "patternType": "SUCCESS",
+    "frequency": 0
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: bcf58702-cc20-4066-8b38-8f7e54ae1cf1
+  Payload: {
+  "update": {
+    "id": "upd-d90d3bc4-5fc9-40b9-8fbd-01dd0ce838b1",
+    "traceId": "trc-8cced48a-945c-4200-a0fe-3508e0d1245d",
+    "researchId": "res-8ad3a230-2fca-4b44-a4ef-10ff7183c528",
+    "artifactId": "pat-0552aada-0f49-4716-84f4-9fce6c84c689",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "PATTERN",
+      "data": {
+        "id": "pat-0552aada-0f49-4716-84f4-9fce6c84c689",
+        "traceId": "trc-8cced48a-945c-4200-a0fe-3508e0d1245d",
+        "researchId": "res-8ad3a230-2fca-4b44-a4ef-10ff7183c528",
+        "type": "PATTERN",
+        "name": "Frequent Success Pattern",
+        "description": "Identified a common sequence leading to success.",
+        "evidence": [],
+        "confidence": 0.85,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511205940,
+        "provenance": "HLLE_PATTERN_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "patternType": "SUCCESS",
+        "frequency": 0
+      }
+    },
+    "timestamp": 1783511205940,
+    "confidence": 0.85,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: a90925fe-11d2-40dd-aea2-a77e8002605d
+  Payload: {
+  "artifact": {
+    "id": "heu-8d0775ff-f13e-4ed0-b291-5dbebd85c304",
+    "traceId": "trc-0022c930-9637-46d1-a0db-618fd0181fa8",
+    "researchId": "res-e56d7c16-1d7a-4807-8ae8-a56ae7ee9697",
+    "type": "HEURISTIC",
+    "name": "Traffic Density Heuristic",
+    "description": "If density is high, use adaptive signals.",
+    "evidence": [],
+    "confidence": 0.9,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511205940,
+    "provenance": "HLLE_HEURISTIC_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "preconditions": {
+      "density": "> 0.8"
+    },
+    "logic": "PREFER(AdaptiveSignals)",
+    "usageHistory": []
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 45cc3f08-b11c-4e66-bd76-186c201799a3
+  Payload: {
+  "update": {
+    "id": "upd-18ebb4b4-5bd0-43a3-9590-0fe3c9456cac",
+    "traceId": "trc-0022c930-9637-46d1-a0db-618fd0181fa8",
+    "researchId": "res-e56d7c16-1d7a-4807-8ae8-a56ae7ee9697",
+    "artifactId": "heu-8d0775ff-f13e-4ed0-b291-5dbebd85c304",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "HEURISTIC",
+      "data": {
+        "id": "heu-8d0775ff-f13e-4ed0-b291-5dbebd85c304",
+        "traceId": "trc-0022c930-9637-46d1-a0db-618fd0181fa8",
+        "researchId": "res-e56d7c16-1d7a-4807-8ae8-a56ae7ee9697",
+        "type": "HEURISTIC",
+        "name": "Traffic Density Heuristic",
+        "description": "If density is high, use adaptive signals.",
+        "evidence": [],
+        "confidence": 0.9,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511205940,
+        "provenance": "HLLE_HEURISTIC_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "preconditions": {
+          "density": "> 0.8"
+        },
+        "logic": "PREFER(AdaptiveSignals)",
+        "usageHistory": []
+      }
+    },
+    "timestamp": 1783511205940,
+    "confidence": 0.9,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: b0da342f-e036-41d2-b647-5f193a1e9d17
+  Payload: {
+  "artifact": {
+    "id": "skl-7b31b849-7e55-4e9f-88d3-a7746fe72a52",
+    "traceId": "trc-191de5c4-c2fa-4354-b305-63ec09225f7d",
+    "researchId": "res-b9593c8f-3216-4502-84a0-74a50c757237",
+    "type": "SKILL",
+    "name": "Analyze Traffic Scene",
+    "description": "Sequence: Capture -> Detect -> Estimate -> Update",
+    "evidence": [],
+    "confidence": 0.88,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511205940,
+    "provenance": "HLLE_SKILL_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "actionSequence": [
+      "CaptureScreen",
+      "DetectVehicles",
+      "EstimateDensity",
+      "UpdateWorldModel"
+    ],
+    "preconditions": {},
+    "expectedOutcomes": {}
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 9bb7494c-53bc-4d9e-94b2-cfe005c694fe
+  Payload: {
+  "update": {
+    "id": "upd-4bb2ddbd-d490-40c6-82b9-c82ecf777c9a",
+    "traceId": "trc-191de5c4-c2fa-4354-b305-63ec09225f7d",
+    "researchId": "res-b9593c8f-3216-4502-84a0-74a50c757237",
+    "artifactId": "skl-7b31b849-7e55-4e9f-88d3-a7746fe72a52",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "SKILL",
+      "data": {
+        "id": "skl-7b31b849-7e55-4e9f-88d3-a7746fe72a52",
+        "traceId": "trc-191de5c4-c2fa-4354-b305-63ec09225f7d",
+        "researchId": "res-b9593c8f-3216-4502-84a0-74a50c757237",
+        "type": "SKILL",
+        "name": "Analyze Traffic Scene",
+        "description": "Sequence: Capture -> Detect -> Estimate -> Update",
+        "evidence": [],
+        "confidence": 0.88,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511205940,
+        "provenance": "HLLE_SKILL_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "actionSequence": [
+          "CaptureScreen",
+          "DetectVehicles",
+          "EstimateDensity",
+          "UpdateWorldModel"
+        ],
+        "preconditions": {},
+        "expectedOutcomes": {}
+      }
+    },
+    "timestamp": 1783511205940,
+    "confidence": 0.88,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: b1176867-5c25-4c79-9a7a-986dbb026354
+  Payload: {
+  "artifact": {
+    "id": "str-862b2eda-f58a-4de5-8077-042234d04629",
+    "traceId": "trc-adf996a1-1bdd-4281-8cd7-501224fba75a",
+    "researchId": "res-9a731289-270f-4f47-8b08-b8b4fc8907b3",
+    "type": "STRATEGY",
+    "name": "Conservative Planning Strategy",
+    "description": "Produces robust plans with lower risk.",
+    "evidence": [],
+    "confidence": 0.92,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511205940,
+    "provenance": "HLLE_STRATEGY_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "successRate": 0.95,
+    "executionTime": 1200,
+    "resourceCost": 50,
+    "failureModes": [
+      "Resource Exhaustion"
+    ]
+  }
+}
+[2026-07-08T11:46:45.940Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: c63e9cbf-e7c4-4de8-b9bd-0f8f99dc4491
+  Payload: {
+  "update": {
+    "id": "upd-e9bee547-db78-4d09-bce8-255c813943ae",
+    "traceId": "trc-adf996a1-1bdd-4281-8cd7-501224fba75a",
+    "researchId": "res-9a731289-270f-4f47-8b08-b8b4fc8907b3",
+    "artifactId": "str-862b2eda-f58a-4de5-8077-042234d04629",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "STRATEGY",
+      "data": {
+        "id": "str-862b2eda-f58a-4de5-8077-042234d04629",
+        "traceId": "trc-adf996a1-1bdd-4281-8cd7-501224fba75a",
+        "researchId": "res-9a731289-270f-4f47-8b08-b8b4fc8907b3",
+        "type": "STRATEGY",
+        "name": "Conservative Planning Strategy",
+        "description": "Produces robust plans with lower risk.",
+        "evidence": [],
+        "confidence": 0.92,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511205940,
+        "provenance": "HLLE_STRATEGY_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "successRate": 0.95,
+        "executionTime": 1200,
+        "resourceCost": 50,
+        "failureModes": [
+          "Resource Exhaustion"
+        ]
+      }
+    },
+    "timestamp": 1783511205940,
+    "confidence": 0.92,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+
+
+--- LOGGER STARTED AT 2026-07-08T11:53:52.498Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T11:54:01.260Z ---
+[2026-07-08T11:58:21.525Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: b3d86543-68ef-4193-9f27-d247514ce0b2
+  Payload: {
+  "missionDirective": "CONTROL FLOOD WATER: ",
+  "context": {
+    "type": "USER_DIRECTIVE",
+    "description": "CONTROL FLOOD WATER: "
+  },
+  "entity": {
+    "name": "User Request",
+    "type": "MISSION_DIRECTIVE"
+  },
+  "additionalEntities": [
+    {
+      "id": "e1",
+      "name": "Nashik Road Junction",
+      "type": "INTERSECTION",
+      "properties": {
+        "status": "congested"
+      }
+    },
+    {
+      "id": "e2",
+      "name": "Main Road",
+      "type": "ROAD",
+      "properties": {
+        "lanes": 4
+      }
+    },
+    {
+      "id": "e3",
+      "name": "Vehicle 101",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 5,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e4",
+      "name": "Vehicle 102",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 0,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e5",
+      "name": "Signal A",
+      "type": "SIGNAL",
+      "properties": {
+        "state": "red",
+        "timer": 45
+      }
+    },
+    {
+      "id": "e6",
+      "name": "Pedestrian Flow",
+      "type": "PEDESTRIAN",
+      "properties": {
+        "density": "high"
+      }
+    },
+    {
+      "id": "e7",
+      "name": "Minor Accident",
+      "type": "ACCIDENT",
+      "properties": {
+        "severity": "low",
+        "blockingLanes": 1
+      }
+    },
+    {
+      "id": "e8",
+      "name": "Debris",
+      "type": "OBSTACLE",
+      "properties": {
+        "size": "small"
+      }
+    }
+  ]
+}
+[2026-07-08T11:58:21.525Z] [EVENT: GOAL_CREATED] (Source: HWME-01) ID: dc739f04-115b-417a-9587-78fbe46a16c4
+  Payload: {
+  "goalId": "97509adb-b5f6-4d60-91ba-6a48d8912fa0",
+  "goalName": "Mission Directive",
+  "goalDescription": "CONTROL FLOOD WATER: "
+}
+[2026-07-08T11:58:21.525Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: c17c915b-1fde-44a5-924c-5a00f1d9c31d
+  Payload: {
+  "timestamp": 1783511901525
+}
+[2026-07-08T11:58:21.530Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 6b017bea-e742-4c01-8178-cf27936a0dfe
+  Payload: {
+  "selected": [
+    "77670a55-114a-4b5a-84cd-619fc5bac96c"
+  ],
+  "workingMemory": {
+    "activeGoals": [],
+    "activeWorldRegions": [
+      "world_region_1"
+    ],
+    "activeConcepts": [],
+    "capacity": 10,
+    "currentLoad": 1
+  }
+}
+[2026-07-08T11:58:21.529Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: 6989b09d-4b64-497a-a750-cde4da05ce27
+  Payload: {
+  "plan": {
+    "id": "1cd53eca-7d34-4473-af83-9fa000f1ba2e",
+    "goalId": "97509adb-b5f6-4d60-91ba-6a48d8912fa0",
+    "version": 1,
+    "status": "READY",
+    "priority": 1,
+    "atomicTasks": {
+      "0974fabe-3616-4403-b13c-7b4242e66f98": {
+        "id": "0974fabe-3616-4403-b13c-7b4242e66f98",
+        "name": "Execute Mission Directive",
+        "description": "Apply CONSTRAINT_PLANNER ",
+        "status": "PENDING",
+        "dependencies": [],
+        "preconditions": [],
+        "postconditions": [
+          "Goal resolved"
+        ],
+        "requiredSpecialists": [],
+        "estimatedDurationMs": 1500,
+        "metrics": {}
+      }
+    },
+    "resourceEstimate": {
+      "specialistsRequired": [
+        "GENERAL"
+      ],
+      "memoryUsage": 10,
+      "computationBudget": 5,
+      "executionTimeMs": 1500,
+      "parallelismOpportunities": 0
+    },
+    "riskAssessment": {
+      "failureProbability": 0.1,
+      "missingResources": [],
+      "dependencyRisks": [
+        "Task timeout"
+      ],
+      "uncertaintyScore": 0.2,
+      "cascadingFailuresScore": 0.1
+    },
+    "confidence": 0.7,
+    "explainability": "Generated via Constraint Satisfaction.",
+    "planningTrace": [
+      {
+        "timestamp": 1783511901528,
+        "action": "GENERATION",
+        "details": "Created plan using CONSTRAINT_PLANNER."
+      },
+      {
+        "timestamp": 1783511901529,
+        "action": "EVALUATION",
+        "details": "Evaluated plan with score 0.45"
+      }
+    ],
+    "executionMetrics": {},
+    "researchTraceability": {
+      "hirqIds": [],
+      "tgpId": "",
+      "mrpId": ""
+    },
+    "metadata": {
+      "strategy": "CONSTRAINT_PLANNER",
+      "usedExternalKnowledge": false
+    },
+    "createdAt": 1783511901528,
+    "updatedAt": 1783511901528,
+    "evaluation": {
+      "expectedUtility": 0.9111223840008085,
+      "riskScore": 0.1,
+      "confidenceScore": 0.7,
+      "complexityScore": 0.1,
+      "efficiencyScore": 0.4,
+      "noveltyScore": 0.5,
+      "constraintSatisfaction": 1,
+      "overallScore": 0.45444895360032345,
+      "explainability": "Score: 0.45. Utility: 0.91, Risk: 0.10."
+    },
+    "candidateRank": 1
+  },
+  "worldState": {
+    "entities": [
+      {
+        "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+        "name": "Nashik Road Junction",
+        "type": "INTERSECTION",
+        "properties": {
+          "status": "congested"
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "b8378194-ad55-4981-868e-fa934895988c",
+        "name": "Main Road",
+        "type": "ROAD",
+        "properties": {
+          "lanes": 4
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+        "name": "Vehicle 101",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 5,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+        "name": "Vehicle 102",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 0,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+        "name": "Signal A",
+        "type": "SIGNAL",
+        "properties": {
+          "state": "red",
+          "timer": 45
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "275d9503-8a21-4794-8e52-27280e453d10",
+        "name": "Pedestrian Flow",
+        "type": "PEDESTRIAN",
+        "properties": {
+          "density": "high"
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+        "name": "Minor Accident",
+        "type": "ACCIDENT",
+        "properties": {
+          "severity": "low",
+          "blockingLanes": 1
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+        "name": "Debris",
+        "type": "OBSTACLE",
+        "properties": {
+          "size": "small"
+        },
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      },
+      {
+        "name": "User Request",
+        "type": "MISSION_DIRECTIVE",
+        "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+        "version": 1,
+        "createdAt": 1783511901525,
+        "updatedAt": 1783511901525
+      }
+    ],
+    "relationships": [],
+    "context": {}
+  }
+}
+[2026-07-08T11:58:21.530Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: 3a62d8f9-e4d6-4bad-ad94-03fa3b8f0ff4
+  Payload: {
+  "processed": true
+}
+[2026-07-08T11:58:22.276Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: c4b13593-a892-4a39-84dd-4ed200194e99
+  Payload: {
+  "selected": [
+    "841d3608-91ad-4ac4-af2b-4ab4f316168b",
+    "77670a55-114a-4b5a-84cd-619fc5bac96c"
+  ],
+  "workingMemory": {
+    "activeGoals": [],
+    "activeWorldRegions": [
+      "world_region_1"
+    ],
+    "activeConcepts": [
+      "concept_1"
+    ],
+    "capacity": 10,
+    "currentLoad": 2
+  }
+}
+[2026-07-08T11:58:21.531Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: e7d41bc9-0ce0-4e21-9ce6-74540615542f
+  Payload: {
+  "thoughtId": "5f222e95-6452-475e-a227-b35cbedbd6f9",
+  "summary": "Focused on Goal World region focus: world_region_1"
+}
+[2026-07-08T11:58:22.276Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: 3bc8f29b-34f7-48de-bd86-2d32272d2d65
+  Payload: {
+  "planId": "1cd53eca-7d34-4473-af83-9fa000f1ba2e",
+  "outcomes": [
+    {
+      "id": "1310daf0-8391-4964-bf73-269ffafa64dc",
+      "scenarioId": "0a4f50a7-4b20-4c3f-9b6c-3f6b5baa861f",
+      "finalState": {
+        "id": "3e5fa796-c36d-46c5-aecb-2ee726696f1c",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783511901531,
+        "state": {
+          "entities": [
+            {
+              "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b8378194-ad55-4981-868e-fa934895988c",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "275d9503-8a21-4794-8e52-27280e453d10",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 100,
+        "risk": 0,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 1
+      },
+      "narrative": "Simulated Best Case - 1cd53eca-7d34-4473-af83-9fa000f1ba2e completing with 100% probability."
+    },
+    {
+      "id": "a869427e-243e-4b33-b12e-21d028f67230",
+      "scenarioId": "d18b7de7-feb0-4c19-b0cb-02083cb04249",
+      "finalState": {
+        "id": "3e5fa796-c36d-46c5-aecb-2ee726696f1c",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783511901531,
+        "state": {
+          "entities": [
+            {
+              "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b8378194-ad55-4981-868e-fa934895988c",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "275d9503-8a21-4794-8e52-27280e453d10",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 40,
+        "risk": 60,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.4
+      },
+      "narrative": "Simulated Worst Case - 1cd53eca-7d34-4473-af83-9fa000f1ba2e completing with 40% probability."
+    },
+    {
+      "id": "c3c8d240-47bd-48b1-9b03-0a56601ef182",
+      "scenarioId": "265ee54b-6da9-4bd4-b67b-7d4002e8ef1f",
+      "finalState": {
+        "id": "3e5fa796-c36d-46c5-aecb-2ee726696f1c",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783511901531,
+        "state": {
+          "entities": [
+            {
+              "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b8378194-ad55-4981-868e-fa934895988c",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "275d9503-8a21-4794-8e52-27280e453d10",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+              "version": 1,
+              "createdAt": 1783511901525,
+              "updatedAt": 1783511901525
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 80,
+        "risk": 19.999999999999996,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.8
+      },
+      "narrative": "Simulated Average Case - 1cd53eca-7d34-4473-af83-9fa000f1ba2e completing with 80% probability."
+    }
+  ]
+}
+[2026-07-08T11:58:22.276Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 41506b89-d0a4-48a2-9b99-c6b8a4f0f326
+  Payload: {
+  "thoughtId": "fd0ca9e6-58f2-466e-a1b5-5795191fbfab",
+  "summary": "Focused on Goal Concept focus: concept_1"
+}
+[2026-07-08T11:58:22.593Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 38dd55b7-5c3c-4d14-ab67-babd4df0de70
+  Payload: {
+  "thoughtId": "5f222e95-6452-475e-a227-b35cbedbd6f9",
+  "conclusionId": "b478d169-e193-49cc-882e-0b2c5a27dd11",
+  "content": "Fallback conclusion generated (no rules met)",
+  "explanation": {
+    "humanReadable": "Fallback explanation"
+  },
+  "confidence": 0.5,
+  "strategy": "DEDUCTIVE",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:58:22.722Z] [EVENT: ACTION_AUTHORIZED] (Source: HDME) ID: c29a5e68-a42f-42fa-b2ec-12c208e2b2c2
+  Payload: {
+  "decision": {
+    "id": "dec-ec5a3d7f-4608-49c3-a2fb-7a9e3ff73c3d",
+    "context": {
+      "missionId": "sys-mission",
+      "worldStateSnapshot": {
+        "entities": [
+          {
+            "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+            "name": "Nashik Road Junction",
+            "type": "INTERSECTION",
+            "properties": {
+              "status": "congested"
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "b8378194-ad55-4981-868e-fa934895988c",
+            "name": "Main Road",
+            "type": "ROAD",
+            "properties": {
+              "lanes": 4
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+            "name": "Vehicle 101",
+            "type": "VEHICLE",
+            "properties": {
+              "speed": 5,
+              "status": "stopped"
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+            "name": "Vehicle 102",
+            "type": "VEHICLE",
+            "properties": {
+              "speed": 0,
+              "status": "stopped"
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+            "name": "Signal A",
+            "type": "SIGNAL",
+            "properties": {
+              "state": "red",
+              "timer": 45
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "275d9503-8a21-4794-8e52-27280e453d10",
+            "name": "Pedestrian Flow",
+            "type": "PEDESTRIAN",
+            "properties": {
+              "density": "high"
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+            "name": "Minor Accident",
+            "type": "ACCIDENT",
+            "properties": {
+              "severity": "low",
+              "blockingLanes": 1
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+            "name": "Debris",
+            "type": "OBSTACLE",
+            "properties": {
+              "size": "small"
+            },
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          },
+          {
+            "name": "User Request",
+            "type": "MISSION_DIRECTIVE",
+            "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+            "version": 1,
+            "createdAt": 1783511901525,
+            "updatedAt": 1783511901525
+          }
+        ],
+        "relationships": []
+      }
+    },
+    "options": [
+      {
+        "id": "opt-e55ba78a-e6b9-4b6d-aeab-39ae631c4652",
+        "planId": "1cd53eca-7d34-4473-af83-9fa000f1ba2e",
+        "predictedOutcomes": [
+          {
+            "id": "1310daf0-8391-4964-bf73-269ffafa64dc",
+            "scenarioId": "0a4f50a7-4b20-4c3f-9b6c-3f6b5baa861f",
+            "finalState": {
+              "id": "3e5fa796-c36d-46c5-aecb-2ee726696f1c",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783511901531,
+              "state": {
+                "entities": [
+                  {
+                    "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b8378194-ad55-4981-868e-fa934895988c",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "275d9503-8a21-4794-8e52-27280e453d10",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 100,
+              "risk": 0,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 1
+            },
+            "narrative": "Simulated Best Case - 1cd53eca-7d34-4473-af83-9fa000f1ba2e completing with 100% probability."
+          },
+          {
+            "id": "a869427e-243e-4b33-b12e-21d028f67230",
+            "scenarioId": "d18b7de7-feb0-4c19-b0cb-02083cb04249",
+            "finalState": {
+              "id": "3e5fa796-c36d-46c5-aecb-2ee726696f1c",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783511901531,
+              "state": {
+                "entities": [
+                  {
+                    "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b8378194-ad55-4981-868e-fa934895988c",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "275d9503-8a21-4794-8e52-27280e453d10",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 40,
+              "risk": 60,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.4
+            },
+            "narrative": "Simulated Worst Case - 1cd53eca-7d34-4473-af83-9fa000f1ba2e completing with 40% probability."
+          },
+          {
+            "id": "c3c8d240-47bd-48b1-9b03-0a56601ef182",
+            "scenarioId": "265ee54b-6da9-4bd4-b67b-7d4002e8ef1f",
+            "finalState": {
+              "id": "3e5fa796-c36d-46c5-aecb-2ee726696f1c",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783511901531,
+              "state": {
+                "entities": [
+                  {
+                    "id": "902400fe-67b8-4353-921f-bd4312871d1c",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b8378194-ad55-4981-868e-fa934895988c",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b096ae46-5558-4ee9-81b4-029f4f39b5ad",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "26dda9a5-6a5e-491f-918d-1fe4c6382fe5",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "b624e177-07e9-4d95-bc14-1115add94b40",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "275d9503-8a21-4794-8e52-27280e453d10",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "9c67e4fb-7a5e-44c6-90c9-f7de3070ba65",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "id": "872ecdcb-97f5-4a5e-a333-e094c9709e35",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "fc00d827-3c21-4ba2-9bcd-d58168da2fb4",
+                    "version": 1,
+                    "createdAt": 1783511901525,
+                    "updatedAt": 1783511901525
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 80,
+              "risk": 19.999999999999996,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.8
+            },
+            "narrative": "Simulated Average Case - 1cd53eca-7d34-4473-af83-9fa000f1ba2e completing with 80% probability."
+          }
+        ],
+        "confidence": {
+          "score": 0.8,
+          "sources": [
+            {
+              "sourceId": "HSTE",
+              "confidence": 0.8
+            }
+          ]
+        },
+        "utilityScore": 0.15,
+        "riskScore": 0,
+        "policyPassed": true
+      }
+    ],
+    "status": "APPROVED",
+    "traceId": "trc-14b435c3-01f7-4966-b57c-7a253a06388c",
+    "timestamp": 1783511902609,
+    "authorizationReason": "Selected by Fallback (HILA provided invalid ID or non-JSON)",
+    "selectedOptionId": "opt-e55ba78a-e6b9-4b6d-aeab-39ae631c4652"
+  },
+  "planId": "1cd53eca-7d34-4473-af83-9fa000f1ba2e"
+}
+[2026-07-08T11:58:22.830Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: ac2adbf3-5375-4cd6-bd50-1e3f6c739f26
+  Payload: {
+  "thoughtId": "fd0ca9e6-58f2-466e-a1b5-5795191fbfab",
+  "conclusionId": "1e582957-955e-4c7d-bb48-554f01772577",
+  "content": "Fallback conclusion generated (no rules met)",
+  "explanation": {
+    "humanReadable": "Fallback explanation"
+  },
+  "confidence": 0.5,
+  "strategy": "DEDUCTIVE",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T11:58:22.833Z] [EVENT: ACTION_COMPLETED] (Source: HPAE_ACTION_MANAGER) ID: 99ca6aa4-3594-4f17-8d30-077abed79c0a
+  Payload: {
+  "action": {
+    "id": "13559d83-4d51-426b-9e08-c2ef4cc0b6c3",
+    "planId": "1cd53eca-7d34-4473-af83-9fa000f1ba2e",
+    "skillId": "S-1",
+    "parameters": {},
+    "status": "COMPLETED",
+    "timestamp": 1783511902832
+  },
+  "feedback": {
+    "actionId": "13559d83-4d51-426b-9e08-c2ef4cc0b6c3",
+    "success": true,
+    "latencyMs": 10,
+    "reward": 1
+  }
+}
+[2026-07-08T11:58:22.833Z] [EVENT: ACTION_COMPLETED] (Source: HPAE) ID: 403a4102-f0e6-4e25-93d0-1c2ee8929736
+  Payload: {
+  "action": {
+    "id": "13559d83-4d51-426b-9e08-c2ef4cc0b6c3",
+    "planId": "1cd53eca-7d34-4473-af83-9fa000f1ba2e",
+    "skillId": "S-1",
+    "parameters": {},
+    "status": "COMPLETED",
+    "timestamp": 1783511902832
+  }
+}
+[2026-07-08T11:58:22.833Z] [EVENT: MISSION_COMPLETED] (Source: HPAE) ID: 432bd89a-6eab-4628-a4c7-090d66c6d6d2
+  Payload: {
+  "missionId": "sys-mission"
+}
+[2026-07-08T11:58:22.835Z] [EVENT: MISSION_RESULT_READY] (Source: HMRC) ID: 1831a3e2-cf2f-4b6f-a841-c8820421f214
+  Payload: {
+  "result": {
+    "missionId": "sys-mission",
+    "directive": "Optimize heavy traffic at Nashik Road Junction.",
+    "status": "SUCCESS",
+    "confidence": 0.94,
+    "score": 92,
+    "durationMs": 151000,
+    "objective": "Reduce congestion.",
+    "outcome": "Traffic congestion reduced by an estimated 34%.",
+    "rootCauses": [
+      "Poor signal timing",
+      "Illegal parking",
+      "Pedestrian crossing bottlenecks"
+    ],
+    "unexpectedFindings": [
+      "High delivery truck density",
+      "School peak-hour congestion"
+    ],
+    "recommendations": [
+      {
+        "id": "r1",
+        "priority": 1,
+        "description": "Increase green phase by 18 seconds.",
+        "expectedImprovement": "34%",
+        "estimatedCost": "₹12 lakh",
+        "implementationDifficulty": "Medium"
+      },
+      {
+        "id": "r2",
+        "priority": 2,
+        "description": "Restrict roadside parking.",
+        "expectedImprovement": "15%",
+        "estimatedCost": "₹2 lakh",
+        "implementationDifficulty": "Low"
+      }
+    ],
+    "evidence": [
+      {
+        "source": "Camera",
+        "description": "Visual tracking of intersection",
+        "confidence": 0.96
+      },
+      {
+        "source": "Simulation",
+        "description": "Traffic throughput analysis",
+        "confidence": 0.92
+      }
+    ],
+    "simulationComparison": [
+      {
+        "name": "Current",
+        "metrics": "8.4 min delay",
+        "selected": false
+      },
+      {
+        "name": "Scenario B",
+        "metrics": "4.8 min delay",
+        "selected": true
+      }
+    ],
+    "cognitiveReasoningSummary": "HyperMind determined that congestion is primarily caused by inefficient signal timing combined with roadside parking and pedestrian interference. Simulations indicate that Scenario B provides the highest throughput while maintaining safety.",
+    "confidenceBreakdown": {
+      "perception": 0.96,
+      "worldModel": 0.93,
+      "reasoning": 0.91,
+      "planning": 0.94,
+      "simulation": 0.92,
+      "decision": 0.95,
+      "execution": 0.9,
+      "learning": 0.89,
+      "overall": 0.94
+    },
+    "timeline": [
+      {
+        "id": "t1",
+        "event": "Mission Created",
+        "timestamp": 1783511752835
+      },
+      {
+        "id": "t2",
+        "event": "Observation Complete",
+        "timestamp": 1783511762835
+      },
+      {
+        "id": "t3",
+        "event": "Mission Closed",
+        "timestamp": 1783511902835
+      }
+    ],
+    "timestamp": 1783511902835
+  }
+}
+[2026-07-08T11:58:22.834Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: 878effa6-6098-486f-aede-1296864b65b6
+  Payload: {
+  "artifact": {
+    "id": "pat-81f66a85-11dc-4a11-b3fa-8ba53a751337",
+    "traceId": "trc-48609a40-8a18-49e8-a3b5-8418a5ed3e45",
+    "researchId": "res-13c033da-481b-429d-9d16-d7d57db95387",
+    "type": "PATTERN",
+    "name": "Frequent Success Pattern",
+    "description": "Identified a common sequence leading to success.",
+    "evidence": [],
+    "confidence": 0.85,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511902834,
+    "provenance": "HLLE_PATTERN_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "patternType": "SUCCESS",
+    "frequency": 0
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 6621de30-2b63-4b53-9f82-644a95761c48
+  Payload: {
+  "update": {
+    "id": "upd-f4230d97-56ff-427a-b3f7-f817315b89e5",
+    "traceId": "trc-48609a40-8a18-49e8-a3b5-8418a5ed3e45",
+    "researchId": "res-13c033da-481b-429d-9d16-d7d57db95387",
+    "artifactId": "pat-81f66a85-11dc-4a11-b3fa-8ba53a751337",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "PATTERN",
+      "data": {
+        "id": "pat-81f66a85-11dc-4a11-b3fa-8ba53a751337",
+        "traceId": "trc-48609a40-8a18-49e8-a3b5-8418a5ed3e45",
+        "researchId": "res-13c033da-481b-429d-9d16-d7d57db95387",
+        "type": "PATTERN",
+        "name": "Frequent Success Pattern",
+        "description": "Identified a common sequence leading to success.",
+        "evidence": [],
+        "confidence": 0.85,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511902834,
+        "provenance": "HLLE_PATTERN_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "patternType": "SUCCESS",
+        "frequency": 0
+      }
+    },
+    "timestamp": 1783511902835,
+    "confidence": 0.85,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: 0d077659-adaa-42e8-a435-74fe9811979d
+  Payload: {
+  "artifact": {
+    "id": "heu-7fa91575-8d9b-4657-a6ee-e66db32c5fec",
+    "traceId": "trc-cd4c2545-6cac-4e28-8735-301d9cdd8042",
+    "researchId": "res-aa1c2ad3-d328-4f63-98df-8ae7e8eee31f",
+    "type": "HEURISTIC",
+    "name": "Traffic Density Heuristic",
+    "description": "If density is high, use adaptive signals.",
+    "evidence": [],
+    "confidence": 0.9,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511902834,
+    "provenance": "HLLE_HEURISTIC_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "preconditions": {
+      "density": "> 0.8"
+    },
+    "logic": "PREFER(AdaptiveSignals)",
+    "usageHistory": []
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 32c6befa-b0a8-4550-bae1-b78f95cab188
+  Payload: {
+  "update": {
+    "id": "upd-f5f45626-1b90-43a5-a734-a67a8b4763e9",
+    "traceId": "trc-cd4c2545-6cac-4e28-8735-301d9cdd8042",
+    "researchId": "res-aa1c2ad3-d328-4f63-98df-8ae7e8eee31f",
+    "artifactId": "heu-7fa91575-8d9b-4657-a6ee-e66db32c5fec",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "HEURISTIC",
+      "data": {
+        "id": "heu-7fa91575-8d9b-4657-a6ee-e66db32c5fec",
+        "traceId": "trc-cd4c2545-6cac-4e28-8735-301d9cdd8042",
+        "researchId": "res-aa1c2ad3-d328-4f63-98df-8ae7e8eee31f",
+        "type": "HEURISTIC",
+        "name": "Traffic Density Heuristic",
+        "description": "If density is high, use adaptive signals.",
+        "evidence": [],
+        "confidence": 0.9,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511902834,
+        "provenance": "HLLE_HEURISTIC_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "preconditions": {
+          "density": "> 0.8"
+        },
+        "logic": "PREFER(AdaptiveSignals)",
+        "usageHistory": []
+      }
+    },
+    "timestamp": 1783511902835,
+    "confidence": 0.9,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: 8fdb281b-3e11-4ea3-b29c-301ccf14e94a
+  Payload: {
+  "artifact": {
+    "id": "skl-4b5c2daf-dc41-4d4e-8ac9-f05b36f74b89",
+    "traceId": "trc-1c748cbb-a8a6-41f0-8666-d5281d0e766d",
+    "researchId": "res-9a417965-00e0-4704-a5a3-2c46f427d071",
+    "type": "SKILL",
+    "name": "Analyze Traffic Scene",
+    "description": "Sequence: Capture -> Detect -> Estimate -> Update",
+    "evidence": [],
+    "confidence": 0.88,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511902834,
+    "provenance": "HLLE_SKILL_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "actionSequence": [
+      "CaptureScreen",
+      "DetectVehicles",
+      "EstimateDensity",
+      "UpdateWorldModel"
+    ],
+    "preconditions": {},
+    "expectedOutcomes": {}
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 6fbdfe7c-96d6-4770-a790-e087b7885c5a
+  Payload: {
+  "update": {
+    "id": "upd-ef2a4013-5658-4eda-8c92-d735cca87f4c",
+    "traceId": "trc-1c748cbb-a8a6-41f0-8666-d5281d0e766d",
+    "researchId": "res-9a417965-00e0-4704-a5a3-2c46f427d071",
+    "artifactId": "skl-4b5c2daf-dc41-4d4e-8ac9-f05b36f74b89",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "SKILL",
+      "data": {
+        "id": "skl-4b5c2daf-dc41-4d4e-8ac9-f05b36f74b89",
+        "traceId": "trc-1c748cbb-a8a6-41f0-8666-d5281d0e766d",
+        "researchId": "res-9a417965-00e0-4704-a5a3-2c46f427d071",
+        "type": "SKILL",
+        "name": "Analyze Traffic Scene",
+        "description": "Sequence: Capture -> Detect -> Estimate -> Update",
+        "evidence": [],
+        "confidence": 0.88,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511902834,
+        "provenance": "HLLE_SKILL_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "actionSequence": [
+          "CaptureScreen",
+          "DetectVehicles",
+          "EstimateDensity",
+          "UpdateWorldModel"
+        ],
+        "preconditions": {},
+        "expectedOutcomes": {}
+      }
+    },
+    "timestamp": 1783511902835,
+    "confidence": 0.88,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: c4e12694-2e2f-44ee-9c2f-b24762f8b5c2
+  Payload: {
+  "artifact": {
+    "id": "str-a2ab43bd-c7d2-4583-8ba3-d43d5a75095d",
+    "traceId": "trc-b15e9a3c-fb5e-45e6-8d2b-d2965341a42d",
+    "researchId": "res-f79566ae-a404-46ee-9180-379eea299b8c",
+    "type": "STRATEGY",
+    "name": "Conservative Planning Strategy",
+    "description": "Produces robust plans with lower risk.",
+    "evidence": [],
+    "confidence": 0.92,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783511902834,
+    "provenance": "HLLE_STRATEGY_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "successRate": 0.95,
+    "executionTime": 1200,
+    "resourceCost": 50,
+    "failureModes": [
+      "Resource Exhaustion"
+    ]
+  }
+}
+[2026-07-08T11:58:22.835Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 40f81c2a-f71f-4bbc-83f3-206aeeaf16e0
+  Payload: {
+  "update": {
+    "id": "upd-6d75d28f-c9d4-4a5f-bda3-944a9f4353ad",
+    "traceId": "trc-b15e9a3c-fb5e-45e6-8d2b-d2965341a42d",
+    "researchId": "res-f79566ae-a404-46ee-9180-379eea299b8c",
+    "artifactId": "str-a2ab43bd-c7d2-4583-8ba3-d43d5a75095d",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "STRATEGY",
+      "data": {
+        "id": "str-a2ab43bd-c7d2-4583-8ba3-d43d5a75095d",
+        "traceId": "trc-b15e9a3c-fb5e-45e6-8d2b-d2965341a42d",
+        "researchId": "res-f79566ae-a404-46ee-9180-379eea299b8c",
+        "type": "STRATEGY",
+        "name": "Conservative Planning Strategy",
+        "description": "Produces robust plans with lower risk.",
+        "evidence": [],
+        "confidence": 0.92,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783511902834,
+        "provenance": "HLLE_STRATEGY_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "successRate": 0.95,
+        "executionTime": 1200,
+        "resourceCost": 50,
+        "failureModes": [
+          "Resource Exhaustion"
+        ]
+      }
+    },
+    "timestamp": 1783511902835,
+    "confidence": 0.92,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+
+
+--- LOGGER STARTED AT 2026-07-08T12:02:58.576Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:06:26.622Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:09:55.734Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:11:23.368Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:12:14.824Z ---
+[2026-07-08T12:12:56.195Z] [EVENT: WORLD_OBSERVATION] (Source: MissionControlUI) ID: 73aec373-e72f-410f-bd86-12d3bfcbfa2f
+  Payload: {
+  "missionDirective": "CONTROL FLOOD WATER: ",
+  "context": {
+    "type": "USER_DIRECTIVE",
+    "description": "CONTROL FLOOD WATER: "
+  },
+  "entity": {
+    "name": "User Request",
+    "type": "MISSION_DIRECTIVE"
+  },
+  "additionalEntities": [
+    {
+      "id": "e1",
+      "name": "Nashik Road Junction",
+      "type": "INTERSECTION",
+      "properties": {
+        "status": "congested"
+      }
+    },
+    {
+      "id": "e2",
+      "name": "Main Road",
+      "type": "ROAD",
+      "properties": {
+        "lanes": 4
+      }
+    },
+    {
+      "id": "e3",
+      "name": "Vehicle 101",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 5,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e4",
+      "name": "Vehicle 102",
+      "type": "VEHICLE",
+      "properties": {
+        "speed": 0,
+        "status": "stopped"
+      }
+    },
+    {
+      "id": "e5",
+      "name": "Signal A",
+      "type": "SIGNAL",
+      "properties": {
+        "state": "red",
+        "timer": 45
+      }
+    },
+    {
+      "id": "e6",
+      "name": "Pedestrian Flow",
+      "type": "PEDESTRIAN",
+      "properties": {
+        "density": "high"
+      }
+    },
+    {
+      "id": "e7",
+      "name": "Minor Accident",
+      "type": "ACCIDENT",
+      "properties": {
+        "severity": "low",
+        "blockingLanes": 1
+      }
+    },
+    {
+      "id": "e8",
+      "name": "Debris",
+      "type": "OBSTACLE",
+      "properties": {
+        "size": "small"
+      }
+    }
+  ]
+}
+[2026-07-08T12:12:56.195Z] [EVENT: GOAL_CREATED] (Source: HWME-01) ID: 8daa7fea-859b-4bc5-81f8-be1fc4bcd8b7
+  Payload: {
+  "goalId": "75f980fc-3fc3-41fe-bc8b-ff1213e487be",
+  "goalName": "Mission Directive",
+  "goalDescription": "CONTROL FLOOD WATER: "
+}
+[2026-07-08T12:12:56.196Z] [EVENT: WORLD_MODEL_UPDATED] (Source: HWME-01) ID: 79bbc3aa-192f-4988-8f58-552abe51204f
+  Payload: {
+  "timestamp": 1783512776195
+}
+[2026-07-08T12:12:56.200Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 2b981672-2f8d-4e77-b384-84ad269aa839
+  Payload: {
+  "selected": [
+    "8e63178e-89b5-4d48-9b31-8c142c41b919"
+  ],
+  "workingMemory": {
+    "activeGoals": [],
+    "activeWorldRegions": [
+      "world_region_1"
+    ],
+    "activeConcepts": [],
+    "capacity": 10,
+    "currentLoad": 1
+  }
+}
+[2026-07-08T12:12:56.199Z] [EVENT: PLAN_CREATED] (Source: HPE) ID: 7c70a69c-6ab7-41c6-a708-2a7497c5b193
+  Payload: {
+  "plan": {
+    "id": "0c81e313-3376-4536-bb59-4d733c873828",
+    "goalId": "75f980fc-3fc3-41fe-bc8b-ff1213e487be",
+    "version": 1,
+    "status": "READY",
+    "priority": 1,
+    "atomicTasks": {
+      "57f4e9ba-c909-46dc-934f-4b2dac2e14c4": {
+        "id": "57f4e9ba-c909-46dc-934f-4b2dac2e14c4",
+        "name": "Execute Mission Directive",
+        "description": "Apply UTILITY_PLANNER ",
+        "status": "PENDING",
+        "dependencies": [],
+        "preconditions": [],
+        "postconditions": [
+          "Goal resolved"
+        ],
+        "requiredSpecialists": [],
+        "estimatedDurationMs": 1500,
+        "metrics": {}
+      }
+    },
+    "resourceEstimate": {
+      "specialistsRequired": [
+        "GENERAL"
+      ],
+      "memoryUsage": 10,
+      "computationBudget": 5,
+      "executionTimeMs": 1500,
+      "parallelismOpportunities": 0
+    },
+    "riskAssessment": {
+      "failureProbability": 0.1,
+      "missingResources": [],
+      "dependencyRisks": [
+        "Task timeout"
+      ],
+      "uncertaintyScore": 0.2,
+      "cascadingFailuresScore": 0.1
+    },
+    "confidence": 0.7,
+    "explainability": "Generated via Expected Utility Maximization.",
+    "planningTrace": [
+      {
+        "timestamp": 1783512776199,
+        "action": "GENERATION",
+        "details": "Created plan using UTILITY_PLANNER."
+      },
+      {
+        "timestamp": 1783512776199,
+        "action": "EVALUATION",
+        "details": "Evaluated plan with score 0.49"
+      }
+    ],
+    "executionMetrics": {},
+    "researchTraceability": {
+      "hirqIds": [],
+      "tgpId": "",
+      "mrpId": ""
+    },
+    "metadata": {
+      "strategy": "UTILITY_PLANNER",
+      "usedExternalKnowledge": false
+    },
+    "createdAt": 1783512776199,
+    "updatedAt": 1783512776199,
+    "evaluation": {
+      "expectedUtility": 0.9937237895857174,
+      "riskScore": 0.1,
+      "confidenceScore": 0.7,
+      "complexityScore": 0.1,
+      "efficiencyScore": 0.4,
+      "noveltyScore": 0.5,
+      "constraintSatisfaction": 1,
+      "overallScore": 0.4874895158342869,
+      "explainability": "Score: 0.49. Utility: 0.99, Risk: 0.10."
+    },
+    "candidateRank": 1
+  },
+  "worldState": {
+    "entities": [
+      {
+        "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+        "name": "Nashik Road Junction",
+        "type": "INTERSECTION",
+        "properties": {
+          "status": "congested"
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+        "name": "Main Road",
+        "type": "ROAD",
+        "properties": {
+          "lanes": 4
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+        "name": "Vehicle 101",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 5,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+        "name": "Vehicle 102",
+        "type": "VEHICLE",
+        "properties": {
+          "speed": 0,
+          "status": "stopped"
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+        "name": "Signal A",
+        "type": "SIGNAL",
+        "properties": {
+          "state": "red",
+          "timer": 45
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "cc114254-9273-427b-b6b5-b3982416033b",
+        "name": "Pedestrian Flow",
+        "type": "PEDESTRIAN",
+        "properties": {
+          "density": "high"
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+        "name": "Minor Accident",
+        "type": "ACCIDENT",
+        "properties": {
+          "severity": "low",
+          "blockingLanes": 1
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+        "name": "Debris",
+        "type": "OBSTACLE",
+        "properties": {
+          "size": "small"
+        },
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      },
+      {
+        "name": "User Request",
+        "type": "MISSION_DIRECTIVE",
+        "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+        "version": 1,
+        "createdAt": 1783512776195,
+        "updatedAt": 1783512776195
+      }
+    ],
+    "relationships": [],
+    "context": {}
+  }
+}
+[2026-07-08T12:12:56.200Z] [EVENT: CONCEPT_DISCOVERED] (Source: HCCE-01) ID: a99e0fd7-cadd-4952-89cb-79ad4a50116f
+  Payload: {
+  "processed": true
+}
+[2026-07-08T12:12:56.749Z] [EVENT: ATTENTION_SHIFTED] (Source: HEAM-01) ID: 2957df05-f780-426c-bde7-5f17b38e08b9
+  Payload: {
+  "selected": [
+    "9cf72594-4529-4a60-ba9f-c41c91060b77",
+    "8e63178e-89b5-4d48-9b31-8c142c41b919"
+  ],
+  "workingMemory": {
+    "activeGoals": [],
+    "activeWorldRegions": [
+      "world_region_1"
+    ],
+    "activeConcepts": [
+      "concept_1"
+    ],
+    "capacity": 10,
+    "currentLoad": 2
+  }
+}
+[2026-07-08T12:12:56.203Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: d97b1666-7ef5-468b-8eb1-4c21ded4c356
+  Payload: {
+  "thoughtId": "6ae2fad9-e9f2-4d04-b749-0130e03e9210",
+  "summary": "Focused on Goal World region focus: world_region_1"
+}
+[2026-07-08T12:12:56.749Z] [EVENT: PLAN_EVALUATED] (Source: HSTE) ID: 51e5deec-2978-4964-889a-c526b4150765
+  Payload: {
+  "planId": "0c81e313-3376-4536-bb59-4d733c873828",
+  "outcomes": [
+    {
+      "id": "a76b4bc6-6b9b-41aa-9f9c-2a8ed802b231",
+      "scenarioId": "70a147ea-55a2-4e0a-ab75-bac002e5c7ff",
+      "finalState": {
+        "id": "31167e8a-0510-4b34-a8cc-91f947127500",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783512776204,
+        "state": {
+          "entities": [
+            {
+              "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "cc114254-9273-427b-b6b5-b3982416033b",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 100,
+        "risk": 0,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 1
+      },
+      "narrative": "Simulated Best Case - 0c81e313-3376-4536-bb59-4d733c873828 completing with 100% probability."
+    },
+    {
+      "id": "7aab5c2c-f4fb-44d4-b037-cc99fc351805",
+      "scenarioId": "6801686f-f36a-47ca-ae92-e50140459b4a",
+      "finalState": {
+        "id": "31167e8a-0510-4b34-a8cc-91f947127500",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783512776204,
+        "state": {
+          "entities": [
+            {
+              "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "cc114254-9273-427b-b6b5-b3982416033b",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 40,
+        "risk": 60,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.4
+      },
+      "narrative": "Simulated Worst Case - 0c81e313-3376-4536-bb59-4d733c873828 completing with 40% probability."
+    },
+    {
+      "id": "1342f6c3-ae07-471c-864c-308e543d8d3b",
+      "scenarioId": "18e6f32b-9189-47b5-b31c-1d354ee0a7f0",
+      "finalState": {
+        "id": "31167e8a-0510-4b34-a8cc-91f947127500",
+        "parentWorldId": "CANONICAL",
+        "version": 1,
+        "timestamp": 1783512776204,
+        "state": {
+          "entities": [
+            {
+              "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+              "name": "Nashik Road Junction",
+              "type": "INTERSECTION",
+              "properties": {
+                "status": "congested"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+              "name": "Main Road",
+              "type": "ROAD",
+              "properties": {
+                "lanes": 4
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+              "name": "Vehicle 101",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 5,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+              "name": "Vehicle 102",
+              "type": "VEHICLE",
+              "properties": {
+                "speed": 0,
+                "status": "stopped"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+              "name": "Signal A",
+              "type": "SIGNAL",
+              "properties": {
+                "state": "red",
+                "timer": 45
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "cc114254-9273-427b-b6b5-b3982416033b",
+              "name": "Pedestrian Flow",
+              "type": "PEDESTRIAN",
+              "properties": {
+                "density": "high"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+              "name": "Minor Accident",
+              "type": "ACCIDENT",
+              "properties": {
+                "severity": "low",
+                "blockingLanes": 1
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+              "name": "Debris",
+              "type": "OBSTACLE",
+              "properties": {
+                "size": "small"
+              },
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            },
+            {
+              "name": "User Request",
+              "type": "MISSION_DIRECTIVE",
+              "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+              "version": 1,
+              "createdAt": 1783512776195,
+              "updatedAt": 1783512776195
+            }
+          ],
+          "relationships": [],
+          "context": {}
+        },
+        "metadata": {}
+      },
+      "metrics": {
+        "utility": 80,
+        "risk": 19.999999999999996,
+        "cost": 10,
+        "confidence": 0.85,
+        "successProbability": 0.8
+      },
+      "narrative": "Simulated Average Case - 0c81e313-3376-4536-bb59-4d733c873828 completing with 80% probability."
+    }
+  ]
+}
+[2026-07-08T12:12:56.750Z] [EVENT: THOUGHT_GENERATED] (Source: HTGE-01) ID: 6c420d9e-e1dc-4e6f-965c-70a51b4ca4fe
+  Payload: {
+  "thoughtId": "a3ee067f-102a-4f30-8bff-dde692edf736",
+  "summary": "Focused on Goal Concept focus: concept_1"
+}
+[2026-07-08T12:12:57.079Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: 32b6489b-1a82-4fb1-9736-ee6514b03512
+  Payload: {
+  "thoughtId": "6ae2fad9-e9f2-4d04-b749-0130e03e9210",
+  "conclusionId": "f27c4b1e-2dcf-4d95-8698-268657f9f364",
+  "content": "Fallback conclusion generated (no rules met)",
+  "explanation": {
+    "humanReadable": "Fallback explanation"
+  },
+  "confidence": 0.5,
+  "strategy": "DEDUCTIVE",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T12:12:57.206Z] [EVENT: ACTION_AUTHORIZED] (Source: HDME) ID: ffce5622-15dc-44c3-84a6-ab8f66a6161a
+  Payload: {
+  "decision": {
+    "id": "dec-9725b134-6d27-4206-8c1d-ecf1570ea25d",
+    "context": {
+      "missionId": "sys-mission",
+      "worldStateSnapshot": {
+        "entities": [
+          {
+            "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+            "name": "Nashik Road Junction",
+            "type": "INTERSECTION",
+            "properties": {
+              "status": "congested"
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+            "name": "Main Road",
+            "type": "ROAD",
+            "properties": {
+              "lanes": 4
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+            "name": "Vehicle 101",
+            "type": "VEHICLE",
+            "properties": {
+              "speed": 5,
+              "status": "stopped"
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+            "name": "Vehicle 102",
+            "type": "VEHICLE",
+            "properties": {
+              "speed": 0,
+              "status": "stopped"
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+            "name": "Signal A",
+            "type": "SIGNAL",
+            "properties": {
+              "state": "red",
+              "timer": 45
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "cc114254-9273-427b-b6b5-b3982416033b",
+            "name": "Pedestrian Flow",
+            "type": "PEDESTRIAN",
+            "properties": {
+              "density": "high"
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+            "name": "Minor Accident",
+            "type": "ACCIDENT",
+            "properties": {
+              "severity": "low",
+              "blockingLanes": 1
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+            "name": "Debris",
+            "type": "OBSTACLE",
+            "properties": {
+              "size": "small"
+            },
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          },
+          {
+            "name": "User Request",
+            "type": "MISSION_DIRECTIVE",
+            "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+            "version": 1,
+            "createdAt": 1783512776195,
+            "updatedAt": 1783512776195
+          }
+        ],
+        "relationships": []
+      }
+    },
+    "options": [
+      {
+        "id": "opt-349dcd9b-31dd-451e-8b40-a05045408d4b",
+        "planId": "0c81e313-3376-4536-bb59-4d733c873828",
+        "predictedOutcomes": [
+          {
+            "id": "a76b4bc6-6b9b-41aa-9f9c-2a8ed802b231",
+            "scenarioId": "70a147ea-55a2-4e0a-ab75-bac002e5c7ff",
+            "finalState": {
+              "id": "31167e8a-0510-4b34-a8cc-91f947127500",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783512776204,
+              "state": {
+                "entities": [
+                  {
+                    "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "cc114254-9273-427b-b6b5-b3982416033b",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 100,
+              "risk": 0,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 1
+            },
+            "narrative": "Simulated Best Case - 0c81e313-3376-4536-bb59-4d733c873828 completing with 100% probability."
+          },
+          {
+            "id": "7aab5c2c-f4fb-44d4-b037-cc99fc351805",
+            "scenarioId": "6801686f-f36a-47ca-ae92-e50140459b4a",
+            "finalState": {
+              "id": "31167e8a-0510-4b34-a8cc-91f947127500",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783512776204,
+              "state": {
+                "entities": [
+                  {
+                    "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "cc114254-9273-427b-b6b5-b3982416033b",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 40,
+              "risk": 60,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.4
+            },
+            "narrative": "Simulated Worst Case - 0c81e313-3376-4536-bb59-4d733c873828 completing with 40% probability."
+          },
+          {
+            "id": "1342f6c3-ae07-471c-864c-308e543d8d3b",
+            "scenarioId": "18e6f32b-9189-47b5-b31c-1d354ee0a7f0",
+            "finalState": {
+              "id": "31167e8a-0510-4b34-a8cc-91f947127500",
+              "parentWorldId": "CANONICAL",
+              "version": 1,
+              "timestamp": 1783512776204,
+              "state": {
+                "entities": [
+                  {
+                    "id": "cec7314d-4666-4c9b-948a-9380b441b631",
+                    "name": "Nashik Road Junction",
+                    "type": "INTERSECTION",
+                    "properties": {
+                      "status": "congested"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "500b6f08-7f70-4878-8d45-5d8e51d697e8",
+                    "name": "Main Road",
+                    "type": "ROAD",
+                    "properties": {
+                      "lanes": 4
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "f3704b17-2faf-46a3-9800-0e16274b56b7",
+                    "name": "Vehicle 101",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 5,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "99e90fb1-f1de-4c4d-94d4-95ceae64439c",
+                    "name": "Vehicle 102",
+                    "type": "VEHICLE",
+                    "properties": {
+                      "speed": 0,
+                      "status": "stopped"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "9150c543-ce90-4260-a252-e6b5dc007918",
+                    "name": "Signal A",
+                    "type": "SIGNAL",
+                    "properties": {
+                      "state": "red",
+                      "timer": 45
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "cc114254-9273-427b-b6b5-b3982416033b",
+                    "name": "Pedestrian Flow",
+                    "type": "PEDESTRIAN",
+                    "properties": {
+                      "density": "high"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "39add131-9278-4b2f-a7cc-a2f9b7d6f588",
+                    "name": "Minor Accident",
+                    "type": "ACCIDENT",
+                    "properties": {
+                      "severity": "low",
+                      "blockingLanes": 1
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "id": "f1b44e85-372c-48b2-8b8b-5dd8bcc5d744",
+                    "name": "Debris",
+                    "type": "OBSTACLE",
+                    "properties": {
+                      "size": "small"
+                    },
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  },
+                  {
+                    "name": "User Request",
+                    "type": "MISSION_DIRECTIVE",
+                    "id": "bb552e34-6580-4fe4-a509-774fee4bcfd9",
+                    "version": 1,
+                    "createdAt": 1783512776195,
+                    "updatedAt": 1783512776195
+                  }
+                ],
+                "relationships": [],
+                "context": {}
+              },
+              "metadata": {}
+            },
+            "metrics": {
+              "utility": 80,
+              "risk": 19.999999999999996,
+              "cost": 10,
+              "confidence": 0.85,
+              "successProbability": 0.8
+            },
+            "narrative": "Simulated Average Case - 0c81e313-3376-4536-bb59-4d733c873828 completing with 80% probability."
+          }
+        ],
+        "confidence": {
+          "score": 0.8,
+          "sources": [
+            {
+              "sourceId": "HSTE",
+              "confidence": 0.8
+            }
+          ]
+        },
+        "utilityScore": 0.15,
+        "riskScore": 0,
+        "policyPassed": true
+      }
+    ],
+    "status": "APPROVED",
+    "traceId": "trc-ecd5ed1d-e4d4-4601-9e1e-a5c7fdd7d4db",
+    "timestamp": 1783512777082,
+    "authorizationReason": "Selected by Fallback (HILA provided invalid ID or non-JSON)",
+    "selectedOptionId": "opt-349dcd9b-31dd-451e-8b40-a05045408d4b"
+  },
+  "planId": "0c81e313-3376-4536-bb59-4d733c873828"
+}
+[2026-07-08T12:12:57.299Z] [EVENT: CONCLUSION_GENERATED] (Source: HRE-01) ID: a04c7687-1484-4426-a523-948569cbec29
+  Payload: {
+  "thoughtId": "a3ee067f-102a-4f30-8bff-dde692edf736",
+  "conclusionId": "a368c8ce-13f2-4158-84a0-bd2428ce3abc",
+  "content": "Fallback conclusion generated (no rules met)",
+  "explanation": {
+    "humanReadable": "Fallback explanation"
+  },
+  "confidence": 0.5,
+  "strategy": "DEDUCTIVE",
+  "executionTimeMs": 2,
+  "alternativeHypotheses": []
+}
+[2026-07-08T12:12:57.302Z] [EVENT: ACTION_COMPLETED] (Source: HPAE_ACTION_MANAGER) ID: ea172d2f-aaf9-4d7f-82b9-f9ce16f9de09
+  Payload: {
+  "action": {
+    "id": "90943e6b-ad4a-45a5-b34a-caa731033c20",
+    "planId": "0c81e313-3376-4536-bb59-4d733c873828",
+    "skillId": "S-1",
+    "parameters": {},
+    "status": "COMPLETED",
+    "timestamp": 1783512777301
+  },
+  "feedback": {
+    "actionId": "90943e6b-ad4a-45a5-b34a-caa731033c20",
+    "success": true,
+    "latencyMs": 10,
+    "reward": 1
+  }
+}
+[2026-07-08T12:12:57.302Z] [EVENT: ACTION_COMPLETED] (Source: HPAE) ID: c3cb0625-4cbf-454d-b656-5e4fb6b724f7
+  Payload: {
+  "action": {
+    "id": "90943e6b-ad4a-45a5-b34a-caa731033c20",
+    "planId": "0c81e313-3376-4536-bb59-4d733c873828",
+    "skillId": "S-1",
+    "parameters": {},
+    "status": "COMPLETED",
+    "timestamp": 1783512777301
+  }
+}
+[2026-07-08T12:12:57.302Z] [EVENT: MISSION_COMPLETED] (Source: HPAE) ID: f99aa5ec-913a-476d-b681-236e96d725f2
+  Payload: {
+  "missionId": "sys-mission"
+}
+[2026-07-08T12:12:57.416Z] [EVENT: MISSION_RESULT_READY] (Source: HMRC) ID: fba6fa17-e10a-42e2-b8a2-a21dd9f7161e
+  Payload: {
+  "result": {
+    "missionId": "sys-mission",
+    "directive": "Unknown Directive",
+    "status": "SUCCESS",
+    "confidence": 0.94,
+    "score": 92,
+    "durationMs": 151000,
+    "objective": "Unknown Objective",
+    "outcome": "Mission Unknown Directive completed successfully.",
+    "rootCauses": [
+      "Complexity of the task",
+      "Resource constraints"
+    ],
+    "unexpectedFindings": [],
+    "recommendations": [
+      {
+        "id": "r1",
+        "priority": 1,
+        "description": "Review mission parameters and allocate more resources.",
+        "expectedImprovement": "High",
+        "estimatedCost": "Variable",
+        "implementationDifficulty": "Medium"
+      }
+    ],
+    "evidence": [],
+    "simulationComparison": [],
+    "cognitiveReasoningSummary": "HyperMind processed the mission Unknown Directive. Results were generated based on available cognitive resources.",
+    "confidenceBreakdown": {
+      "perception": 0.96,
+      "worldModel": 0.93,
+      "reasoning": 0.91,
+      "planning": 0.94,
+      "simulation": 0.92,
+      "decision": 0.95,
+      "execution": 0.9,
+      "learning": 0.89,
+      "overall": 0.94
+    },
+    "timeline": [
+      {
+        "id": "t1",
+        "event": "Mission Created",
+        "timestamp": 1783512627416
+      },
+      {
+        "id": "t2",
+        "event": "Observation Complete",
+        "timestamp": 1783512637416
+      },
+      {
+        "id": "t3",
+        "event": "Mission Closed",
+        "timestamp": 1783512777416
+      }
+    ],
+    "timestamp": 1783512777416
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: 45e5d81f-9669-461e-87b8-a9b82fe75546
+  Payload: {
+  "artifact": {
+    "id": "pat-fb429ca8-bc3b-45d5-b474-84a2332fad08",
+    "traceId": "trc-0edfacc4-56ca-4aae-9a80-44bbb4414bf1",
+    "researchId": "res-72937084-085b-4c2a-8762-526c9f71accf",
+    "type": "PATTERN",
+    "name": "Frequent Success Pattern",
+    "description": "Identified a common sequence leading to success.",
+    "evidence": [],
+    "confidence": 0.85,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783512777303,
+    "provenance": "HLLE_PATTERN_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "patternType": "SUCCESS",
+    "frequency": 0
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: eb4b62c5-983a-4f92-976e-a241dbc5cb2a
+  Payload: {
+  "update": {
+    "id": "upd-7a3891e5-5b66-4754-a647-c298af9bbd38",
+    "traceId": "trc-0edfacc4-56ca-4aae-9a80-44bbb4414bf1",
+    "researchId": "res-72937084-085b-4c2a-8762-526c9f71accf",
+    "artifactId": "pat-fb429ca8-bc3b-45d5-b474-84a2332fad08",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "PATTERN",
+      "data": {
+        "id": "pat-fb429ca8-bc3b-45d5-b474-84a2332fad08",
+        "traceId": "trc-0edfacc4-56ca-4aae-9a80-44bbb4414bf1",
+        "researchId": "res-72937084-085b-4c2a-8762-526c9f71accf",
+        "type": "PATTERN",
+        "name": "Frequent Success Pattern",
+        "description": "Identified a common sequence leading to success.",
+        "evidence": [],
+        "confidence": 0.85,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783512777303,
+        "provenance": "HLLE_PATTERN_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "patternType": "SUCCESS",
+        "frequency": 0
+      }
+    },
+    "timestamp": 1783512777304,
+    "confidence": 0.85,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: fd053b6b-71ae-4cd7-82af-b1ff0723e72c
+  Payload: {
+  "artifact": {
+    "id": "heu-98f21d07-03ea-475a-a57c-ee708b220190",
+    "traceId": "trc-01af563c-3597-44ef-82b0-bd83c2a46316",
+    "researchId": "res-103600ff-281e-4342-8ab3-f4d04dd25daf",
+    "type": "HEURISTIC",
+    "name": "Traffic Density Heuristic",
+    "description": "If density is high, use adaptive signals.",
+    "evidence": [],
+    "confidence": 0.9,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783512777304,
+    "provenance": "HLLE_HEURISTIC_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "preconditions": {
+      "density": "> 0.8"
+    },
+    "logic": "PREFER(AdaptiveSignals)",
+    "usageHistory": []
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 38148d32-5945-4840-baa1-64d5d9ff0266
+  Payload: {
+  "update": {
+    "id": "upd-ebac6ed4-46c9-42f5-a121-735d61772651",
+    "traceId": "trc-01af563c-3597-44ef-82b0-bd83c2a46316",
+    "researchId": "res-103600ff-281e-4342-8ab3-f4d04dd25daf",
+    "artifactId": "heu-98f21d07-03ea-475a-a57c-ee708b220190",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "HEURISTIC",
+      "data": {
+        "id": "heu-98f21d07-03ea-475a-a57c-ee708b220190",
+        "traceId": "trc-01af563c-3597-44ef-82b0-bd83c2a46316",
+        "researchId": "res-103600ff-281e-4342-8ab3-f4d04dd25daf",
+        "type": "HEURISTIC",
+        "name": "Traffic Density Heuristic",
+        "description": "If density is high, use adaptive signals.",
+        "evidence": [],
+        "confidence": 0.9,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783512777304,
+        "provenance": "HLLE_HEURISTIC_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "preconditions": {
+          "density": "> 0.8"
+        },
+        "logic": "PREFER(AdaptiveSignals)",
+        "usageHistory": []
+      }
+    },
+    "timestamp": 1783512777304,
+    "confidence": 0.9,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: 09cb5695-a74e-4513-8c87-35b5ede2a21d
+  Payload: {
+  "artifact": {
+    "id": "skl-0f110764-e8c0-4211-9644-c9d78331b2cd",
+    "traceId": "trc-c1143e46-04c8-48e4-a7cb-44cb20ccbf47",
+    "researchId": "res-6ff2546c-1520-4ea7-87a7-6a811a602fd8",
+    "type": "SKILL",
+    "name": "Analyze Traffic Scene",
+    "description": "Sequence: Capture -> Detect -> Estimate -> Update",
+    "evidence": [],
+    "confidence": 0.88,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783512777304,
+    "provenance": "HLLE_SKILL_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "actionSequence": [
+      "CaptureScreen",
+      "DetectVehicles",
+      "EstimateDensity",
+      "UpdateWorldModel"
+    ],
+    "preconditions": {},
+    "expectedOutcomes": {}
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: bac3ce97-b0da-4ad7-83a7-68126242315f
+  Payload: {
+  "update": {
+    "id": "upd-f7cacdec-cb90-44b5-9d72-1ba6e187512c",
+    "traceId": "trc-c1143e46-04c8-48e4-a7cb-44cb20ccbf47",
+    "researchId": "res-6ff2546c-1520-4ea7-87a7-6a811a602fd8",
+    "artifactId": "skl-0f110764-e8c0-4211-9644-c9d78331b2cd",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "SKILL",
+      "data": {
+        "id": "skl-0f110764-e8c0-4211-9644-c9d78331b2cd",
+        "traceId": "trc-c1143e46-04c8-48e4-a7cb-44cb20ccbf47",
+        "researchId": "res-6ff2546c-1520-4ea7-87a7-6a811a602fd8",
+        "type": "SKILL",
+        "name": "Analyze Traffic Scene",
+        "description": "Sequence: Capture -> Detect -> Estimate -> Update",
+        "evidence": [],
+        "confidence": 0.88,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783512777304,
+        "provenance": "HLLE_SKILL_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "actionSequence": [
+          "CaptureScreen",
+          "DetectVehicles",
+          "EstimateDensity",
+          "UpdateWorldModel"
+        ],
+        "preconditions": {},
+        "expectedOutcomes": {}
+      }
+    },
+    "timestamp": 1783512777304,
+    "confidence": 0.88,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: LEARNING_ARTIFACT_CREATED] (Source: HLLE) ID: d99e5db3-a529-4250-be3a-08ae7a174ab8
+  Payload: {
+  "artifact": {
+    "id": "str-4a211c81-2d4a-4bd1-9707-be981b11600b",
+    "traceId": "trc-f9023514-ba1e-4198-9caf-e16bf867002d",
+    "researchId": "res-10428235-e96e-4955-bcb0-3cfb8c5d0529",
+    "type": "STRATEGY",
+    "name": "Conservative Planning Strategy",
+    "description": "Produces robust plans with lower risk.",
+    "evidence": [],
+    "confidence": 0.92,
+    "validationStatus": "PROMOTED",
+    "timestamp": 1783512777304,
+    "provenance": "HLLE_STRATEGY_ENGINE",
+    "version": 1,
+    "telemetry": {},
+    "lifecycle": "DISCOVERED",
+    "successRate": 0.95,
+    "executionTime": 1200,
+    "resourceCost": 50,
+    "failureModes": [
+      "Resource Exhaustion"
+    ]
+  }
+}
+[2026-07-08T12:12:57.304Z] [EVENT: KNOWLEDGE_UPDATED] (Source: HLLE) ID: 36aa6838-75ef-45b6-9107-8900bbebede0
+  Payload: {
+  "update": {
+    "id": "upd-6570825b-d9dc-44d9-af73-a970946c3a2f",
+    "traceId": "trc-f9023514-ba1e-4198-9caf-e16bf867002d",
+    "researchId": "res-10428235-e96e-4955-bcb0-3cfb8c5d0529",
+    "artifactId": "str-4a211c81-2d4a-4bd1-9707-be981b11600b",
+    "targetSystem": "HWME",
+    "updatePayload": {
+      "type": "STRATEGY",
+      "data": {
+        "id": "str-4a211c81-2d4a-4bd1-9707-be981b11600b",
+        "traceId": "trc-f9023514-ba1e-4198-9caf-e16bf867002d",
+        "researchId": "res-10428235-e96e-4955-bcb0-3cfb8c5d0529",
+        "type": "STRATEGY",
+        "name": "Conservative Planning Strategy",
+        "description": "Produces robust plans with lower risk.",
+        "evidence": [],
+        "confidence": 0.92,
+        "validationStatus": "PROMOTED",
+        "timestamp": 1783512777304,
+        "provenance": "HLLE_STRATEGY_ENGINE",
+        "version": 1,
+        "telemetry": {},
+        "lifecycle": "DISCOVERED",
+        "successRate": 0.95,
+        "executionTime": 1200,
+        "resourceCost": 50,
+        "failureModes": [
+          "Resource Exhaustion"
+        ]
+      }
+    },
+    "timestamp": 1783512777304,
+    "confidence": 0.92,
+    "provenance": "HLLE_EVOLUTION_ENGINE",
+    "version": 1,
+    "validationStatus": "PROMOTED",
+    "lifecycle": "APPLIED",
+    "telemetry": {}
+  }
+}
+
+
+--- LOGGER STARTED AT 2026-07-08T12:28:31.526Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:28:42.712Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:35:38.660Z ---
+
+
+--- LOGGER STARTED AT 2026-07-08T12:35:43.873Z ---

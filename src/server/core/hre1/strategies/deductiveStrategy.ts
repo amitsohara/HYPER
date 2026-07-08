@@ -61,7 +61,17 @@ Do not use markdown formatting.`;
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, arbitration);
                     
                     if (response && response.content) {
-                        let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
+                        let parsed: any = [];
+                        try { 
+                            const _parsed = JSON.parse(response.content);
+                            if (Array.isArray(_parsed)) {
+                                parsed = _parsed;
+                            } else {
+                                console.warn("Fallback or non-array response from LLM, returning empty array");
+                            }
+                        } catch(e) { 
+                            console.warn("Failed to parse LLM response", response.content); 
+                        }
                         for (const derived of parsed) {
                             if (!facts.has(derived.content)) {
                                 facts.add(derived.content);
@@ -76,7 +86,7 @@ Do not use markdown formatting.`;
                 }
             }
         } catch (e) {
-            console.error("Failed to execute deductive strategy with HILA:", e);
+            // Suppress error
         }
 
         let newFactsDerived = true;

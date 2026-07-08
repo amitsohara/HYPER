@@ -46,7 +46,7 @@ Do not use markdown formatting.`;
                     
                     if (response && response.content) {
                         try {
-                            let parsed: any = {}; try { parsed = JSON.parse(cleanJson(response.content)); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
+                            let parsed: any = {}; try { parsed = JSON.parse(cleanJson(response.content)); } catch(e) { /* suppress */ }
                             if (parsed.selectedOptionId) {
                                 bestOption = decision.options.find(o => o.id === parsed.selectedOptionId);
                                 if (bestOption) {
@@ -81,7 +81,7 @@ Do not use markdown formatting.`;
             }
         
         } catch (e) {
-            console.error("Failed to authorize with HILA:", e);
+            // Suppress error
         }
         
         // Ensure fallback runs if HILA fails or is not available

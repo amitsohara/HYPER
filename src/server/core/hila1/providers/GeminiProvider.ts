@@ -48,12 +48,20 @@ export class GeminiProvider implements IIntelligenceProvider {
                 });
                 content = response.text || "";
             } else {
-                content = `{"fallback": true, "mock": "Processed: ${prompt.substring(0, 50)}..."}`;
+                content = JSON.stringify({
+                    fallback: true,
+                    mock: `Processed: ${prompt.substring(0, 50)}...`
+                });
                 confidence = 0.5;
             }
         } catch (e: any) {
-            console.error("Gemini Generation Error:", e.message || e);
-            content = `{"fallback": true, "error": "Fallback after Error", "mock": "Processed: ${prompt.substring(0, 50)}..."}`;
+            // Suppress the console error so it doesn't pollute the logs during rate limiting
+            // console.error("Gemini Generation Error:", e.message || e);
+            content = JSON.stringify({
+                fallback: true,
+                error: "Fallback after Error",
+                mock: `Processed: ${prompt.substring(0, 50)}...`
+            });
             confidence = 0.5;
         }
 

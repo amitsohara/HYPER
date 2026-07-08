@@ -3,6 +3,7 @@ import { BookOpen, Search, Filter, Database, Brain, Hexagon } from "lucide-react
 
 export function KnowledgeCenterView() {
   const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("Semantic Memory");
 
   return (
     <div className="flex-1 flex flex-col p-8 overflow-auto">
@@ -23,7 +24,7 @@ export function KnowledgeCenterView() {
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-12 pr-4 py-3 text-zinc-100 focus:outline-none focus:border-indigo-500"
             />
           </div>
-          <button className="flex items-center space-x-2 bg-zinc-900 border border-zinc-800 px-6 py-3 rounded-xl hover:bg-zinc-800 transition-colors">
+          <button onClick={() => alert("Filter options opened")} className="flex items-center space-x-2 bg-zinc-900 border border-zinc-800 px-6 py-3 rounded-xl hover:bg-zinc-800 transition-colors">
             <Filter className="w-4 h-4" />
             <span>Filter</span>
           </button>
@@ -32,19 +33,19 @@ export function KnowledgeCenterView() {
         <div className="grid grid-cols-3 gap-6 flex-1">
           {/* Categories Sidebar */}
           <div className="space-y-4">
-            <CategoryCard icon={Database} title="Semantic Memory" count="1,240" active />
-            <CategoryCard icon={Hexagon} title="Procedural Memory" count="86" />
-            <CategoryCard icon={Brain} title="Episodic Memory" count="4,592" />
+            <CategoryCard icon={Database} title="Semantic Memory" count="1,240" active={activeCategory === "Semantic Memory"} onClick={() => setActiveCategory("Semantic Memory")} />
+            <CategoryCard icon={Hexagon} title="Procedural Memory" count="86" active={activeCategory === "Procedural Memory"} onClick={() => setActiveCategory("Procedural Memory")} />
+            <CategoryCard icon={Brain} title="Episodic Memory" count="4,592" active={activeCategory === "Episodic Memory"} onClick={() => setActiveCategory("Episodic Memory")} />
           </div>
 
           {/* Content Area */}
           <div className="col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 flex flex-col">
-            <h2 className="text-xl font-medium mb-4">Recent Semantic Concepts</h2>
+            <h2 className="text-xl font-medium mb-4">Recent {activeCategory} Nodes</h2>
             <div className="flex-1 space-y-3 overflow-auto">
               {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="p-4 border border-zinc-800 rounded-xl hover:bg-zinc-800/50 cursor-pointer transition-colors">
+                <div key={i} className="p-4 border border-zinc-800 rounded-xl hover:bg-zinc-800/50 cursor-pointer transition-colors" onClick={() => alert("Memory node details opened")}>
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-indigo-400">Concept Node_{i}</h3>
+                    <h3 className="font-medium text-indigo-400">Node_{activeCategory.split(' ')[0]}_{i}</h3>
                     <span className="text-xs text-zinc-500 font-mono">Confidence: 0.9{i}</span>
                   </div>
                   <p className="text-sm text-zinc-400">
@@ -61,9 +62,9 @@ export function KnowledgeCenterView() {
   );
 }
 
-function CategoryCard({ icon: Icon, title, count, active }: any) {
+function CategoryCard({ icon: Icon, title, count, active, onClick }: any) {
   return (
-    <div className={`p-5 rounded-2xl border flex items-center justify-between cursor-pointer transition-colors ${
+    <div onClick={onClick} className={`p-5 rounded-2xl border flex items-center justify-between cursor-pointer transition-colors ${
       active ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'
     }`}>
       <div className="flex items-center space-x-3">

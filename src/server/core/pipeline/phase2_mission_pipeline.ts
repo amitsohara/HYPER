@@ -82,9 +82,6 @@ async function runTrace() {
     console.log("Registering and initializing all specialists...");
     hwme.initialize(); // Initialize HWME manually
     
-        }
-    });
-
     console.log("\n--- STARTING TRACE ---");
     console.log("Publishing initial WORLD_OBSERVATION...");
     
@@ -95,7 +92,7 @@ async function runTrace() {
         priority: 1,
         source: "InputAdapter",
         payload: {
-            missionDirective: "Optimize heavy traffic at Nashik Road Junction.",
+            missionDirective: "Optimize heavy traffic at Target Road Junction.",
             entity: { name: "User Request", type: "MISSION_DIRECTIVE" }
         }
     });

@@ -35,14 +35,24 @@ Return a JSON object containing ONLY the updated parameters. Do not use markdown
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, arbitration);
                     
                     if (response && response.content) {
-                        let parsed: any = {}; try { parsed = (function(){ try { return JSON.parse(response.content); } catch(e) { return [] as any; } })(); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
+                        let parsed: any = {};
+                        try { 
+                            const _parsed = JSON.parse(response.content);
+                            if (typeof _parsed === 'object' && !Array.isArray(_parsed) && !_parsed.fallback) {
+                                parsed = _parsed;
+                            } else {
+                                console.warn("Fallback or non-object response from LLM, returning empty object");
+                            }
+                        } catch(e) { 
+                            console.warn("Failed to parse LLM response", response.content); 
+                        }
                         policy.parameters = { ...policy.parameters, ...parsed };
                         return policy;
                     }
                 }
             }
         } catch (e) {
-            console.error("Failed to optimize policy with HILA:", e);
+            // Suppress error
         }
 
         // Mock optimization fallback

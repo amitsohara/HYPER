@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useHyperMindStore } from "../../../store/useHyperMindStore";
-import { Activity, Network, LineChart, Server } from "lucide-react";
+import { Activity, Network, LineChart as LineChartIcon, Server } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+
+const MOCK_THROUGHPUT = Array.from({ length: 20 }).map((_, i) => ({
+  time: `10:${i.toString().padStart(2, '0')}`,
+  eps: Math.floor(Math.random() * 50) + 10
+}));
+
+const MOCK_ADAPTATION = Array.from({ length: 20 }).map((_, i) => ({
+  time: `Day ${i+1}`,
+  rate: Math.floor(Math.random() * 30) + 50 + i * 2
+}));
 
 export function ObservatoryView() {
   const { metrics } = useHyperMindStore();
@@ -19,8 +30,16 @@ export function ObservatoryView() {
               <Activity className="w-5 h-5 text-emerald-400" />
               <span>Event Throughput (eps)</span>
             </h2>
-            <div className="flex-1 flex items-center justify-center text-zinc-600 border border-zinc-800 border-dashed rounded-xl">
-              [Live Chart Rendering]
+            <div className="flex-1 w-full h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={MOCK_THROUGHPUT}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="time" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }} />
+                  <Line type="monotone" dataKey="eps" stroke="#34d399" strokeWidth={2} dot={false} animationDuration={1000} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
           
@@ -40,11 +59,19 @@ export function ObservatoryView() {
 
         <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
           <h2 className="text-lg font-medium mb-4 flex items-center space-x-2">
-            <LineChart className="w-5 h-5 text-amber-400" />
+            <LineChartIcon className="w-5 h-5 text-amber-400" />
             <span>Learning & Adaptation Rates</span>
           </h2>
-          <div className="h-64 flex items-center justify-center text-zinc-600 border border-zinc-800 border-dashed rounded-xl">
-            [Adaptation Trend Visualization]
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={MOCK_ADAPTATION}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <XAxis dataKey="time" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }} />
+                <Area type="monotone" dataKey="rate" stroke="#fbbf24" fill="#fbbf24" fillOpacity={0.1} strokeWidth={2} animationDuration={1000} />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

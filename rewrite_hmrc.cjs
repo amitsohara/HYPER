@@ -1,4 +1,5 @@
-import { HyperMindEventMesh } from "../../hcns01/eventMesh.js";
+const fs = require('fs');
+const code = `import { HyperMindEventMesh } from "../../hcns01/eventMesh.js";
 import { CognitiveDomain } from "../../hcns01/types.js";
 import { MissionResult } from "../types.js";
 
@@ -11,7 +12,7 @@ export class MissionResultManager {
     private currentAggregatedResult: Partial<MissionResult> = {
         directive: "Unknown Directive",
         objective: "Pending objective generation...",
-        status: "SUCCESS" /* placeholder */,
+        status: "RUNNING",
         confidence: 0,
         score: 0,
         durationMs: 0,
@@ -99,7 +100,7 @@ export class MissionResultManager {
     }
 
     private finalizeMission(event: any) {
-        const missionId = event.payload?.missionId || event.payload?.mission?.id || `m_${Date.now()}`;
+        const missionId = event.payload?.missionId || event.payload?.mission?.id || \`m_\${Date.now()}\`;
         const status = event.type === "MISSION_COMPLETED" ? "SUCCESS" : "FAILED";
         
         const duration = Date.now() - this.missionStartTime;
@@ -114,19 +115,19 @@ export class MissionResultManager {
         // Build final recommendations dynamically based on reasoning
         const recommendations = [
             {
-                id: `rec-${Date.now()}`,
+                id: \`rec-\${Date.now()}\`,
                 priority: 1,
-                description: `Implement validated plan for: ${this.currentAggregatedResult.directive}`,
+                description: \`Implement validated plan for: \${this.currentAggregatedResult.directive}\`,
                 expectedImprovement: "High",
                 estimatedCost: "Low",
-                implementationDifficulty: "Medium" as any
+                implementationDifficulty: "Medium"
             }
         ];
         
         let rootCauses = this.currentAggregatedResult.rootCauses || [];
         if (rootCauses.length === 0) {
             rootCauses = [
-                `Analysis of ${this.currentAggregatedResult.directive || "the situation"} revealed multiple interacting variables.`,
+                \`Analysis of \${this.currentAggregatedResult.directive || "the situation"} revealed multiple interacting variables.\`,
                 "Systemic dependencies required cognitive breakdown."
             ];
         }
@@ -139,7 +140,7 @@ export class MissionResultManager {
             confidence: avgConf,
             score: Math.max(0, Math.min(100, score)),
             durationMs: duration > 0 ? duration : 45000,
-            outcome: this.currentAggregatedResult.outcome !== "Mission in progress..." ? this.currentAggregatedResult.outcome : `Mission completed with status: ${status}`,
+            outcome: this.currentAggregatedResult.outcome !== "Mission in progress..." ? this.currentAggregatedResult.outcome : \`Mission completed with status: \${status}\`,
             rootCauses,
             unexpectedFindings: [],
             recommendations,
@@ -171,7 +172,7 @@ export class MissionResultManager {
         this.currentAggregatedResult = {
             directive: "Unknown Directive",
             objective: "Pending objective generation...",
-            status: "SUCCESS" /* placeholder */,
+            status: "RUNNING",
             confidence: 0,
             score: 0,
             durationMs: 0,
@@ -192,3 +193,6 @@ export class MissionResultManager {
         return this.results.get(missionId);
     }
 }
+`;
+fs.writeFileSync('src/server/core/hmrc1/managers/MissionResultManager.ts', code);
+console.log("Updated MissionResultManager.ts");

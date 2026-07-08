@@ -196,7 +196,8 @@ Do not wrap in markdown \`\`\`json blocks. Just return the raw JSON array.`;
                     this.activeRequests.delete(cacheKey);
                 }
                 } catch(e) {
-                    console.error("Gemini Reasoning failed:", e); fs.appendFileSync("hre_debug.log", "Gemini error: " + e.stack + "\n");
+                    // Suppress error log
+                    fs.appendFileSync("hre_debug.log", "Gemini error: " + e.stack + "\n");
                 }
                 if (llmConclusions.length > 0) {
                     for (const conc of llmConclusions) {

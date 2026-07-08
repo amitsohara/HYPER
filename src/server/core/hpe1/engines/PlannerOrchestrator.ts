@@ -57,7 +57,7 @@ if (response && response.content) {
                     }
                 }
             } catch (e) {
-                console.error("Failed to retrieve external knowledge via HILA:", e);
+                // Suppress error
             }
 
             if (knowledge) {

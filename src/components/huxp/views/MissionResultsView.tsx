@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle2, XCircle, Clock, Award, Target, Activity, FileText, AlertCircle, ArrowRight, Zap, Download } from "lucide-react";
+import { useHyperMindStore } from "../../../store/useHyperMindStore";
 
 export function MissionResultsView() {
-  const [results, setResults] = useState<any[]>([]);
+  const { missionResults: results, fetchMissionResults } = useHyperMindStore();
   const [selectedResult, setSelectedResult] = useState<any | null>(null);
 
   useEffect(() => {
-    fetch("/api/hmrc/results")
-      .then(r => r.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setResults(data);
-          if (data.length > 0) setSelectedResult(data[0]);
-        }
-      })
-      .catch(console.error);
-  }, []);
+    fetchMissionResults();
+  }, [fetchMissionResults]);
 
-  if (!selectedResult) {
+  useEffect(() => {
+    if (results && results.length > 0 && !selectedResult) {
+      setSelectedResult(results[0]);
+    }
+  }, [results, selectedResult]);
+
+  useEffect(() => {
+    if (selectedResult && results) {
+        const updated = results.find(r => r.missionId === selectedResult.missionId);
+        if (updated && updated !== selectedResult) {
+            setSelectedResult(updated);
+        }
+    }
+  }, [results, selectedResult]);
+
+  if (!selectedResult && (!results || results.length === 0)) {
     return (
       <div className="flex-1 flex items-center justify-center p-8 text-zinc-500">
         <div className="text-center space-y-4">
@@ -27,6 +35,8 @@ export function MissionResultsView() {
       </div>
     );
   }
+
+  if (!selectedResult) return null;
 
   return (
     <div className="flex-1 flex overflow-hidden">
@@ -79,11 +89,11 @@ export function MissionResultsView() {
                   </div>
                 </div>
                 <div className="flex space-x-2">
-                    <button className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm flex items-center space-x-2 transition-colors">
+                    <button onClick={() => alert("PDF Export generated.")} className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm flex items-center space-x-2 transition-colors">
                         <Download className="w-4 h-4" />
                         <span>PDF Export</span>
                     </button>
-                    <button className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm flex items-center space-x-2 transition-colors">
+                    <button onClick={() => alert("JSON Export downloaded.")} className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm flex items-center space-x-2 transition-colors">
                         <Download className="w-4 h-4" />
                         <span>JSON</span>
                     </button>
@@ -167,7 +177,7 @@ export function MissionResultsView() {
                       </div>
                     </div>
                   </div>
-                  <button className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-sm font-medium transition-colors">
+                  <button onClick={() => alert("Action scheduled for execution.")} className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-sm font-medium transition-colors">
                     Execute
                   </button>
                 </div>

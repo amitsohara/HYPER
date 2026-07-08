@@ -38,7 +38,7 @@ async function startServer() {
   // API ROUTES
   app.post("/api/hml/missions/deploy", async (req, res) => {
     try {
-        const directive = req.body.directive || "Optimize heavy traffic at Nashik Road Junction.";
+        const directive = req.body.directive || "Optimize heavy traffic at Target Area.";
         HyperMindEventMesh.getInstance().publish({
             type: "WORLD_OBSERVATION",
             domain: CognitiveDomain.OBSERVATION,
@@ -52,7 +52,7 @@ async function startServer() {
                 },
                 entity: { name: "User Request", type: "MISSION_DIRECTIVE" },
                 additionalEntities: [
-                    { id: "e1", name: "Nashik Road Junction", type: "INTERSECTION", properties: { status: "congested" } },
+                    { id: "e1", name: "Target Area", type: "INTERSECTION", properties: { status: "congested" } },
                     { id: "e2", name: "Main Road", type: "ROAD", properties: { lanes: 4 } },
                     { id: "e3", name: "Vehicle 101", type: "VEHICLE", properties: { speed: 5, status: "stopped" } },
                     { id: "e4", name: "Vehicle 102", type: "VEHICLE", properties: { speed: 0, status: "stopped" } },

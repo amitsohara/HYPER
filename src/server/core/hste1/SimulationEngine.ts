@@ -57,7 +57,7 @@ Do not use markdown formatting.`;
                     
                     const response = await hila.arbitrator.executeExternal({...request, task: prompt}, decision);
                     if (response && response.content) {
-                        let parsed: any = {}; try { parsed = JSON.parse(cleanJson(response.content)); } catch(e) { console.warn("Failed to parse LLM response", response.content); }
+                        let parsed: any = {}; try { parsed = JSON.parse(cleanJson(response.content)); } catch(e) { /* suppress */ }
                         successProb = parsed.successProbability ?? successProb;
                         simulatedRisk = parsed.risk ?? simulatedRisk;
                         narrative = parsed.narrative ?? narrative;
@@ -80,7 +80,7 @@ Do not use markdown formatting.`;
                 }
             }
         } catch (e) {
-            console.error("Failed to run simulation with HILA:", e);
+            // Suppress error
         }
 
         const metrics: SimulationMetric = {

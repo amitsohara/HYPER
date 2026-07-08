@@ -1,35 +1,33 @@
 import React, { useState } from "react";
-import { Camera, Play, Plus, Activity, Cpu, Shield, ArrowRight, Check } from "lucide-react";
-import { useHyperMindStore } from "../../../store/useHyperMindStore";
+import { Plus, ListTodo, Activity, AlertTriangle, Shield, ShieldAlert, FileText, Settings, Database, Server, Camera, Cpu, ArrowRight, Check } from "lucide-react";
 
 export function HomeView({ onNavigateQueue }: { onNavigateQueue: () => void }) {
   const [wizardOpen, setWizardOpen] = useState(false);
-  const { metrics } = useHyperMindStore();
 
   return (
-    <div className="flex-1 overflow-auto p-8 relative">
-      <div className="max-w-6xl mx-auto space-y-12">
+    <div className="flex-1 flex flex-col p-8 overflow-auto">
+      <div className="max-w-6xl mx-auto w-full space-y-8">
         
         {/* Header */}
         <header className="flex justify-between items-end">
           <div>
-            <h1 className="text-4xl font-light tracking-tight mb-2">Cognitive Environment</h1>
-            <p className="text-zinc-400">System operating nominally. Ready for new directives.</p>
+            <h1 className="text-4xl font-light tracking-tight mb-2">HyperMind Command</h1>
+            <p className="text-zinc-400 text-lg">System operational. 3 active missions, 0 critical alerts.</p>
           </div>
           <button 
             onClick={() => setWizardOpen(true)}
-            className="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-6 py-3 rounded-full font-medium transition-colors"
+            className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-6 py-3 rounded-full font-medium flex items-center space-x-2 transition-colors"
           >
             <Plus className="w-5 h-5" />
-            <span>New Mission</span>
+            <span>Create Mission</span>
           </button>
         </header>
 
-        {/* System Health */}
+        {/* Quick Stats */}
         <div className="grid grid-cols-4 gap-6">
-          <StatCard title="System Load" value={`${(metrics?.cpuUsage || 0).toFixed(1)}%`} icon={Activity} healthy />
-          <StatCard title="Active Memories" value={metrics?.memoryCount || 0} icon={Cpu} />
-          <StatCard title="Throughput" value={`${metrics?.eventsPerSecond || 0} eps`} icon={Activity} />
+          <StatCard title="Active Missions" value="3" icon={Activity} />
+          <StatCard title="Queued Tasks" value="12" icon={ListTodo} />
+          <StatCard title="System Load" value="24%" icon={Server} />
           <StatCard title="Security Level" value="LDP-001 Enforced" icon={Shield} healthy />
         </div>
 
@@ -57,10 +55,13 @@ function StatCard({ title, value, icon: Icon, healthy = false }: any) {
 function MissionWizard({ onClose, onComplete }: any) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({ name: "", type: "observation", description: "" });
+  
+  const [sources, setSources] = useState({ camera: true, telemetry: false, security: true, network: false });
+  const [mode, setMode] = useState("live");
 
   const handleCreate = async () => {
     try {
-      await fetch("/api/hmcc/dispatch", {
+      await fetch("/api/hml/missions/deploy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -134,10 +135,10 @@ function MissionWizard({ onClose, onComplete }: any) {
             <div className="space-y-6">
               <h3 className="text-2xl font-light mb-6">Input Sources</h3>
               <div className="grid grid-cols-2 gap-4">
-                <SourceOption icon={Camera} label="Live Camera Feed" selected />
-                <SourceOption icon={Cpu} label="Telemetry Sensors" />
-                <SourceOption icon={Shield} label="Security Logs" selected />
-                <SourceOption icon={Activity} label="Network Traffic" />
+                <SourceOption icon={Camera} label="Live Camera Feed" selected={sources.camera} onClick={() => setSources({...sources, camera: !sources.camera})} />
+                <SourceOption icon={Cpu} label="Telemetry Sensors" selected={sources.telemetry} onClick={() => setSources({...sources, telemetry: !sources.telemetry})} />
+                <SourceOption icon={Shield} label="Security Logs" selected={sources.security} onClick={() => setSources({...sources, security: !sources.security})} />
+                <SourceOption icon={Activity} label="Network Traffic" selected={sources.network} onClick={() => setSources({...sources, network: !sources.network})} />
               </div>
             </div>
           )}
@@ -146,9 +147,9 @@ function MissionWizard({ onClose, onComplete }: any) {
             <div className="space-y-6">
               <h3 className="text-2xl font-light mb-6">Execution Mode</h3>
               <div className="space-y-4">
-                <ModeOption title="Live Execution" desc="Mission executes immediately in the real world." active />
-                <ModeOption title="Simulation" desc="Mission runs in the cognitive sandbox. Safe." />
-                <ModeOption title="Dry Run" desc="Plans are generated but not executed." />
+                <ModeOption title="Live Execution" desc="Mission executes immediately in the real world." active={mode === "live"} onClick={() => setMode("live")} />
+                <ModeOption title="Simulation" desc="Mission runs in the cognitive sandbox. Safe." active={mode === "sim"} onClick={() => setMode("sim")} />
+                <ModeOption title="Dry Run" desc="Plans are generated but not executed." active={mode === "dry"} onClick={() => setMode("dry")} />
               </div>
             </div>
           )}
@@ -159,6 +160,7 @@ function MissionWizard({ onClose, onComplete }: any) {
               <div className="bg-zinc-950 border border-zinc-800 p-6 rounded-xl space-y-4">
                 <ReviewItem label="Name" value={formData.name || "Untitled"} />
                 <ReviewItem label="Type" value={formData.type} />
+                <ReviewItem label="Mode" value={mode} />
                 <ReviewItem label="Safety" value="Verified (LDP-001)" color="text-emerald-400" />
                 <ReviewItem label="Est. Duration" value="Indefinite (Continuous)" />
               </div>
@@ -193,24 +195,23 @@ function MissionWizard({ onClose, onComplete }: any) {
             </button>
           )}
         </div>
-
       </div>
     </div>
   );
 }
 
-function SourceOption({ icon: Icon, label, selected = false }: any) {
+function SourceOption({ icon: Icon, label, selected = false, onClick }: any) {
   return (
-    <div className={`p-4 rounded-xl border flex items-center space-x-3 cursor-pointer transition-colors ${selected ? "bg-emerald-400/10 border-emerald-400/30 text-emerald-400" : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"}`}>
+    <div onClick={onClick} className={`p-4 rounded-xl border flex items-center space-x-3 cursor-pointer transition-colors ${selected ? "bg-emerald-400/10 border-emerald-400/30 text-emerald-400" : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"}`}>
       <Icon className="w-5 h-5" />
       <span className="font-medium">{label}</span>
     </div>
   );
 }
 
-function ModeOption({ title, desc, active = false }: any) {
+function ModeOption({ title, desc, active = false, onClick }: any) {
   return (
-    <div className={`p-4 rounded-xl border cursor-pointer transition-colors ${active ? "bg-zinc-800 border-zinc-700" : "bg-zinc-950 border-zinc-800 text-zinc-500 hover:border-zinc-700"}`}>
+    <div onClick={onClick} className={`p-4 rounded-xl border cursor-pointer transition-colors ${active ? "bg-zinc-800 border-zinc-700" : "bg-zinc-950 border-zinc-800 text-zinc-500 hover:border-zinc-700"}`}>
       <div className={`font-medium mb-1 ${active ? "text-zinc-100" : "text-zinc-400"}`}>{title}</div>
       <div className="text-sm">{desc}</div>
     </div>

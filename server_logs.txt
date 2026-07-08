@@ -1,4 +1,59 @@
+--- START ---
+=== Booting HyperMind Core Platform ===
+1. Initializing HCNS (HyperMind Core Event Mesh)...
+2. Initializing HyperMindOS...
+HOS Kernel: Booting...
+HOS Kernel: Running.
+3. Initializing HCSE (HyperMind Cognitive Society Engine)...
+4. Registering Cognitive Specialists...
+[HILA] initialize called!
+[HILA] arbitrator assigned! type: object
+All Specialists Registered Successfully.
+Initializing World Model Engine...
+5. Starting Telemetry & Resource Management...
+6. Initializing Mission Runtime (HML1 & HML2)...
+=== HyperMind Core Platform Fully Operational ===
+ERROR: {}
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"0dc875e6-baa6-4102-b3b2-f2daafb824eb","provider":"GEMINI","reason":"Internal confidence (0.2) below required (0.8)."}
+12:36:27 PM [vite] (client) page reload server_logs.txt
+12:36:27 PM [vite] (client) page reload mission_execution_log.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"0dc875e6-baa6-4102-b3b2-f2daafb824eb"}
+12:36:27 PM [vite] (client) page reload server_logs.txt
+ERROR: WebSocket server error: Port 24678 is already in use
+12:36:27 PM [vite] (client) page reload server_logs.txt
 [EVENT: HPE_DEBUG] Starting createPlansForGoal
-[PlannerOrchestrator] All planners failed for goal Mission Directive. Consulting HILA for knowledge...
-[PlannerOrchestrator] hila exists: true, arbitrator exists: true
-[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"8758eee3-8148-4b64-a921-4dd38378f9c8","provider":"GEMINI","reason":"Internal confidence (0.2) below required (0.8)."}
+[EVENT: HPE_DEBUG] Plans created: 4
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"90890aa3-26f8-48b4-b43b-2223f1af3cea","provider":"GEMINI","reason":"Internal confidence (0.5) below required (0.8)."}
+12:37:13 PM [vite] (client) page reload mission_execution_log.txt
+12:37:13 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"90890aa3-26f8-48b4-b43b-2223f1af3cea"}
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"dd140587-06c7-49ac-9df0-f180a61c5555","provider":"GEMINI","reason":"Internal confidence (0.5) below required (0.8)."}
+12:37:13 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"dd140587-06c7-49ac-9df0-f180a61c5555"}
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"7ebf6b32-c3ac-42d0-b241-822ed6944304","provider":"GEMINI","reason":"Internal confidence (0.5) below required (0.8)."}
+12:37:13 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"7ebf6b32-c3ac-42d0-b241-822ed6944304"}
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"a5f571ea-2f66-451a-9b90-37d7e4767f3f","provider":"GEMINI","reason":"Internal confidence (0.4) below required (0.8)."}
+12:37:14 PM [vite] (client) page reload server_logs.txt
+12:37:14 PM [vite] (client) page reload mission_execution_log.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"a5f571ea-2f66-451a-9b90-37d7e4767f3f"}
+12:37:14 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"8d7c09ce-ca1a-446f-8745-a324bce19a8a","provider":"GEMINI","reason":"Internal confidence (0.4) below required (0.9)."}
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"fc3853e8-8f83-4c63-9ed6-42cf44079d47","provider":"GEMINI","reason":"Internal confidence (0.4) below required (0.8)."}
+12:37:14 PM [vite] (client) page reload mission_execution_log.txt
+12:37:14 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"8d7c09ce-ca1a-446f-8745-a324bce19a8a"}
+12:37:14 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"fc3853e8-8f83-4c63-9ed6-42cf44079d47"}
+[HILA-AUDIT] EXTERNAL_ROUTING: {"requestId":"5d7510de-24c5-43b0-85d0-1600084901dc","provider":"GEMINI","reason":"Internal confidence (0.2) below required (0.8)."}
+12:37:14 PM [vite] (client) page reload mission_execution_log.txt
+12:37:14 PM [vite] (client) page reload server_logs.txt
+[HILA-AUDIT] RESPONSE_VALIDATED: {"requestId":"5d7510de-24c5-43b0-85d0-1600084901dc"}
+12:37:14 PM [vite] (client) page reload server_logs.txt
+12:37:14 PM [vite] (client) page reload mission_execution_log.txt
+12:42:28 PM [vite] (client) page reload src/server/core/hmrc1/managers/MissionResultManager.ts
+12:42:28 PM [vite] (client) page reload server_logs.txt
+12:43:23 PM [vite] (client) page reload src/server/core/hmrc1/managers/MissionResultManager.ts
+12:43:23 PM [vite] (client) page reload server_logs.txt
+12:43:38 PM [vite] (client) page reload hypermind-x/frontend/dist/index.html
+12:43:38 PM [vite] (client) page reload server_logs.txt

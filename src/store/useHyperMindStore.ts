@@ -7,21 +7,36 @@ interface HyperMindState {
   metrics: any;
   hii: any;
   missions: any[];
+  missionResults: any[];
   diagnostics: any;
+  worldState: any;
   events: any[];
   isConnected: boolean;
   connect: () => void;
   disconnect: () => void;
+  fetchMissionResults: () => Promise<void>;
 }
 
 export const useHyperMindStore = create<HyperMindState>((set, get) => ({
   metrics: null,
   hii: null,
   missions: [],
+  missionResults: [],
   diagnostics: null,
+  worldState: null,
   events: [],
   isConnected: false,
-
+  fetchMissionResults: async () => {
+    try {
+      const res = await fetch("/api/hmrc/results");
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        set({ missionResults: data });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  },
   connect: () => {
     if (get().isConnected) return;
     
@@ -142,7 +157,7 @@ export const useHyperMindStore = create<HyperMindState>((set, get) => ({
            set((state) => ({
                events: [...state.events, msg].slice(-1000)
            }));
-        } else if (msg.type === "SIMULATION_STARTED") { useSimulationStore.getState().addScenario({ scenarioId: msg.payload?.scenarioId || "sim-"+Date.now(), scenarioName: msg.payload?.scenarioName || "Simulated Scenario", metrics: { successProbability: 0, risk: 0, utility: 0, confidence: 0, cost: 0 }, narrative: "Initializing simulation...", status: 'RUNNING' }); set((state) => ({ events: [...state.events, msg].slice(-1000) })); } else if (msg.type === "SIMULATION_COMPLETED") { if (msg.payload?.run) { const run = msg.payload.run; useSimulationStore.getState().updateScenarioStatus(run.scenarioId, run.status, run.outcome); if (run.outcome) { useSimulationStore.getState().addScenario({ scenarioId: run.scenarioId, scenarioName: run.outcome.narrative || "Simulated Scenario", metrics: run.outcome.metrics || { successProbability: 0, risk: 0, utility: 0, confidence: 0, cost: 0 }, narrative: run.outcome.narrative || "Simulation completed.", status: run.status }); } } set((state) => ({ events: [...state.events, msg].slice(-1000) })); } else if (msg.type === "PLAN_EVALUATED") { if (msg.payload?.outcomes) { msg.payload.outcomes.forEach((outcome: any) => { useSimulationStore.getState().addScenario({ scenarioId: outcome.scenarioId || "sim-"+Date.now(), scenarioName: outcome.narrative || "Simulated Scenario", metrics: outcome.metrics || { successProbability: 0, risk: 0, utility: 0, confidence: 0, cost: 0 }, narrative: outcome.narrative || "Simulation completed.", status: 'COMPLETED' }); }); } set((state) => ({ events: [...state.events, msg].slice(-1000) })); } else {
+        } else if (msg.type === "SIMULATION_STARTED") { useSimulationStore.getState().addScenario({ scenarioId: msg.payload?.scenarioId || "sim-"+Date.now(), scenarioName: msg.payload?.scenarioName || "Simulated Scenario", metrics: { successProbability: 0, risk: 0, utility: 0, confidence: 0, cost: 0 }, narrative: "Initializing simulation...", status: 'RUNNING' }); set((state) => ({ events: [...state.events, msg].slice(-1000) })); } else if (msg.type === "SIMULATION_COMPLETED") { if (msg.payload?.run) { const run = msg.payload.run; useSimulationStore.getState().updateScenarioStatus(run.scenarioId, run.status, run.outcome); if (run.outcome) { useSimulationStore.getState().addScenario({ scenarioId: run.scenarioId, scenarioName: run.outcome.narrative || "Simulated Scenario", metrics: run.outcome.metrics || { successProbability: 0, risk: 0, utility: 0, confidence: 0, cost: 0 }, narrative: run.outcome.narrative || "Simulation completed.", status: run.status }); } } set((state) => ({ events: [...state.events, msg].slice(-1000) })); } else if (msg.type === "PLAN_EVALUATED") { if (msg.payload?.outcomes) { msg.payload.outcomes.forEach((outcome: any) => { useSimulationStore.getState().addScenario({ scenarioId: outcome.scenarioId || "sim-"+Date.now(), scenarioName: outcome.narrative || "Simulated Scenario", metrics: outcome.metrics || { successProbability: 0, risk: 0, utility: 0, confidence: 0, cost: 0 }, narrative: outcome.narrative || "Simulation completed.", status: 'COMPLETED' }); }); } set((state) => ({ events: [...state.events, msg].slice(-1000) })); } else if (msg.type === "MISSION_RESULT_READY") { set((state) => { const newResult = msg.payload?.result || msg.data?.result; if (!newResult) return state; const results = [...state.missionResults]; const idx = results.findIndex(r => r.missionId === newResult.missionId); if (idx >= 0) results[idx] = newResult; else results.unshift(newResult); return { missionResults: results, events: [...state.events, msg].slice(-1000) }; }); } else {
            // Push other events to historystory
            set((state) => ({
                events: [...state.events, msg].slice(-1000)

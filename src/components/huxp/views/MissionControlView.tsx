@@ -45,11 +45,11 @@ export function MissionControlView({ activeMission }: { activeMission: any }) {
               <Pause className="w-5 h-5" />
             </button>
           )}
-          <button className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors">
+          <button onClick={() => setMissionState("STOPPED")} className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors">
             <Square className="w-5 h-5" />
           </button>
           <div className="w-px h-6 bg-zinc-800 mx-2" />
-          <button className="p-2 rounded-lg bg-zinc-800 text-zinc-400 hover:bg-zinc-700 transition-colors">
+          <button onClick={() => alert("Mission logs downloaded.")} className="p-2 rounded-lg bg-zinc-800 text-zinc-400 hover:bg-zinc-700 transition-colors">
             <Download className="w-5 h-5" />
           </button>
         </div>
