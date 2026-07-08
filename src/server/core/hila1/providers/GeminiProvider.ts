@@ -42,18 +42,18 @@ export class GeminiProvider implements IIntelligenceProvider {
         try {
             if (this.isHealthy) {
                 const response = await this.ai.models.generateContent({
-                    model: "gemini-2.5-pro",
+                    model: "gemini-2.5-flash",
                     contents: prompt + "\nContext: " + JSON.stringify(context),
                     config: options
                 });
                 content = response.text || "";
             } else {
-                content = `[Mock Gemini Output] Processed: ${prompt.substring(0, 50)}...`;
+                content = `{"fallback": true, "mock": "Processed: ${prompt.substring(0, 50)}..."}`;
                 confidence = 0.5;
             }
         } catch (e: any) {
             console.error("Gemini Generation Error:", e.message || e);
-            content = `[Mock Gemini Output - Fallback after Error] Processed: ${prompt.substring(0, 50)}...`;
+            content = `{"fallback": true, "error": "Fallback after Error", "mock": "Processed: ${prompt.substring(0, 50)}..."}`;
             confidence = 0.5;
         }
 
