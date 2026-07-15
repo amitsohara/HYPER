@@ -18,7 +18,7 @@ export class PerceptionManager {
         this.environmentInterpreter = new EnvironmentInterpreter(this.eventMesh);
     }
 
-    async processEnvironment(): Promise<void> {
+    async processEnvironment(missionId: string = "sys-mission", directive: string = ""): Promise<void> {
         const rawObs = await this.adapter.observe();
         
         const visionObs = await this.visionEngine.analyzeScene({ id: "cam-1" });
@@ -28,6 +28,6 @@ export class PerceptionManager {
 
         const unifiedObs = this.fusionEngine.fuse(allObs);
         
-        this.environmentInterpreter.interpret(unifiedObs);
+        this.environmentInterpreter.interpret(unifiedObs, missionId, directive);
     }
 }

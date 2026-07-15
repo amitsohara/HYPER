@@ -73,6 +73,8 @@ export interface Mission {
     id: string;
     name: string;
     description: string;
+    directive?: string;
+    objective?: string;
     state: MissionState;
     goalIds: string[];
     createdAt: number;

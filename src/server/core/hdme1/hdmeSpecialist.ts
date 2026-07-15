@@ -111,7 +111,7 @@ export class HDMESpecialist implements ISpecialist {
                 relationships: Array.from(HyperMindWorldModelEngine.getInstance().stateManager.getCanonicalWorld().relationships.values())
             };
         } catch(e) {}
-        const context: DecisionContext = { missionId: "sys-mission", worldStateSnapshot: ws };
+        const context: DecisionContext = { missionId: event.payload?.missionId || "sys-mission", worldStateSnapshot: ws };
         const decision = this.fusionEngine.fuse(payload, context);
 
         // 2. Evaluate Utility & Risk

@@ -8,11 +8,13 @@ export class MissionLifecycleManager {
 
     constructor(private eventMesh: HyperMindEventMesh) {}
 
-    createMission(name: string, description: string, goalIds: string[]): Mission {
+    createMission(name: string, description: string, goalIds: string[], directive?: string, objective?: string): Mission {
         const mission: Mission = {
             id: `mis-${uuidv4()}`,
             name,
             description,
+            directive,
+            objective,
             state: MissionState.CREATED,
             goalIds,
             createdAt: Date.now(),

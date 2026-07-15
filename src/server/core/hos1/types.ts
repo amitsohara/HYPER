@@ -40,10 +40,20 @@ export interface Plugin {
 
 export interface MissionContext {
     id: string;
+    name: string;
+    directive: string;
+    objective: string;
+    description: string;
     priority: number;
     deadline?: number;
     requiredCapabilities: string[];
     allocatedResources: string[];
+    observations?: any[];
+    plans?: any[];
+    decisions?: any[];
+    results?: any[];
+    status?: string;
+    metadata?: any;
 }
 
 export interface MissionExecution {

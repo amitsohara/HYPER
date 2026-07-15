@@ -28,7 +28,6 @@ export class MissionScheduler {
             context,
             startTime: Date.now()
         };
-
         this.queue.enqueue(execution);
 
         this.eventMesh.publish({
@@ -36,7 +35,13 @@ export class MissionScheduler {
             domain: CognitiveDomain.SYSTEM,
             priority: 1,
             source: "HOS_SCHEDULER",
-            payload: { execution }
+            payload: { 
+                missionId: context.id,
+                missionName: context.name,
+                directive: context.directive,
+                objective: context.objective,
+                execution 
+            }
         });
 
         return execution;
@@ -46,13 +51,22 @@ export class MissionScheduler {
 export class MissionManager {
     constructor(private scheduler: MissionScheduler, private eventMesh: HyperMindEventMesh) {}
 
-    createMission(name: string, priority: number): MissionContext {
-        // Reuse HCNS missions if possible, but this is the execution envelope
+    createMission(name: string, priority: number, directive: string = "", description: string = "", objective: string = "", metadata: any = {}): MissionContext {
         return {
-            id: `mis-ctx-${uuidv4()}`,
+            id: `sys-mission`,
+            name,
+            directive: directive || name,
+            objective: objective || description || name,
+            description,
             priority,
             requiredCapabilities: [],
-            allocatedResources: []
+            allocatedResources: [],
+            status: "CREATED",
+            observations: [],
+            plans: [],
+            decisions: [],
+            results: [],
+            metadata
         };
     }
 

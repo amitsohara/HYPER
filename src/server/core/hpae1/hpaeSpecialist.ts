@@ -77,9 +77,13 @@ export class HPAESpecialist implements ISpecialist {
 
     async handleEvent(event: CognitiveEvent): Promise<void> {
         if (event.type === "MISSION_SCHEDULED") {
-            await this.perceptionManager.processEnvironment();
+            const exec = event.payload?.execution;
+            await this.perceptionManager.processEnvironment(
+                exec?.missionId || "sys-mission",
+                exec?.context?.directive || ""
+            );
         } else if (event.type === "ACTION_AUTHORIZED" && event.payload) {
-            const action: Action = {
+            const action: Action = { missionId: event.payload?.missionId || "sys-mission",
                 id: uuidv4(),
                 planId: event.payload.planId || "P-1",
                 skillId: event.payload.skillId || "S-1",
@@ -103,7 +107,7 @@ export class HPAESpecialist implements ISpecialist {
                 domain: CognitiveDomain.SYSTEM,
                 priority: 1,
                 source: "HPAE",
-                payload: { missionId: event.payload.decision?.missionId || "sys-mission" }
+                payload: { missionId: event.payload?.action?.missionId || event.payload?.missionId || event.payload?.decision?.missionId || "sys-mission" }
             });
         }
     }

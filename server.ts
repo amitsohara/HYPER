@@ -38,19 +38,24 @@ async function startServer() {
   // API ROUTES
   app.post("/api/hml/missions/deploy", async (req, res) => {
     try {
+        const name = req.body.name || req.body.directive || "Optimization Mission";
         const directive = req.body.directive || "Optimize heavy traffic at Target Area.";
+        const description = req.body.description || directive;
+        const objective = req.body.objective || directive;
+        
+        // Use HOS to create and run the mission
+        const hos = global.hos;
+        const ctx = hos.missionManager.createMission(name, 10, directive, description, objective);
+        hos.missionManager.runMission(ctx);
+        
+        // Inject synthetic environment state directly to HCNS so HWME has something to work with
         HyperMindEventMesh.getInstance().publish({
             type: "WORLD_OBSERVATION",
             domain: CognitiveDomain.OBSERVATION,
             priority: 1,
-            source: "MissionControlUI",
+            source: "EnvironmentSimulator",
             payload: {
-                missionDirective: directive,
-                context: {
-                    type: "USER_DIRECTIVE",
-                    description: directive
-                },
-                entity: { name: "User Request", type: "MISSION_DIRECTIVE" },
+                missionId: ctx.id,
                 additionalEntities: [
                     { id: "e1", name: "Target Area", type: "INTERSECTION", properties: { status: "congested" } },
                     { id: "e2", name: "Main Road", type: "ROAD", properties: { lanes: 4 } },
@@ -63,8 +68,10 @@ async function startServer() {
                 ]
             }
         });
-        res.json({ success: true });
+
+        res.json({ status: "deployed", missionId: ctx.id, directive });
     } catch (e: any) {
+        console.error(e);
         res.status(500).json({ error: e.message });
     }
   });
